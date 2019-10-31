@@ -48,6 +48,7 @@ public class Login extends javax.swing.JFrame {
                     logueado.setTelefono(a.getString("numero"));
                     logueado.setPassword(a.getString("password"));
                     CorteModel corte = null;
+                    
                     if (logueado.getRol() != 1){
                         String currentCorteQuery = "select * from Corte where id_Trabajador = ? and estatus = ?";
                         pst = conection.conectar.prepareStatement(currentCorteQuery);
@@ -110,7 +111,6 @@ public class Login extends javax.swing.JFrame {
         ventanaMenu.setVisible(false);
         this.setVisible(true);
         ventanaMenu = null;
-        
     }
 
     /**
@@ -128,11 +128,11 @@ public class Login extends javax.swing.JFrame {
         usuario = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         contrasena = new javax.swing.JPasswordField();
-        jLabel1 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        Ingresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/iconfinder_SignIn_1031506.png"))); // NOI18N
+        Ingresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/iconfinder_SignIn_1031506.png"))); // NOI18N
         Ingresar.setText("  Ingresar");
         Ingresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -160,7 +160,7 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/emp.png"))); // NOI18N
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/emp.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -180,19 +180,19 @@ public class Login extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(contrasena, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(98, 98, 98)
+                        .addGap(65, 65, 65)
                         .addComponent(Ingresar, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(132, 132, 132)
-                        .addComponent(jLabel1)))
-                .addContainerGap(104, Short.MAX_VALUE))
+                        .addGap(99, 99, 99)
+                        .addComponent(jLabel4)))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(76, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(31, 31, 31)
+                .addContainerGap()
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(usuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
@@ -210,8 +210,9 @@ public class Login extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(29, 29, 29)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -280,9 +281,9 @@ public class Login extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Ingresar;
     private javax.swing.JPasswordField contrasena;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField usuario;
     // End of variables declaration//GEN-END:variables

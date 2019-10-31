@@ -171,7 +171,7 @@ public class BuscaCliente extends javax.swing.JFrame {
         jLabel1.setText("Buscar por ID:");
 
         jLabel3.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
-        jLabel3.setText("Buscar por apelleido paterno:");
+        jLabel3.setText("Buscar por apellido paterno:");
 
         ClientesTabla.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -194,7 +194,7 @@ public class BuscaCliente extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(ClientesTabla);
 
-        BuscaPaterno.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/buscar.png"))); // NOI18N
+        BuscaPaterno.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/buscar.png"))); // NOI18N
         BuscaPaterno.setText("Buscar ");
         BuscaPaterno.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -202,7 +202,7 @@ public class BuscaCliente extends javax.swing.JFrame {
             }
         });
 
-        BuscaID.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/buscar.png"))); // NOI18N
+        BuscaID.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/buscar.png"))); // NOI18N
         BuscaID.setText("Buscar ");
         BuscaID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -251,10 +251,10 @@ public class BuscaCliente extends javax.swing.JFrame {
                         .addGap(14, 14, 14)
                         .addComponent(BuscaPaterno, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE))
         );
 
-        Regresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/regresar.png"))); // NOI18N
+        Regresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/regresar.png"))); // NOI18N
         Regresar.setText("Regresar");
         Regresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

@@ -89,7 +89,7 @@
         <Component class="javax.swing.JButton" name="Empleados">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/pandaderia/empleados.png"/>
+              <Image iconType="3" name="/Images/empleados.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Empleados"/>
           </Properties>
@@ -101,7 +101,7 @@
         <Component class="javax.swing.JButton" name="Ventas">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/pandaderia/venta.png"/>
+              <Image iconType="3" name="/Images/venta.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Ventas"/>
           </Properties>
@@ -112,7 +112,7 @@
         <Component class="javax.swing.JButton" name="Inventario">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/pandaderia/inventario.png"/>
+              <Image iconType="3" name="/Images/inventario.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Inventario"/>
           </Properties>
@@ -123,7 +123,7 @@
         <Component class="javax.swing.JButton" name="Corte">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/pandaderia/coin.png"/>
+              <Image iconType="3" name="/Images/coin.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Corte"/>
           </Properties>
@@ -134,7 +134,7 @@
         <Component class="javax.swing.JButton" name="LogOut">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/pandaderia/iconfinder_outlined_log_out_4280468.png"/>
+              <Image iconType="3" name="/Images/iconfinder_outlined_log_out_4280468.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Cerrar sesion"/>
           </Properties>

@@ -53,7 +53,7 @@ public class Menu extends javax.swing.JFrame {
         this.ventanaLogin = previewView;
         this.setVisible(rootPaneCheckingEnabled);
         setResizable(false);
-        this.getContentPane().setBackground(Color.orange);
+        //this.getContentPane().setBackground(Color.orange);
     }
 
     public void thismissVentas(){
@@ -103,7 +103,7 @@ public class Menu extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        Empleados.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/empleados.png"))); // NOI18N
+        Empleados.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/empleados.png"))); // NOI18N
         Empleados.setText("Empleados");
         Empleados.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -116,7 +116,7 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
-        Ventas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/venta.png"))); // NOI18N
+        Ventas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/venta.png"))); // NOI18N
         Ventas.setText("Ventas");
         Ventas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -124,7 +124,7 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
-        Inventario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/inventario.png"))); // NOI18N
+        Inventario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/inventario.png"))); // NOI18N
         Inventario.setText("Inventario");
         Inventario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -132,7 +132,7 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
-        Corte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/coin.png"))); // NOI18N
+        Corte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/coin.png"))); // NOI18N
         Corte.setText("Corte");
         Corte.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -140,7 +140,7 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
-        LogOut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/iconfinder_outlined_log_out_4280468.png"))); // NOI18N
+        LogOut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/iconfinder_outlined_log_out_4280468.png"))); // NOI18N
         LogOut.setText("Cerrar sesion");
         LogOut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
