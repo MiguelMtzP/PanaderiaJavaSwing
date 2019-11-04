@@ -62,7 +62,7 @@ public class RegPedido extends javax.swing.JFrame {
         try {
                 PreparedStatement pst= conexion.conectar.prepareStatement("SELECT * FROM Inventario order by nombre asc ");
                 ResultSet rs = pst.executeQuery();
-                CbPan.addItem("Selecicone un pan");
+                CbPan.addItem("Seleccione un pan");
                 
                 while(rs.next()){
                     Pan nuevoPan = new Pan();
@@ -128,7 +128,7 @@ public class RegPedido extends javax.swing.JFrame {
             }
         });
 
-        agregarJbtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/iconfinder_sign-check_299110.png"))); // NOI18N
+        agregarJbtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/iconfinder_sign-check_299110.png"))); // NOI18N
         agregarJbtn.setEnabled(false);
         agregarJbtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -136,6 +136,7 @@ public class RegPedido extends javax.swing.JFrame {
             }
         });
 
+        addPedido.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/add_Pedido.png"))); // NOI18N
         addPedido.setText("Agregar Pedido");
         addPedido.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -146,6 +147,7 @@ public class RegPedido extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
         jLabel2.setText("TOTAL:");
 
+        Regresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/regresar.png"))); // NOI18N
         Regresar.setText("Regresar");
         Regresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

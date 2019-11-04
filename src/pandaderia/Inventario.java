@@ -166,7 +166,7 @@ public class Inventario extends javax.swing.JFrame {
 
         jLabel3.setText("Existencia:");
 
-        Regresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/regresar.png"))); // NOI18N
+        Regresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/regresar.png"))); // NOI18N
         Regresar.setText("Regresar");
         Regresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -174,7 +174,7 @@ public class Inventario extends javax.swing.JFrame {
             }
         });
 
-        Buscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/buscar.png"))); // NOI18N
+        Buscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/buscar.png"))); // NOI18N
         Buscar.setText("Buscar");
         Buscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -182,7 +182,7 @@ public class Inventario extends javax.swing.JFrame {
             }
         });
 
-        Borrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/borrar.png"))); // NOI18N
+        Borrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/borrar.png"))); // NOI18N
         Borrar.setText("Borrar");
         Borrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -190,7 +190,7 @@ public class Inventario extends javax.swing.JFrame {
             }
         });
 
-        Guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/guardar.png"))); // NOI18N
+        Guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/guardar.png"))); // NOI18N
         Guardar.setText("Guardar");
         Guardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -208,7 +208,7 @@ public class Inventario extends javax.swing.JFrame {
             }
         });
 
-        Modificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/editar.png"))); // NOI18N
+        Modificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/editar.png"))); // NOI18N
         Modificar.setText("Modificar");
         Modificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -379,7 +379,7 @@ public class Inventario extends javax.swing.JFrame {
                     modelo.addRow(fila);
                     
                 }catch (SQLException e) {
-                        //JOptionPane.showMessageDialog(null, "ERROR!!");
+                        JOptionPane.showMessageDialog(null, "No hay datos que guardar");
                         System.out.println(e);
         }
     }//GEN-LAST:event_GuardarActionPerformed

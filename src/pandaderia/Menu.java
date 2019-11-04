@@ -11,10 +11,6 @@ import javax.swing.JOptionPane;
 
 import java.awt.Component;
 
-/**
- *
- * @author alexis
- */
 public class Menu extends javax.swing.JFrame {
     
     private Empleado empleadoLoggeado;
@@ -55,7 +51,7 @@ public class Menu extends javax.swing.JFrame {
         this.ventanaLogin = previewView;
         this.setVisible(rootPaneCheckingEnabled);
         setResizable(false);
-        this.getContentPane().setBackground(Color.orange);
+        //this.getContentPane().setBackground(Color.orange);
     }
 
     public void thismissVentas(){
@@ -77,7 +73,7 @@ public class Menu extends javax.swing.JFrame {
         ventanaCorte = null;
         currentCorte = corteActualizado;
         if(currentCorte.getEstatus() == 1){
-            VentasJButton.setEnabled(false);
+            Venta.setEnabled(false);
         }
     }
     public void thismissCorteAdminViewer(){
@@ -98,16 +94,40 @@ public class Menu extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        Empleados = new javax.swing.JButton();
-        VentasJButton = new javax.swing.JButton();
         Inventario = new javax.swing.JButton();
         Corte = new javax.swing.JButton();
+        Venta = new javax.swing.JButton();
+        Empleados = new javax.swing.JButton();
         LogOut = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        Empleados.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/empleados.png"))); // NOI18N
+        Inventario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/inventario.png"))); // NOI18N
+        Inventario.setText("Inventario");
+        Inventario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                InventarioActionPerformed(evt);
+            }
+        });
+
+        Corte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/coin.png"))); // NOI18N
+        Corte.setText("Corte");
+        Corte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CorteActionPerformed(evt);
+            }
+        });
+
+        Venta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/venta.png"))); // NOI18N
+        Venta.setText("Venta");
+        Venta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                VentaActionPerformed(evt);
+            }
+        });
+
+        Empleados.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/empleados.png"))); // NOI18N
         Empleados.setText("Empleados");
         Empleados.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -120,31 +140,7 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
-        VentasJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/venta.png"))); // NOI18N
-        VentasJButton.setText("Ventas");
-        VentasJButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                VentasJButtonActionPerformed(evt);
-            }
-        });
-
-        Inventario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/inventario.png"))); // NOI18N
-        Inventario.setText("Inventario");
-        Inventario.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                InventarioActionPerformed(evt);
-            }
-        });
-
-        Corte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/coin.png"))); // NOI18N
-        Corte.setText("Corte");
-        Corte.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CorteActionPerformed(evt);
-            }
-        });
-
-        LogOut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/iconfinder_outlined_log_out_4280468.png"))); // NOI18N
+        LogOut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/iconfinder_outlined_log_out_4280468.png"))); // NOI18N
         LogOut.setText("Cerrar sesion");
         LogOut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -152,56 +148,47 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(LogOut, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 224, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(Inventario, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(Empleados, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(Corte, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(VentasJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(213, 213, 213))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(27, Short.MAX_VALUE)
-                .addComponent(Empleados, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(VentasJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24)
-                .addComponent(Inventario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(Corte, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36)
-                .addComponent(LogOut)
-                .addContainerGap())
-        );
+        jButton1.setText("Proveedores");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(LogOut))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(158, 158, 158)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton1)
+                            .addComponent(Empleados)
+                            .addComponent(Inventario))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(175, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(Corte)
+                    .addComponent(Venta))
+                .addGap(199, 199, 199))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap(55, Short.MAX_VALUE)
+                .addComponent(Inventario)
+                .addGap(52, 52, 52)
+                .addComponent(Corte)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(Venta)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Empleados)
+                .addGap(26, 26, 26)
+                .addComponent(jButton1)
+                .addGap(46, 46, 46)
+                .addComponent(LogOut)
+                .addGap(20, 20, 20))
         );
 
         pack();
@@ -240,12 +227,12 @@ public class Menu extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_CorteActionPerformed
 
-    private void VentasJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VentasJButtonActionPerformed
+    private void VentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VentaActionPerformed
         ventanaVenta = new Venta(this, empleadoLoggeado, conexion, currentCorte);
         System.out.println(empleadoLoggeado);
         ventanaVenta.setVisible(true); //this,logueado
         this.setVisible(false);
-    }//GEN-LAST:event_VentasJButtonActionPerformed
+    }//GEN-LAST:event_VentaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -287,8 +274,8 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JButton Empleados;
     private javax.swing.JButton Inventario;
     private javax.swing.JButton LogOut;
-    private javax.swing.JButton VentasJButton;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton Venta;
+    private javax.swing.JButton jButton1;
     // End of variables declaration//GEN-END:variables
 
   

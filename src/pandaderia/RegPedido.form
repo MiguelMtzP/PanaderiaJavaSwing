@@ -179,7 +179,7 @@
         <Component class="javax.swing.JButton" name="agregarJbtn">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/pandaderia/iconfinder_sign-check_299110.png"/>
+              <Image iconType="3" name="/Images/iconfinder_sign-check_299110.png"/>
             </Property>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
@@ -189,6 +189,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="addPedido">
           <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/Images/add_Pedido.png"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Agregar Pedido"/>
           </Properties>
           <Events>
@@ -205,6 +208,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="Regresar">
           <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/Images/regresar.png"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Regresar"/>
           </Properties>
           <Events>

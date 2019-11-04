@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package pandaderia;
 
 import Models.Empleado;
@@ -11,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -19,10 +16,45 @@ public class MisEmpleados extends javax.swing.JFrame {
     private Empleado empleadoLoggeado;
     public DefaultTableModel modelo = new DefaultTableModel();
     private Menu ventanaMenu;
+    private ButtonGroup rolButton;
     
-    public void Actualizar(String valor){
+    public MisEmpleados() {
+
+        initComponents();
+        setLocationRelativeTo(null);
+        setTitle("Mis Empleados");
+        Actualizar("");
+        setResizable(false);
+    }
+ 
+    public MisEmpleados(Component father,Empleado logged) { //aqui  sobreescribo el constructor
+        initComponents();
+        setTitle("Mis Empleados");
+        Actualizar("");
+        setResizable(false);
+        empleadoLoggeado = logged;
+        //Empleados.setVisible(empleadoLoggeado.getRol() == 1);
+        this.setLocationRelativeTo(father);
+        //System.out.println(empleadoLoggeado.toString());
+    }
+    
+    public MisEmpleados(Menu previewView, Empleado emp){
+        initComponents();
+        setLocationRelativeTo(null);
+        setTitle("Mis empleados");
+        this.ventanaMenu = previewView;
+        empleadoLoggeado = emp;
+        setResizable(false);
+        rolButton = new ButtonGroup();
+        rolButton.add(gerenteOptionRadioButton);
+        rolButton.add(empleadoOptionRadioButton);
+        validateButtons();
+        Actualizar("");
+    }
+    
+        public void Actualizar(String valor){
         
-        TrabajadorField.setEnabled(false); 
+        idTrabajadorField.setEnabled(false); 
         String sql = "";
         if(valor.equals("")){
             sql = "SELECT * FROM Usuarios";
@@ -33,9 +65,9 @@ public class MisEmpleados extends javax.swing.JFrame {
         Conexion cc = new Conexion();
         
         try {
-                //modelo = new DefaultTableModel();
+                modelo = new DefaultTableModel();
                 EmpleadosTabla.setModel(modelo);
-                PreparedStatement pst= cc.conectar.prepareStatement("select * from Usuarios ");
+                PreparedStatement pst= cc.conectar.prepareStatement(sql);
                 //System.out.println(pst);
                 ResultSet a = pst.executeQuery(sql);
                 ResultSetMetaData aMd = a.getMetaData(); //Le pasamos el resultado de la consulta
@@ -70,36 +102,44 @@ public class MisEmpleados extends javax.swing.JFrame {
             //System.out.println(e);
         }
     }
-    
-    public MisEmpleados() {
-
-        initComponents();
-        setLocationRelativeTo(null);
-        setTitle("Mis Empleados");
-        Actualizar("");
-        setResizable(false);
+        
+    private void validateButtons(){
+        if (idTrabajadorField.getText().isEmpty()){
+            ModificarButton.setEnabled(false);
+            BorrarButton.setEnabled(false);
+        }else{
+            BorrarButton.setEnabled(true);
+            if((!gerenteOptionRadioButton.isSelected()&&!empleadoOptionRadioButton.isSelected())||
+            PaternoField.getText().isEmpty()||
+            MaternoField.getText().isEmpty()||
+            NombreField.getText().isEmpty()||
+            NumeroField.getText().isEmpty()||
+            PasswField.getText().isEmpty()){
+                ModificarButton.setEnabled(false);
+            }else{
+                ModificarButton.setEnabled(true);
+            }
+        }
+        if (!idTrabajadorField.getText().isEmpty()||
+            (!gerenteOptionRadioButton.isSelected()&&!empleadoOptionRadioButton.isSelected())||
+            PaternoField.getText().isEmpty()||
+            MaternoField.getText().isEmpty()||
+            NombreField.getText().isEmpty()||
+            NumeroField.getText().isEmpty()||
+            PasswField.getText().isEmpty()){
+            GuardarButton.setEnabled(false);
+        }else{
+            GuardarButton.setEnabled(true);
+        }
     }
- 
-    public MisEmpleados(Component father,Empleado logged) { //aqui  sobreescribo el constructor
-        initComponents();
-        setTitle("Mis Empleados");
-        Actualizar("");
-        setResizable(false);
-        empleadoLoggeado = logged;
-        //Empleados.setVisible(empleadoLoggeado.getRol() == 1);
-        this.setLocationRelativeTo(father);
-        //System.out.println(empleadoLoggeado.toString());
-    }
     
-    public MisEmpleados(Menu previewView, Empleado emp){
-        initComponents();
-        setLocationRelativeTo(null);
-        setTitle("Mis empleados");
-        this.ventanaMenu = previewView;
-        empleadoLoggeado = emp;
-        this.setVisible(rootPaneCheckingEnabled);
-        Actualizar("");
-        setResizable(false);
+    public void limpiaFields(){
+        idTrabajadorField.setText("");
+        NombreField.setText("");
+        PaternoField.setText("");
+        MaternoField.setText("");
+        NumeroField.setText("");
+        PasswField.setText("");
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -120,20 +160,23 @@ public class MisEmpleados extends javax.swing.JFrame {
         label5 = new javax.swing.JLabel();
         label6 = new javax.swing.JLabel();
         NombreField = new javax.swing.JTextField();
-        PaternField = new javax.swing.JTextField();
+        PaternoField = new javax.swing.JTextField();
         MaternoField = new javax.swing.JTextField();
         PasswField = new javax.swing.JTextField();
         NumeroField = new javax.swing.JTextField();
-        RolField = new javax.swing.JTextField();
         Regresar = new javax.swing.JButton();
-        Buscar = new javax.swing.JButton();
-        Borrar = new javax.swing.JButton();
-        Guardar = new javax.swing.JButton();
-        TextBuscar = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
+        BorrarButton = new javax.swing.JButton();
+        GuardarButton = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        TrabajadorField = new javax.swing.JTextField();
-        Modificar = new javax.swing.JButton();
+        idTrabajadorField = new javax.swing.JTextField();
+        ModificarButton = new javax.swing.JButton();
+        gerenteOptionRadioButton = new javax.swing.JRadioButton();
+        empleadoOptionRadioButton = new javax.swing.JRadioButton();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        TextBuscar = new javax.swing.JTextField();
+        Buscar = new javax.swing.JButton();
+        limpiaCampos = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -141,7 +184,7 @@ public class MisEmpleados extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 24, Short.MAX_VALUE)
+            .addGap(0, 3, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -207,7 +250,7 @@ public class MisEmpleados extends javax.swing.JFrame {
             }
         });
 
-        Regresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/regresar.png"))); // NOI18N
+        Regresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/regresar.png"))); // NOI18N
         Regresar.setText("Regresar");
         Regresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -215,29 +258,41 @@ public class MisEmpleados extends javax.swing.JFrame {
             }
         });
 
-        Buscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/buscar.png"))); // NOI18N
-        Buscar.setText("Buscar");
-        Buscar.addActionListener(new java.awt.event.ActionListener() {
+        BorrarButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/borrar.png"))); // NOI18N
+        BorrarButton.setText("Borrar");
+        BorrarButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BuscarActionPerformed(evt);
+                BorrarButtonActionPerformed(evt);
             }
         });
 
-        Borrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/borrar.png"))); // NOI18N
-        Borrar.setText("Borrar");
-        Borrar.addActionListener(new java.awt.event.ActionListener() {
+        GuardarButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/guardar.png"))); // NOI18N
+        GuardarButton.setText("Guardar");
+        GuardarButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BorrarActionPerformed(evt);
+                GuardarButtonActionPerformed(evt);
             }
         });
 
-        Guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/guardar.png"))); // NOI18N
-        Guardar.setText("Guardar");
-        Guardar.addActionListener(new java.awt.event.ActionListener() {
+        jLabel5.setText("id Trabajador:");
+
+        idTrabajadorField.setEditable(false);
+
+        ModificarButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/editar.png"))); // NOI18N
+        ModificarButton.setText("Modificar");
+        ModificarButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                GuardarActionPerformed(evt);
+                ModificarButtonActionPerformed(evt);
             }
         });
+
+        gerenteOptionRadioButton.setText("Gerente");
+
+        empleadoOptionRadioButton.setText("Empleado");
+
+        jPanel2.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jLabel4.setText("Buscar por ID:");
 
         TextBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -245,15 +300,48 @@ public class MisEmpleados extends javax.swing.JFrame {
             }
         });
 
-        jLabel4.setText("Buscar por ID:");
-
-        jLabel5.setText("id Trabajador:");
-
-        Modificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/editar.png"))); // NOI18N
-        Modificar.setText("Modificar");
-        Modificar.addActionListener(new java.awt.event.ActionListener() {
+        Buscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/buscar.png"))); // NOI18N
+        Buscar.setText("Buscar");
+        Buscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ModificarActionPerformed(evt);
+                BuscarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(TextBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(Buscar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(TextBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Buscar)
+                .addGap(0, 37, Short.MAX_VALUE))
+        );
+
+        limpiaCampos.setIcon(new javax.swing.ImageIcon("/home/alexis/NetBeansProjects/NetBeansProjects/PanaderiaJavaSwing/imagenes/limpiar.png")); // NOI18N
+        limpiaCampos.setText("Limpiar campos de texto");
+        limpiaCampos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                limpiaCamposActionPerformed(evt);
             }
         });
 
@@ -262,58 +350,60 @@ public class MisEmpleados extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1033, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(label4)
-                        .addGap(18, 18, 18)
-                        .addComponent(PasswField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
+                        .addGap(42, 42, 42)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(8, 8, 8)
-                                .addComponent(Regresar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(Modificar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                                .addComponent(label6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(empleadoOptionRadioButton)
+                                    .addComponent(gerenteOptionRadioButton)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(label5)
-                                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(label1))
-                                        .addGap(26, 26, 26)
+                                        .addGap(29, 29, 29)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(NombreField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(PaternField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(MaternoField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(NumeroField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(TrabajadorField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(42, 42, 42)
-                                                .addComponent(label6)))
-                                        .addGap(0, 0, Short.MAX_VALUE))
+                                            .addComponent(PaternoField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                .addComponent(RolField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(193, 193, 193)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(TextBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(100, 100, 100)
+                                        .addComponent(idTrabajadorField, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel5))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(label4)
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(label5))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(MaternoField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(NumeroField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(PasswField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(Borrar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(Regresar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(limpiaCampos, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(GuardarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(ModificarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(Guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                                .addComponent(BorrarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(21, 21, 21))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1033, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -323,53 +413,54 @@ public class MisEmpleados extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
+                        .addGap(12, 12, 12)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(16, 16, 16)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel5)
-                                    .addComponent(TrabajadorField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(label6)
-                                    .addComponent(RolField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(NombreField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(label1))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel2)
-                                    .addComponent(PaternField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(MaternoField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel3))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(NumeroField, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(label5))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(PasswField, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(label4)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel5)
+                                            .addComponent(idTrabajadorField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(NombreField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(label1))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel2)
+                                            .addComponent(PaternoField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGap(34, 34, 34)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(gerenteOptionRadioButton)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(empleadoOptionRadioButton))
+                                    .addComponent(label6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(TextBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(MaternoField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel3))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(label5)
-                                    .addComponent(NumeroField, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(13, 13, 13)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(label4)
-                                    .addComponent(PasswField, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(Regresar, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(Borrar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(Guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(Modificar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                    .addComponent(BorrarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(ModificarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(GuardarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(limpiaCampos, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(Regresar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(14, 14, 14)))))
                 .addContainerGap())
         );
 
@@ -390,17 +481,22 @@ public class MisEmpleados extends javax.swing.JFrame {
 
     private void BuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuscarActionPerformed
        Actualizar(TextBuscar.getText());
+       TextBuscar.setText("");
     }//GEN-LAST:event_BuscarActionPerformed
 
     private void RegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegresarActionPerformed
+        Empleado logueado = new Empleado();
+        System.out.println(logueado);
+        ventanaMenu.setVisible(true);
+        this.setVisible(false);
         ventanaMenu.thismissEmpleados();
     }//GEN-LAST:event_RegresarActionPerformed
 
-    private void BorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarActionPerformed
+    private void BorrarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarButtonActionPerformed
            
-                Conexion cc = new Conexion();
+            Conexion cc = new Conexion();
             
-            try {
+            try {   
                     int fila = EmpleadosTabla.getSelectedRow();
                     System.out.println(fila);
                     int idTrabaj = (int)EmpleadosTabla.getValueAt(fila, 0);
@@ -416,50 +512,51 @@ public class MisEmpleados extends javax.swing.JFrame {
         }    
            
        
-    }//GEN-LAST:event_BorrarActionPerformed
+    }//GEN-LAST:event_BorrarButtonActionPerformed
 
     private void TextBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TextBuscarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_TextBuscarActionPerformed
 
-    private void GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GuardarActionPerformed
+    private void GuardarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GuardarButtonActionPerformed
                     
                     Conexion cc = new Conexion();
             
             try {          
                     PreparedStatement pst= cc.conectar.prepareStatement("INSERT INTO Usuarios  (nombre, paterno, materno, numero, password, rol) VALUES(?,?,?,?,?,?)");
-                    
+                    //kstor modifique cosas a partir de aqui
                     //System.out.println(pst);
                     pst.setString(1, NombreField.getText());
-                    pst.setString(2, PaternField.getText());
+                    pst.setString(2, PaternoField.getText());
                     pst.setString(3, MaternoField.getText());
                     pst.setString(4, NumeroField.getText());
                     pst.setString(5, PasswField.getText());
-                    pst.setString(6, RolField.getText());
+                    int rol = empleadoOptionRadioButton.isSelected() ? 2 : 1;
+                    pst.setInt(6, rol);
                     pst.execute();
                     JOptionPane.showMessageDialog(null, "Guardado");
                         
                     Object[] fila = new Object[7];
                     fila[1] = NombreField.getText();
-                    fila[2] = PaternField.getText();
+                    fila[2] = PaternoField.getText();
                     fila[3] = MaternoField.getText();
                     fila[4] = NumeroField.getText();
                     fila[5] = PasswField.getText();
-                    fila[6] = RolField.getText();
+                    fila[6] = gerenteOptionRadioButton.isSelected() ? "Gerente" : "Empleado";
                     modelo.addRow(fila);
                     
                 }catch (SQLException e) {
-                        JOptionPane.showMessageDialog(null, "ERROR!!");
+                        //JOptionPane.showMessageDialog(null, "ERROR!!");
                         System.out.println(e);
         }
-    }//GEN-LAST:event_GuardarActionPerformed
+    }//GEN-LAST:event_GuardarButtonActionPerformed
 
-    private void ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ModificarActionPerformed
+    private void ModificarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ModificarButtonActionPerformed
             
                   Conexion cc = new Conexion();
             
             try {
-                  PreparedStatement pst = cc.conectar.prepareStatement("UPDATE Usuarios SET nombre = '"+NombreField.getText()+"', paterno = '"+PaternField.getText()+"', materno = '"+MaternoField.getText()+"', password = '"+PasswField.getText()+"', numero = '"+NumeroField.getText()+"', rol = '"+RolField.getText()+"' WHERE id_Trabajador = '"+TrabajadorField.getText()+"'");
+                  PreparedStatement pst = cc.conectar.prepareStatement("UPDATE Usuarios SET nombre = '"+NombreField.getText()+"', paterno = '"+PaternoField.getText()+"', materno = '"+MaternoField.getText()+"', password = '"+PasswField.getText()+"', numero = '"+NumeroField.getText()+"', rol = '"+(gerenteOptionRadioButton.isSelected()?"1":"2")+"' WHERE id_Trabajador = '"+idTrabajadorField.getText()+"'");
                   pst.executeUpdate();
                   Actualizar("");
                   JOptionPane.showMessageDialog(null,"MODIFICADO!");  
@@ -467,38 +564,42 @@ public class MisEmpleados extends javax.swing.JFrame {
                   //JOptionPane.showMessageDialog(null,"ERROR");
                   System.out.println(e);
         }
-    }//GEN-LAST:event_ModificarActionPerformed
+    }//GEN-LAST:event_ModificarButtonActionPerformed
 
     private void EmpleadosTablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EmpleadosTablaMouseClicked
-        
+        //kstor
                Conexion cc = new Conexion();
                 
             try {
 
-                int Fila = EmpleadosTabla.getSelectedRow();
-                String codigo = EmpleadosTabla.getValueAt(Fila, 0).toString();
+                    int Fila = EmpleadosTabla.getSelectedRow();
+                    String codigo = EmpleadosTabla.getValueAt(Fila, 0).toString();
 
-                PreparedStatement pst= cc.conectar.prepareStatement("select * from Usuarios where id_Trabajador = ?");
-                //System.out.println(pst);
-                pst.setString(1, codigo);
-                ResultSet a = pst.executeQuery();
-                //ResultSetMetaData aMd = a.getMetaData(); //Le pasamos el resultado de la consulta
+                    PreparedStatement pst= cc.conectar.prepareStatement("select * from Usuarios where id_Trabajador = ?");
+                    //System.out.println(pst);
+                    pst.setString(1, codigo);
+                    ResultSet a = pst.executeQuery();
+                    //ResultSetMetaData aMd = a.getMetaData(); //Le pasamos el resultado de la consulta
 
-                while(a.next()){  //Recorremos los datos de la consulta //En cada ciclo me va a dar los datos de una sola fila
+                    while(a.next()){  //Recorremos los datos de la consulta //En cada ciclo me va a dar los datos de una sola fila
 
-                TrabajadorField.setText(a.getString("id_Trabajador"));
-                NombreField.setText(a.getString("Nombre"));
-                PaternField.setText(a.getString("Paterno"));
-                MaternoField.setText(a.getString("Materno"));
-                NumeroField.setText(a.getString("Numero"));
-                PasswField.setText(a.getString("password"));
-                RolField.setText(a.getString("Rol"));
-                }
+                    idTrabajadorField.setText(a.getString("id_Trabajador"));
+                    NombreField.setText(a.getString("Nombre"));
+                    PaternoField.setText(a.getString("Paterno"));
+                    MaternoField.setText(a.getString("Materno"));
+                    NumeroField.setText(a.getString("Numero"));
+                    PasswField.setText(a.getString("password"));
+                    int rol = a.getInt("Rol");
+                    }
 
             } catch (SQLException e) {
                 System.out.println(e);
             }
     }//GEN-LAST:event_EmpleadosTablaMouseClicked
+
+    private void limpiaCamposActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_limpiaCamposActionPerformed
+        limpiaFields();
+    }//GEN-LAST:event_limpiaCamposActionPerformed
 
     /**
      * @param args the command line arguments
@@ -526,6 +627,9 @@ public class MisEmpleados extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(MisEmpleados.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -536,29 +640,32 @@ public class MisEmpleados extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Borrar;
+    private javax.swing.JButton BorrarButton;
     private javax.swing.JButton Buscar;
     private javax.swing.JTable EmpleadosTabla;
-    private javax.swing.JButton Guardar;
+    private javax.swing.JButton GuardarButton;
     private javax.swing.JTextField MaternoField;
-    private javax.swing.JButton Modificar;
+    private javax.swing.JButton ModificarButton;
     private javax.swing.JTextField NombreField;
     private javax.swing.JTextField NumeroField;
     private javax.swing.JTextField PasswField;
-    private javax.swing.JTextField PaternField;
+    private javax.swing.JTextField PaternoField;
     private javax.swing.JButton Regresar;
-    private javax.swing.JTextField RolField;
     private javax.swing.JTextField TextBuscar;
-    private javax.swing.JTextField TrabajadorField;
+    private javax.swing.JRadioButton empleadoOptionRadioButton;
+    private javax.swing.JRadioButton gerenteOptionRadioButton;
+    private javax.swing.JTextField idTrabajadorField;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel label1;
     private javax.swing.JLabel label4;
     private javax.swing.JLabel label5;
     private javax.swing.JLabel label6;
+    private javax.swing.JButton limpiaCampos;
     // End of variables declaration//GEN-END:variables
 }
