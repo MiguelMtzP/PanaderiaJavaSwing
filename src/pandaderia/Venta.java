@@ -499,10 +499,10 @@ public class Venta extends javax.swing.JFrame {
     }//GEN-LAST:event_CbPanActionPerformed
 
     private void RegPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegPedidoActionPerformed
-            ventanaRegPedido = new RegPedido(this, empleadoLoggeado);
-            System.out.println(empleadoLoggeado);
-            ventanaRegPedido.setVisible(true);
-            this.setVisible(false);
+        ventanaRegPedido = new RegPedido(this, empleadoLoggeado);
+        System.out.println(empleadoLoggeado);
+        ventanaRegPedido.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_RegPedidoActionPerformed
 
     private void RegVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegVentaActionPerformed
@@ -510,8 +510,11 @@ public class Venta extends javax.swing.JFrame {
     }//GEN-LAST:event_RegVentaActionPerformed
 
     private void genCambioJBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_genCambioJBtnActionPerformed
-        generarCambio();
-        
+        try {
+            generarCambio();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ingresa un monto");
+        }
     }//GEN-LAST:event_genCambioJBtnActionPerformed
 
     private void recibiJTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recibiJTFActionPerformed

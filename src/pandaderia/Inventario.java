@@ -377,7 +377,7 @@ public class Inventario extends javax.swing.JFrame {
                     modelo.addRow(fila);
                     
                 }catch (SQLException e) {
-                        //JOptionPane.showMessageDialog(null, "ERROR!!");
+                        JOptionPane.showMessageDialog(null, "No hay datos que guardar");
                         System.out.println(e);
         }
     }//GEN-LAST:event_GuardarActionPerformed
