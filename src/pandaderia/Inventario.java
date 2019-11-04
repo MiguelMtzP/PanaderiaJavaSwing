@@ -16,6 +16,7 @@ public class Inventario extends javax.swing.JFrame {
 
     private  Empleado empleadoLoggeado;
     public DefaultTableModel modelo = new DefaultTableModel();
+    Conexion conexion ;
     private Menu ventanaMenu;
     
     public void Actualizar(String valor){
@@ -29,12 +30,12 @@ public class Inventario extends javax.swing.JFrame {
             sql  = "SELECT * FROM Inventario WHERE id_Pan = '"+valor+"'";
         }
      
-        Conexion cc = new Conexion();
+        
         
         try {
             modelo = new DefaultTableModel();
             InventTabla.setModel(modelo);
-            PreparedStatement pst= cc.conectar.prepareStatement("select * from Inventario ");
+            PreparedStatement pst= conexion.conectar.prepareStatement("select * from Inventario ");
             //System.out.println(pst);
             ResultSet a = pst.executeQuery(sql);
             ResultSetMetaData aMd = a.getMetaData(); //Le pasamos el resultado de la consulta
@@ -77,7 +78,6 @@ public class Inventario extends javax.swing.JFrame {
     public Inventario(Component father,Empleado logged) { //aqui  sobreescribo el constructor
         
         empleadoLoggeado = logged;
-        
         initComponents();
         Buscar.setVisible(empleadoLoggeado.getRol() != 1);
         this.setLocationRelativeTo(father);
@@ -88,11 +88,15 @@ public class Inventario extends javax.swing.JFrame {
     }
     
     public Inventario(Menu previewView, Empleado emp){
+        empleadoLoggeado = emp;
+        conexion = new Conexion();
+        
         initComponents();
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(previewView);
         setTitle("Inventario");
         this.ventanaMenu = previewView;
-        empleadoLoggeado = emp;
+        
+
         this.setVisible(rootPaneCheckingEnabled);
         Actualizar("");
         setResizable(false);
@@ -329,14 +333,13 @@ public class Inventario extends javax.swing.JFrame {
 
     private void InventTablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InventTablaMouseClicked
         
-            Conexion cc = new Conexion();
                 
         try {
 
             int Fila = InventTabla.getSelectedRow();
             String codigo = InventTabla.getValueAt(Fila, 0).toString();
             
-            PreparedStatement pst= cc.conectar.prepareStatement("select * from Inventario where id_Pan = ?");
+            PreparedStatement pst= conexion.conectar.prepareStatement("select * from Inventario where id_Pan = ?");
             //System.out.println(pst);
             pst.setString(1, codigo);
             ResultSet a = pst.executeQuery();
@@ -358,10 +361,9 @@ public class Inventario extends javax.swing.JFrame {
 
     private void GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GuardarActionPerformed
             
-            Conexion cc = new Conexion();
             
             try {          
-                    PreparedStatement pst= cc.conectar.prepareStatement("INSERT INTO Inventario  (nombre, costo, existencia) VALUES(?,?,?)");
+                    PreparedStatement pst= conexion.conectar.prepareStatement("INSERT INTO Inventario  (nombre, costo, existencia) VALUES(?,?,?)");
                     
                     //System.out.println(pst);
                     pst.setString(1, NomPan.getText());
@@ -384,13 +386,12 @@ public class Inventario extends javax.swing.JFrame {
 
     private void BorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarActionPerformed
             
-            Conexion cc = new Conexion();
             
             try {
                     int fila = InventTabla.getSelectedRow();
                     System.out.println(fila);
                     int idPan = (int)InventTabla.getValueAt(fila, 0);
-                    PreparedStatement pst= cc.conectar.prepareStatement("DELETE FROM Inventario WHERE id_Pan = ?");
+                    PreparedStatement pst= conexion.conectar.prepareStatement("DELETE FROM Inventario WHERE id_Pan = ?");
                     pst.setInt(1, idPan);
                     pst.execute();
                     modelo.removeRow(fila);
@@ -408,11 +409,10 @@ public class Inventario extends javax.swing.JFrame {
 
     private void ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ModificarActionPerformed
         
-        Conexion cc = new Conexion();
         
         try {   
                 
-                PreparedStatement pst = cc.conectar.prepareStatement("UPDATE Inventario SET nombre = '"+NomPan.getText()+"', costo = '"+PrecioPan.getText()+"', existencia = '"+IngresPan.getText()+"' WHERE id_Pan = '"+IdPan.getText()+"'");
+                PreparedStatement pst = conexion.conectar.prepareStatement("UPDATE Inventario SET nombre = '"+NomPan.getText()+"', costo = '"+PrecioPan.getText()+"', existencia = '"+IngresPan.getText()+"' WHERE id_Pan = '"+IdPan.getText()+"'");
                 pst.executeUpdate();
                 Actualizar("");
                 JOptionPane.showMessageDialog(null,"MODIFICADO!");

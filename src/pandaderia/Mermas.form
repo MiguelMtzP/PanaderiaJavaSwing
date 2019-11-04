@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+<Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
   </Properties>
@@ -28,7 +28,11 @@
               <Group type="103" groupAlignment="1" max="-2" attributes="0">
                   <Component id="jPanel2" max="32767" attributes="0"/>
                   <Component id="jPanel1" max="32767" attributes="0"/>
-                  <Component id="Salir" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="Salir" min="-2" pref="100" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="eliminaSelectedMermaJButton" min="-2" pref="202" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace pref="51" max="32767" attributes="0"/>
           </Group>
@@ -42,7 +46,10 @@
               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
               <EmptySpace pref="15" max="32767" attributes="0"/>
-              <Component id="Salir" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="Salir" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="eliminaSelectedMermaJButton" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -69,7 +76,7 @@
                           <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jSpinner1" min="-2" pref="80" max="-2" attributes="0"/>
+                          <Component id="panesFriosjSpinner" min="-2" pref="80" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -77,16 +84,16 @@
                       <Group type="102" attributes="0">
                           <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jSpinner2" min="-2" pref="80" max="-2" attributes="0"/>
+                          <Component id="panesRotosjSpinner" min="-2" pref="80" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
                           <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jSpinner3" min="-2" pref="80" max="-2" attributes="0"/>
+                          <Component id="panesComidosjSpinner" min="-2" pref="80" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="jComboBox1" max="32767" attributes="0"/>
+                      <Component id="CbPan" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace pref="46" max="32767" attributes="0"/>
-                  <Component id="Guardar" min="-2" pref="100" max="-2" attributes="0"/>
+                  <Component id="registraMermaJButton" min="-2" pref="100" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -99,19 +106,19 @@
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jLabel2" alignment="3" min="-2" pref="29" max="-2" attributes="0"/>
-                              <Component id="jComboBox1" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="CbPan" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jLabel1" alignment="3" max="32767" attributes="0"/>
-                              <Component id="jSpinner1" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="panesFriosjSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel3" alignment="3" max="32767" attributes="0"/>
-                              <Component id="jSpinner2" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="panesRotosjSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel4" alignment="3" max="32767" attributes="0"/>
-                              <Component id="jSpinner3" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="panesComidosjSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <Component id="Guardar" alignment="0" max="32767" attributes="0"/>
+                      <Component id="registraMermaJButton" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -127,7 +134,7 @@
             <Property name="text" type="java.lang.String" value="Registra Merma por pan"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JComboBox" name="jComboBox1">
+        <Component class="javax.swing.JComboBox" name="CbPan">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="1">
@@ -135,6 +142,9 @@
               </StringArray>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="CbPanActionPerformed"/>
+          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>
@@ -144,28 +154,53 @@
             <Property name="text" type="java.lang.String" value="Frios"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JSpinner" name="jSpinner1">
+        <Component class="javax.swing.JSpinner" name="panesFriosjSpinner">
+          <Properties>
+            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+              <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="panesFriosjSpinnerStateChanged"/>
+          </Events>
         </Component>
-        <Component class="javax.swing.JSpinner" name="jSpinner2">
+        <Component class="javax.swing.JSpinner" name="panesRotosjSpinner">
+          <Properties>
+            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+              <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="panesRotosjSpinnerStateChanged"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel3">
           <Properties>
             <Property name="text" type="java.lang.String" value="Rotos"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JSpinner" name="jSpinner3">
+        <Component class="javax.swing.JSpinner" name="panesComidosjSpinner">
+          <Properties>
+            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+              <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="panesComidosjSpinnerStateChanged"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel4">
           <Properties>
             <Property name="text" type="java.lang.String" value="Comidos"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="Guardar">
+        <Component class="javax.swing.JButton" name="registraMermaJButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;center&gt;Registrar &lt;br&gt;Merma&lt;/center&gt;"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="GuardarActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="registraMermaJButtonActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>
@@ -207,7 +242,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JTable" name="jTable1">
+            <Component class="javax.swing.JTable" name="mermasjTable">
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                   <Table columnCount="4" rowCount="4">
@@ -218,6 +253,9 @@
                   </Table>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="mermasjTableMouseClicked"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -225,10 +263,19 @@
     </Container>
     <Component class="javax.swing.JButton" name="Salir">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Cancelar"/>
+        <Property name="text" type="java.lang.String" value="Volver"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SalirActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="eliminaSelectedMermaJButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Eleminar seleccionado"/>
+        <Property name="enabled" type="boolean" value="false"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="eliminaSelectedMermaJButtonActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

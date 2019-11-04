@@ -24,7 +24,8 @@ public class Menu extends javax.swing.JFrame {
     private Inventario ventanaInventario;
     private Corte ventanaCorte;
     private Login ventanaLogin;
-
+    private Conexion conexion;
+    
     public Menu() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -42,14 +43,15 @@ public class Menu extends javax.swing.JFrame {
         //System.out.println(empleadoLoggeado.toString());
     }
     
-    public Menu(Login previewView, Empleado emp, CorteModel currentCorte){
+    public Menu(Login previewView, Empleado emp, CorteModel currentCorte,Conexion cc){
+        conexion = cc;
         empleadoLoggeado = emp;
         this.currentCorte = currentCorte;
         initComponents();
         Empleados.setVisible(empleadoLoggeado.getRol() == 1);
         Inventario.setVisible(empleadoLoggeado.getRol() == 1);
         setTitle("Menu");
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(previewView);
         this.ventanaLogin = previewView;
         this.setVisible(rootPaneCheckingEnabled);
         setResizable(false);
@@ -68,16 +70,18 @@ public class Menu extends javax.swing.JFrame {
         this.setVisible(true);
         ventanaEmpleados = null;
     }
-    public void thismissCorteViewer(){
+    public void thismissCorteEmpleadoViewer(CorteModel corteActualizado){
         System.out.println(empleadoLoggeado);
         ventanaCorte.setVisible(false);
         this.setVisible(true);
         ventanaCorte = null;
+        currentCorte = corteActualizado;
+        if(currentCorte.getEstatus() == 1){
+            VentasJButton.setEnabled(false);
+        }
     }
-    public void thismissCorte(){
-        ventanaCorte.setVisible(false);
-        this.setVisible(true);
-        ventanaCorte = null;
+    public void thismissCorteAdminViewer(){
+        
     }
     public void thismissInventario(){
         System.out.println(empleadoLoggeado);
@@ -96,7 +100,7 @@ public class Menu extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         Empleados = new javax.swing.JButton();
-        Ventas = new javax.swing.JButton();
+        VentasJButton = new javax.swing.JButton();
         Inventario = new javax.swing.JButton();
         Corte = new javax.swing.JButton();
         LogOut = new javax.swing.JButton();
@@ -116,11 +120,11 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
-        Ventas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/venta.png"))); // NOI18N
-        Ventas.setText("Ventas");
-        Ventas.addActionListener(new java.awt.event.ActionListener() {
+        VentasJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pandaderia/venta.png"))); // NOI18N
+        VentasJButton.setText("Ventas");
+        VentasJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                VentasActionPerformed(evt);
+                VentasJButtonActionPerformed(evt);
             }
         });
 
@@ -164,7 +168,7 @@ public class Menu extends javax.swing.JFrame {
                         .addComponent(Empleados, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(Corte, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Ventas, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(VentasJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(213, 213, 213))
         );
         jPanel1Layout.setVerticalGroup(
@@ -173,7 +177,7 @@ public class Menu extends javax.swing.JFrame {
                 .addContainerGap(27, Short.MAX_VALUE)
                 .addComponent(Empleados, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(Ventas, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(VentasJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(24, 24, 24)
                 .addComponent(Inventario, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -230,18 +234,18 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_EmpleadosMouseClicked
 
     private void CorteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CorteActionPerformed
-        ventanaCorte = new Corte(this,currentCorte);
+        ventanaCorte = new Corte(this,currentCorte,conexion);
         System.out.println(empleadoLoggeado);
         ventanaCorte.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_CorteActionPerformed
 
-    private void VentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VentasActionPerformed
-        ventanaVenta = new Venta(this, empleadoLoggeado);
+    private void VentasJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VentasJButtonActionPerformed
+        ventanaVenta = new Venta(this, empleadoLoggeado, conexion, currentCorte);
         System.out.println(empleadoLoggeado);
         ventanaVenta.setVisible(true); //this,logueado
         this.setVisible(false);
-    }//GEN-LAST:event_VentasActionPerformed
+    }//GEN-LAST:event_VentasJButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -283,7 +287,7 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JButton Empleados;
     private javax.swing.JButton Inventario;
     private javax.swing.JButton LogOut;
-    private javax.swing.JButton Ventas;
+    private javax.swing.JButton VentasJButton;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 

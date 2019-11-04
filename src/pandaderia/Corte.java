@@ -7,6 +7,13 @@ package pandaderia;
 
 import Models.CorteModel;
 import Models.Empleado;
+import java.awt.Color;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,27 +25,42 @@ public class Corte extends javax.swing.JFrame {
     private CorteModel currentCorte;
     private Menu ventanaMenu;
     private Mermas ventanaMermas;
+    private Conexion conexion;
     
     public Corte() {
         initComponents();
         this.setLocationRelativeTo(null);
     }
     
-    public Corte(Menu previewView,CorteModel corte){
+    public Corte(Menu previewView,CorteModel corte,Conexion cc){
         initComponents();
         setLocationRelativeTo(previewView);
+        conexion = cc;
         setTitle("Corte");
         this.ventanaMenu = previewView;
         empleadoLoggeado = corte.getIdTrabajador();
         currentCorte = corte;
         setResizable(false);
         
-        fechaHoraJTF.setText(String.valueOf(corte.getFechaInicio()));
+        fechaHoraJTF.setText(corte.getFechaInicio().toString());
         turnoJTF.setText(corte.getTurno());
         nombreEmpJTF.setText(corte.getIdTrabajador().getFullName());
         totalVentasJTF.setText(String.valueOf(corte.getTotalVentas()));
         totalMermasJTF.setText(String.valueOf(corte.getTotalMermas()));
-        estatusJTF.setText(corte.getEstatus() == 0 ? "Abierto" : "Cerrado" );
+        estatusJTF.setText(corte.getEstatus() == 0 ? "Abierto" : "Cerrado" ) ;
+        estatusJTF.setForeground(corte.getEstatus() == 0 ? Color.BLUE : estatusJTF.getForeground() );
+        
+        try {
+            int tVentas = getTotalVentasByCorte();
+            int tMermas = getTotalMermasByCorte();
+            totalMermasJTF.setText(String.valueOf(tMermas));
+            totalVentasJTF.setText(String.valueOf(tVentas));
+        } catch (SQLException ex) {
+            Logger.getLogger(Corte.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        terminaCorteJButton.setEnabled(corte.getEstatus() == 0);
+        registraMermaJButton.setEnabled(corte.getEstatus() == 0);
     }
 
     /**
@@ -156,26 +178,26 @@ public class Corte extends javax.swing.JFrame {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(turnoJTF, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(fechaHoraJTF, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(totalVentasJTF, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel5))
+                        .addGap(0, 164, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(12, 12, 12)
-                                .addComponent(totalMermasJTF, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(totalVentasJTF, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel5))
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(totalMermasJTF, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -194,7 +216,7 @@ public class Corte extends javax.swing.JFrame {
                 .addComponent(totalVentasJTF)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(totalMermasJTF)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -283,11 +305,59 @@ public class Corte extends javax.swing.JFrame {
 
     private void terminaCorteJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_terminaCorteJButtonActionPerformed
         // TODO add your handling code here:
+        int opcion = JOptionPane.showConfirmDialog(this, "Recuerda que una vez terminado tu corte ya no \npodrás realizar ventas hasta que inicies \nun nuevo corte.\n¿Deseas cerrar tu corte actual?", "Confirmar Cerrar Corte", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        System.out.println("opcion "+opcion);
+        if (opcion == 0) {
+            try {
+                int tVentas = getTotalVentasByCorte();
+                int tMermas = getTotalMermasByCorte();
+                PreparedStatement pst = conexion.conectar.prepareStatement("update Corte set estatus = 1 ,Tot_ventas = ?,Tot_merma = ?, fecha_fin = now() where id_Corte = ?");
+                pst.setInt(1, tVentas);
+                pst.setInt(2, tMermas);
+                pst.setInt(3, currentCorte.getIdCorte());
+                pst.execute();
+                currentCorte.setEstatus(1);
+                currentCorte.setTotalVentas(tVentas);
+                currentCorte.setTotalMermas(tMermas);
+                estatusJTF.setForeground(Color.red );
+                estatusJTF.setText("Cerrado");
+                terminaCorteJButton.setEnabled(false);
+                registraMermaJButton.setEnabled(false);
+
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Corte.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }//GEN-LAST:event_terminaCorteJButtonActionPerformed
 
+    private int getTotalMermasByCorte() throws SQLException{
+        PreparedStatement pst = conexion.conectar.prepareStatement("select sum(frios + comidos + rotos) as totalMerma from Merma where id_Corte = ?");
+        pst.setInt(1, currentCorte.getIdCorte());
+        ResultSet res = pst.executeQuery();
+        if(res.next()){
+            int value = res.getInt("totalMerma");
+            totalMermasJTF.setText(String.valueOf(value));
+            return value;
+        }
+        return 0;
+    }
+    
+    
+    private int getTotalVentasByCorte() throws SQLException{
+        PreparedStatement pst = conexion.conectar.prepareStatement("select sum(cantidad) as totalVentas from Ventas where id_Corte = ?");
+        pst.setInt(1, currentCorte.getIdCorte());
+        ResultSet res = pst.executeQuery();
+        if(res.next()){
+            int value = res.getInt("totalVentas");
+            totalVentasJTF.setText(String.valueOf(value));
+            return value;
+        }
+        return 0;
+    }
     private void regresarJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_regresarJButtonActionPerformed
         // TODO add your handling code here:
-        ventanaMenu.thismissCorte();
+        ventanaMenu.thismissCorteEmpleadoViewer(currentCorte);
     }//GEN-LAST:event_regresarJButtonActionPerformed
 
     private void registraMermaJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registraMermaJButtonActionPerformed
@@ -298,6 +368,16 @@ public class Corte extends javax.swing.JFrame {
     }//GEN-LAST:event_registraMermaJButtonActionPerformed
 
     public void thismissVentanaMermas(){
+        
+        try {
+            int tVentas = getTotalVentasByCorte();
+            int tMermas = getTotalMermasByCorte();
+            totalMermasJTF.setText(String.valueOf(tMermas));
+            totalVentasJTF.setText(String.valueOf(tVentas));
+        } catch (SQLException ex) {
+            Logger.getLogger(Corte.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         this.setVisible(true);
         ventanaMermas.setVisible(false);
         ventanaMermas = null;

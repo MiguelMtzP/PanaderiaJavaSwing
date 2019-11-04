@@ -1,5 +1,6 @@
 package pandaderia;
 
+import Models.CorteModel;
 import Models.RegVenta;
 import Models.Empleado;
 import Models.Pan;
@@ -24,13 +25,15 @@ import javax.swing.table.DefaultTableModel;
 public class Venta extends javax.swing.JFrame {
 
     private Empleado empleadoLoggeado;
-    private Empleado logueado = new Empleado();
     public DefaultTableModel modelo ;
+    private Empleado logueado = new Empleado();
     private Menu ventanaMenu;
     private RegPedido ventanaRegPedido;
     private AddPedido ventanaAddPedido;
     private ArrayList <Pan> panesExistencia;
     private ArrayList <RegVenta> panesVendidos;
+    private Conexion conexion;
+    private CorteModel currentCorte;    
     public DecimalFormat formato = new DecimalFormat("#.0"); 
     
     
@@ -51,20 +54,23 @@ public class Venta extends javax.swing.JFrame {
         cargaCB();
     }
     
-    public Venta(Menu previewView,Empleado emp ) {
+    public Venta(Menu previewView,Empleado emp, Conexion c, CorteModel current ) {
+        conexion = c;
+        currentCorte = current;
+        panesVendidos = new ArrayList(0);
+        panesExistencia = new ArrayList(0);
+        empleadoLoggeado = emp;
+        
         initComponents();
         modelo = new DefaultTableModel();
         modelo.addColumn("Pan");
         modelo.addColumn("Precio");
         modelo.addColumn("Cantidad");
         modelo.addColumn("Total");
-        panesVendidos = new ArrayList(0);
-        panesExistencia = new ArrayList(0);
         VentaPanJTable.setModel(modelo);
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(previewView);
         setTitle("Ventas");
         this.ventanaMenu = previewView;
-        empleadoLoggeado = emp;
         cargaCB();
         this.setVisible(rootPaneCheckingEnabled);
         setResizable(false);
@@ -103,10 +109,9 @@ public class Venta extends javax.swing.JFrame {
     
     public void cargaCB(){
         
-                Conexion cc = new Conexion();
                 //System.out.println("aaaaa");
         try {
-                PreparedStatement pst= cc.conectar.prepareStatement("SELECT * FROM Inventario");
+                PreparedStatement pst= conexion.conectar.prepareStatement("SELECT * FROM Inventario");
                 ResultSet rs = pst.executeQuery();
                 CbPan.addItem("Selecicone un pan");
                 
@@ -131,24 +136,21 @@ public class Venta extends javax.swing.JFrame {
         
     }
     
-    public void registraVenta(){
-        Conexion cc = new Conexion();
-        
+    public void registraVenta(){        
         try {
             for (RegVenta elem : panesVendidos) {
-                PreparedStatement pst= cc.conectar.prepareStatement("INSERT INTO Ventas  (id_Trabajador, id_Pan, id_Corte, fecha, cantidad, Total ) VALUES(?,?,?,now(),?,?)");
+                PreparedStatement pst= conexion.conectar.prepareStatement("INSERT INTO Ventas  (id_Trabajador, id_Pan, id_Corte, fecha, cantidad, Total ) VALUES(?,?,?,now(),?,?)");
                 System.out.println(elem);
                 
                 pst.setInt(1, elem.getIdTrabajador());
                 pst.setInt(2, elem.getIdPan());
-                pst.setInt(3, 34);
+                pst.setInt(3,currentCorte.getIdCorte());
                 pst.setInt(4, elem.getCantidad());
                 pst.setFloat(5, elem.getTotal());
                 pst.execute();
-                JOptionPane.showMessageDialog(null, "Venta registrada exitosamente");
-
-                limpiaVentana();
              }
+                JOptionPane.showMessageDialog(null, "Venta registrada exitosamente");
+                limpiaVentana();
         }catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "ERROR!!");
             System.out.println(e);
@@ -473,7 +475,7 @@ public class Venta extends javax.swing.JFrame {
     }//GEN-LAST:event_CbPanActionPerformed
 
     private void RegPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegPedidoActionPerformed
-            ventanaRegPedido = new RegPedido(this, empleadoLoggeado);
+            ventanaRegPedido = new RegPedido(this, currentCorte, conexion);
             System.out.println(empleadoLoggeado);
             ventanaRegPedido.setVisible(true);
             this.setVisible(false);

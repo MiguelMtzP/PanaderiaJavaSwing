@@ -5,7 +5,7 @@
  */
 package Models;
 
-import java.util.Date;
+import java.sql.Date;
 
 /**
  *
@@ -43,10 +43,10 @@ public class CorteModel {
     }
 
     public void setFechaInicio(Date fecha) {
-        this.fechaFin = fecha;
+        this.fechaInicio = fecha;
     }
     public Date getFechaFin() {
-        return fechaInicio;
+        return fechaFin;
     }
 
     public void setFechaFin(Date fecha) {

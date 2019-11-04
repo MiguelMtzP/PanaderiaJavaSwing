@@ -56,7 +56,9 @@ public class Login extends javax.swing.JFrame {
                         ResultSet response = pst.executeQuery();
                         if (response.next()) {
                             corte = new CorteModel();
+                            corte.setIdCorte(response.getInt("id_Corte"));
                             corte.setEstatus(response.getInt("estatus"));
+                            corte.setTurno(response.getString("Turno"));
                             corte.setIdTrabajador(logueado);
                             corte.setFechaInicio(response.getDate("fecha_inicio"));
                             corte.setFechaFin(response.getDate("fecha_fin"));
@@ -69,7 +71,7 @@ public class Login extends javax.swing.JFrame {
                             }
                         }                           
                     }
-                    ventanaMenu= new Menu(this,logueado,corte);
+                    ventanaMenu= new Menu(this,logueado,corte,conection);
                     System.out.println(logueado);
                     ventanaMenu.setVisible(true);
                     this.setVisible(false); 
