@@ -1,14 +1,22 @@
 package pandaderia;
 
+import Models.Clientes;
 import Models.CorteModel;
 import Models.RegistroPedido;
 import Models.Empleado;
+import Models.ItemPedido;
 import Models.Pan;
+import Models.Pedido;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -19,11 +27,22 @@ public class RegPedido extends javax.swing.JFrame {
     private Empleado empleadoLoggeado; 
     private Venta ventanaVenta;
     private AddPedido ventanaAddPedido;
+    private NuevoClient ventanaNuevoCliente;
     private ArrayList <Pan> panesExistencia;
+    private ArrayList <Clientes> clientesExistentes;
     private ArrayList <RegPedido> panesPedidos;
     private Conexion conexion;
     private CorteModel currentCorte;
+    private Pedido currentPedido;
+    private ButtonGroup tipoPedidoBtnGrp;
+    private Clientes currentSelectedCliente;
     
+    public DefaultTableModel modelo ;
+    public DefaultTableModel modeloClientes ;
+    
+    
+    
+
     
     
     public RegPedido() {
@@ -38,9 +57,32 @@ public class RegPedido extends javax.swing.JFrame {
         empleadoLoggeado = currentCorte.getIdTrabajador();
         this.currentCorte = currentCorte;
         panesExistencia = new ArrayList<Pan>(0);
+        clientesExistentes = new ArrayList<Clientes>(0);
+        currentPedido = new Pedido();
         conexion = cc;
+        currentSelectedCliente = null;
         initComponents();
-        setLocationRelativeTo(null);
+        
+        tipoPedidoBtnGrp = new ButtonGroup();
+        tipoPedidoBtnGrp.add(tipoExternoJRadioButton);
+        tipoPedidoBtnGrp.add(tipoNormalJRadioButton);
+        fechaEntregaJCalendar.setMinSelectableDate(new Date());
+        setLocationRelativeTo(previewView);
+        modelo = new DefaultTableModel();
+        modelo.addColumn("Pan");
+        modelo.addColumn("Precio");
+        modelo.addColumn("Cantidad");
+        modelo.addColumn("Total");
+        itemsPedidoJTable.setModel(modelo);
+        
+        modeloClientes =  new DefaultTableModel();
+        modeloClientes.addColumn("Apellido Paterno");
+        modeloClientes.addColumn("Apellido Materno");
+        modeloClientes.addColumn("Nombre");
+        modeloClientes.addColumn("Empresa");
+        clientesJTable.setModel(modeloClientes);
+        cargaClientes();
+        
         setTitle("Registrar pedido");
         cargaCB();
         this.ventanaVenta = previewView;
@@ -55,6 +97,35 @@ public class RegPedido extends javax.swing.JFrame {
         ventanaAddPedido = null;
     }
     
+    
+    public void cargaClientes(){
+        try {
+            PreparedStatement pst = conexion.conectar.prepareStatement("select * from Cliente order by paterno asc");
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                Clientes nuevoCliente = new Clientes();
+                nuevoCliente.setAppMat(rs.getString("materno"));
+                nuevoCliente.setAppPat(rs.getString("paterno"));
+                nuevoCliente.setnombre(rs.getString("nombre"));
+                nuevoCliente.setTelefono(rs.getString("telefono"));
+                nuevoCliente.setCorreo(rs.getString("correo"));
+                nuevoCliente.setEmpresa(rs.getString("empresa"));
+                nuevoCliente.setIdCliente(rs.getInt("id_Cliente"));
+                clientesExistentes.add(nuevoCliente);
+                
+                Object row[] = new Object[4];
+                row[0] = nuevoCliente.getAppPat();
+                row[1] = nuevoCliente.getAppMat();
+                row[2] = nuevoCliente.getnombre();
+                row[3] = nuevoCliente.getEmpresa();
+                
+                modeloClientes.addRow(row);
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "ERROR!");
+            System.out.println(ex);        }
+
+    }
     
     public void cargaCB(){
         
@@ -80,6 +151,30 @@ public class RegPedido extends javax.swing.JFrame {
             System.out.println(e);
         }
     }
+    
+    
+    public void seleccionaNuevoClienteRegistrado(Clientes nuevoCliente){
+        clientesExistentes.add(nuevoCliente);
+        String nombreCompleto = nuevoCliente.getAppPat() + " "+nuevoCliente.getAppMat()+" "+nuevoCliente.getnombre();
+        nombreBuscaClienteJTF.setText(nombreCompleto);
+        idClienteSelectedJTF.setText(String.valueOf(nuevoCliente.getIdCliente()));
+        
+        Object row[] = new Object[4];
+        row[0] = nuevoCliente.getAppPat();
+        row[1] = nuevoCliente.getAppMat();
+        row[2] = nuevoCliente.getnombre();
+        row[3] = nuevoCliente.getEmpresa();
+
+        modeloClientes.addRow(row);
+        
+        currentSelectedCliente  = nuevoCliente;
+        selectedClienteJTF.setText(nuevoCliente.FullName());
+        
+        
+        ventanaNuevoCliente.setVisible(false);
+        this.setVisible(true);
+        ventanaNuevoCliente = null;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -92,34 +187,34 @@ public class RegPedido extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         CbPan = new javax.swing.JComboBox<>();
-        agregarJbtn = new javax.swing.JButton();
+        agregarJBtn = new javax.swing.JButton();
         addPedido = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         Regresar = new javax.swing.JButton();
         CantPanJtf = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        totalPedidoJL = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        itemsPedidoJTable = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
-        Calendario = new com.toedter.calendar.JDateChooser();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
+        fechaEntregaJCalendar = new com.toedter.calendar.JDateChooser();
+        tipoExternoJRadioButton = new javax.swing.JRadioButton();
+        tipoNormalJRadioButton = new javax.swing.JRadioButton();
         jSeparator1 = new javax.swing.JSeparator();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        clientesJTable = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        nombreBuscaClienteJTF = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        idClienteSelectedJTF = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        jLabel6 = new javax.swing.JLabel();
+        selectedClienteJTF = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -135,11 +230,11 @@ public class RegPedido extends javax.swing.JFrame {
             }
         });
 
-        agregarJbtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/iconfinder_sign-check_299110.png"))); // NOI18N
-        agregarJbtn.setEnabled(false);
-        agregarJbtn.addActionListener(new java.awt.event.ActionListener() {
+        agregarJBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/iconfinder_sign-check_299110.png"))); // NOI18N
+        agregarJBtn.setEnabled(false);
+        agregarJBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                agregarJbtnActionPerformed(evt);
+                agregarJBtnActionPerformed(evt);
             }
         });
 
@@ -172,13 +267,13 @@ public class RegPedido extends javax.swing.JFrame {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Cantidad");
 
-        jLabel4.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("0");
+        totalPedidoJL.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
+        totalPedidoJL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        totalPedidoJL.setText("0");
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Panes agregados al pedido", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 0, 12), new java.awt.Color(113, 113, 113))); // NOI18N
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        itemsPedidoJTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -197,7 +292,7 @@ public class RegPedido extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(itemsPedidoJTable);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -224,14 +319,25 @@ public class RegPedido extends javax.swing.JFrame {
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel9.setText("Anticipo");
 
-        jTextField2.setText("jTextField1");
-
-        jRadioButton1.setText("Externo");
-
-        jRadioButton2.setText("Normal");
-        jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
+        jTextField2.setText("0");
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton2ActionPerformed(evt);
+                jTextField2ActionPerformed(evt);
+            }
+        });
+
+        fechaEntregaJCalendar.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                fechaEntregaJCalendarPropertyChange(evt);
+            }
+        });
+
+        tipoExternoJRadioButton.setText("Externo");
+
+        tipoNormalJRadioButton.setText("Normal");
+        tipoNormalJRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tipoNormalJRadioButtonActionPerformed(evt);
             }
         });
 
@@ -248,11 +354,11 @@ public class RegPedido extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTextField2)
-                    .addComponent(Calendario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(fechaEntregaJCalendar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jRadioButton2)
-                            .addComponent(jRadioButton1))
+                            .addComponent(tipoNormalJRadioButton)
+                            .addComponent(tipoExternoJRadioButton))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(jPanel3Layout.createSequentialGroup()
@@ -265,7 +371,7 @@ public class RegPedido extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
-                    .addComponent(Calendario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(fechaEntregaJCalendar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
@@ -275,9 +381,9 @@ public class RegPedido extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(4, 4, 4)
-                        .addComponent(jRadioButton1)
+                        .addComponent(tipoExternoJRadioButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
-                        .addComponent(jRadioButton2)
+                        .addComponent(tipoNormalJRadioButton)
                         .addContainerGap())
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -287,7 +393,7 @@ public class RegPedido extends javax.swing.JFrame {
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Busca y  Selecciona Cliente", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Gargi", 1, 12), new java.awt.Color(155, 96, 96))); // NOI18N
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        clientesJTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -298,19 +404,21 @@ public class RegPedido extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(clientesJTable);
 
         jLabel10.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel10.setText("Nombre");
 
-        jTextField3.setText("jTextField1");
+        nombreBuscaClienteJTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nombreBuscaClienteJTFActionPerformed(evt);
+            }
+        });
 
         jLabel11.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel11.setText("ID Cliente");
-
-        jTextField1.setText("jTextField1");
 
         jButton1.setText("Nuevo Cliente");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -330,11 +438,11 @@ public class RegPedido extends javax.swing.JFrame {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(nombreBuscaClienteJTF, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel11)
-                        .addGap(18, 18, 18)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(idClienteSelectedJTF, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton1)))
@@ -346,18 +454,18 @@ public class RegPedido extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nombreBuscaClienteJTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(idClienteSelectedJTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
                 .addComponent(jButton1))
         );
 
-        jLabel6.setFont(new java.awt.Font("Chandas", 0, 14)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(29, 136, 144));
-        jLabel6.setText("Selecciona un cliente...");
+        selectedClienteJTF.setFont(new java.awt.Font("Chandas", 0, 14)); // NOI18N
+        selectedClienteJTF.setForeground(new java.awt.Color(29, 136, 144));
+        selectedClienteJTF.setText("Selecciona un cliente...");
 
         jLabel7.setFont(new java.awt.Font("Liberation Sans", 1, 22)); // NOI18N
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -376,7 +484,7 @@ public class RegPedido extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(totalPedidoJL, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(23, 23, 23)
                         .addComponent(addPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -392,9 +500,9 @@ public class RegPedido extends javax.swing.JFrame {
                             .addComponent(CantPanJtf, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(agregarJbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(agregarJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(53, 53, 53)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(selectedClienteJTF, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -417,10 +525,10 @@ public class RegPedido extends javax.swing.JFrame {
                                     .addComponent(CantPanJtf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel3)
-                                .addComponent(agregarJbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(agregarJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(38, 38, 38)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(selectedClienteJTF, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -432,7 +540,7 @@ public class RegPedido extends javax.swing.JFrame {
                     .addComponent(addPedido, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel2)
-                        .addComponent(jLabel4)
+                        .addComponent(totalPedidoJL)
                         .addComponent(Regresar)))
                 .addContainerGap())
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -473,48 +581,72 @@ public class RegPedido extends javax.swing.JFrame {
         
     }//GEN-LAST:event_addPedidoActionPerformed
 
-    private void agregarJbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarJbtnActionPerformed
+    private void agregarJBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarJBtnActionPerformed
         int idPanSelected = CbPan.getSelectedIndex();
-        Pan panEncontrado=null;
-
-        for(int i=0; i < panesExistencia.size(); i++){
-            Pan elem = panesExistencia.get(i);
-            if(elem.getidPan() == idPanSelected){
-                panEncontrado = elem;
-            }
-        }
-
-        if(null != panEncontrado){
-            RegistroPedido nuevoPedido = new RegistroPedido();
-            //nuevoPedido.setIdPan(panEncontrado.getidPan());
+        Pan panEncontrado = panesExistencia.get(idPanSelected-1);
+      
+        
+        if (null != panEncontrado){
+            
             int cantidad = Integer.parseInt(CantPanJtf.getText());
-        }
-    }//GEN-LAST:event_agregarJbtnActionPerformed
+            ItemPedido nuevoItem = new ItemPedido();
+            nuevoItem.setCantidad(cantidad);
+            nuevoItem.setPan(panEncontrado);
+            float total = cantidad * panEncontrado.getcosto();
+            currentPedido.setCosto(total+currentPedido.getCosto());
+            totalPedidoJL.setText(String.valueOf(currentPedido.getCosto()));
+            currentPedido.getItemsEnPedido().add(nuevoItem);
+            
+            //agregar a oa tabla
+            Object row[] = new Object[4];
+            row [0]= panEncontrado.getnombre();
+            row [1]= panEncontrado.getcosto();
+            row [2]= nuevoItem.getCantidad();
+            row [3]= total;
+            
+            modelo.addRow(row);
+            CantPanJtf.setText("");
+            CbPan.setSelectedIndex(0);
+        } 
+    }//GEN-LAST:event_agregarJBtnActionPerformed
 
     private void CbPanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CbPanActionPerformed
-        if (CbPan.getSelectedIndex() == 0){
-            agregarJbtn.setEnabled(false);
-        }else{
-            agregarJbtn.setEnabled(true);
-        }
+        validaCantPan();
     }//GEN-LAST:event_CbPanActionPerformed
 
-    private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
+    private void tipoNormalJRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tipoNormalJRadioButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton2ActionPerformed
+    }//GEN-LAST:event_tipoNormalJRadioButtonActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        this.ventanaNuevoCliente = new NuevoClient(this,empleadoLoggeado);
+        ventanaNuevoCliente.setVisible(true);
+        this.setVisible(false);
+        
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void fechaEntregaJCalendarPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_fechaEntregaJCalendarPropertyChange
+        // TODO add your handling code here:
+        System.out.println("Entro a cambiar fecha ---->" +fechaEntregaJCalendar.getDate());
+    }//GEN-LAST:event_fechaEntregaJCalendarPropertyChange
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void nombreBuscaClienteJTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nombreBuscaClienteJTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nombreBuscaClienteJTFActionPerformed
     
     public void validaCantPan(){
         try {
             System.out.println("El valor es --->"+CantPanJtf.getText());
             int cantidad = Integer.parseInt(CantPanJtf.getText());
             //CantPan.setText(String.valueOf(cantidad));
-            agregarJbtn.setEnabled(CbPan.getSelectedIndex() > 0);
+            agregarJBtn.setEnabled(CbPan.getSelectedIndex() > 0);
          } catch (Exception e) {
-             agregarJbtn.setEnabled(false);
+             agregarJBtn.setEnabled(false);
          }
     }
     /**
@@ -553,21 +685,22 @@ public class RegPedido extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.toedter.calendar.JDateChooser Calendario;
     private javax.swing.JTextField CantPanJtf;
     private javax.swing.JComboBox<String> CbPan;
     private javax.swing.JButton Regresar;
     private javax.swing.JButton addPedido;
-    private javax.swing.JButton agregarJbtn;
+    private javax.swing.JButton agregarJBtn;
+    private javax.swing.JTable clientesJTable;
+    private com.toedter.calendar.JDateChooser fechaEntregaJCalendar;
+    private javax.swing.JTextField idClienteSelectedJTF;
+    private javax.swing.JTable itemsPedidoJTable;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -575,15 +708,14 @@ public class RegPedido extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField nombreBuscaClienteJTF;
+    private javax.swing.JLabel selectedClienteJTF;
+    private javax.swing.JRadioButton tipoExternoJRadioButton;
+    private javax.swing.JRadioButton tipoNormalJRadioButton;
+    private javax.swing.JLabel totalPedidoJL;
     // End of variables declaration//GEN-END:variables
 }

@@ -225,10 +225,7 @@ public class AddPedido extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void NewClientJBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewClientJBtnActionPerformed
-        ventanaNuevoCliente = new NuevoClient(this, empleadoLoggeado);
-        System.out.println(empleadoLoggeado);
-        ventanaNuevoCliente.setVisible(true);
-        this.setVisible(false);
+
     }//GEN-LAST:event_NewClientJBtnActionPerformed
 
     private void BuscaClientJBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuscaClientJBtnActionPerformed

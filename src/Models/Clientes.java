@@ -6,12 +6,21 @@ package Models;
  */
 public class Clientes {
     
+    private int idCliente;
     private String nombre;
     private String appPat;
     private String appMat;
     private String telefono;
     private String correo;
+    private String empresa;
     
+    public int getIdCliente(){
+        return idCliente;
+    }
+    
+    public void setIdCliente(int idCliente){
+        this.idCliente = idCliente;
+    }
     public String getnombre(){
         return nombre;
     }
@@ -51,6 +60,23 @@ public class Clientes {
     public void setCorreo(String correo) {
         this.correo = correo;
     }
+
+    /**
+     * @return the empresa
+     */
+    public String getEmpresa() {
+        return empresa;
+    }
+
+    /**
+     * @param empresa the empresa to set
+     */
+    public void setEmpresa(String empresa) {
+        this.empresa = empresa;
+    }
     
+    public String FullName(){
+        return appPat + " "+appMat+" "+nombre;
+    }
     
 }

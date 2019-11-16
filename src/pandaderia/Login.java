@@ -89,21 +89,20 @@ public class Login extends javax.swing.JFrame {
     public CorteModel initCorte(Empleado emp) throws SQLException{
         PreparedStatement pst = conection.conectar.prepareStatement("INSERT INTO Corte (id_Trabajador, fecha_inicio, estatus, Turno) VALUES (?,NOW(),0,'mornig')",Statement.RETURN_GENERATED_KEYS);
         pst.setInt(1, emp.getIdEmpleado());
-        if (pst.execute()){
-            ResultSet rset = pst.getGeneratedKeys();
-            if(rset.next()){
-                int idCorte = rset.getInt(1);
-                rset = pst.executeQuery("select * from Corte where id_Corte = "+idCorte);
-                if (rset.next()){
-                    CorteModel corte = new CorteModel();
-                    corte.setEstatus(rset.getInt("estatus"));
-                    corte.setIdTrabajador(emp);
-                    corte.setIdCorte(rset.getInt("id_Corte"));
-                    corte.setFechaInicio(rset.getDate("fecha_inicio"));
-                    return corte;
-                }
-            }
-        }
+        pst.execute();
+        ResultSet rset = pst.getGeneratedKeys();
+        if(rset.next()){
+            int idCorte = rset.getInt(1);
+            rset = pst.executeQuery("select * from Corte where id_Corte = "+idCorte);
+            if (rset.next()){
+                CorteModel corte = new CorteModel();
+                corte.setEstatus(rset.getInt("estatus"));
+                corte.setIdTrabajador(emp);
+                corte.setIdCorte(rset.getInt("id_Corte"));
+                corte.setFechaInicio(rset.getDate("fecha_inicio"));
+                return corte;
+            }else{System.out.println("valio verga 1");}
+        }else{System.out.println("valio verga 2");}
 
         return null;
 
