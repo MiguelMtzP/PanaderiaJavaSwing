@@ -247,7 +247,6 @@ public class AddPedido extends javax.swing.JFrame {
     }//GEN-LAST:event_aceptaJBtnActionPerformed
 
     private void RegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegresarActionPerformed
-        ventanaRegPedido.thismissAddPedido();
     }//GEN-LAST:event_RegresarActionPerformed
 
     private void PedNormalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PedNormalActionPerformed

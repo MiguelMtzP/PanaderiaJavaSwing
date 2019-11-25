@@ -502,7 +502,6 @@ public class Venta extends javax.swing.JFrame {
 
     private void RegPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegPedidoActionPerformed
             ventanaRegPedido = new RegPedido(this, currentCorte, conexion);
-            System.out.println(empleadoLoggeado);
             ventanaRegPedido.setVisible(true);
             this.setVisible(false);
     }//GEN-LAST:event_RegPedidoActionPerformed

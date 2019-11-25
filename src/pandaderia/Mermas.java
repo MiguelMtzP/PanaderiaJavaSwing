@@ -324,7 +324,7 @@ public class Mermas extends javax.swing.JFrame {
         nueva.setNombrePan(panesExistencia.get(SelectedPanIndex-1).getnombre());
         
         try {
-            PreparedStatement pst = conexion.conectar.prepareStatement("insert into Merma (id_Corte,id_Pan,frios,comidos,rotos) values (?,?,?,?,?)",Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement pst = conexion.conectar.prepareStatement("insert into Merma (id_Corte,id_Pan,frios,comidos,rotos,fecha) values (?,?,?,?,?,now())",Statement.RETURN_GENERATED_KEYS);
             pst.setInt(1, nueva.getIdCorte());
             pst.setInt(2, nueva.getIdPan());
             pst.setInt(3, nueva.getFrios());

@@ -19,6 +19,7 @@ public class Menu extends javax.swing.JFrame {
     private MisEmpleados ventanaEmpleados;
     private Inventario ventanaInventario;
     private Corte ventanaCorte;
+    private CorteAdmin ventanaCorteAdmin;
     private Login ventanaLogin;
     private Conexion conexion;
     
@@ -221,10 +222,16 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_EmpleadosMouseClicked
 
     private void CorteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CorteActionPerformed
-        ventanaCorte = new Corte(this,currentCorte,conexion);
-        System.out.println(empleadoLoggeado);
-        ventanaCorte.setVisible(true);
-        this.setVisible(false);
+        if(empleadoLoggeado.getRol() == 1){ //ADMIN
+            ventanaCorteAdmin = new CorteAdmin(this, conexion, empleadoLoggeado);
+            ventanaCorteAdmin.setVisible(true);
+            this.setVisible(false);
+        }else{
+            ventanaCorte = new Corte(this,currentCorte,conexion);
+            System.out.println(empleadoLoggeado);
+            ventanaCorte.setVisible(true);
+            this.setVisible(false);
+        }
     }//GEN-LAST:event_CorteActionPerformed
 
     private void VentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VentaActionPerformed
