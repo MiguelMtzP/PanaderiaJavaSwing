@@ -21,6 +21,7 @@ public class Pedido {
     private Date fechaCreacion;
     private Date fechaEntrega;
     private float costo;
+    private int status;
     private float abono;
     private int tipo;
     private ArrayList<ItemPedido> itemsEnPedido;
@@ -51,6 +52,16 @@ public class Pedido {
      */
     public Empleado getTrabajador() {
         return trabajador;
+    }
+    public void setStatus(int status) {
+        this.status=status;
+    }
+
+    /**
+     * @return the trabajador
+     */
+    public int getStatus() {
+        return this.status;
     }
 
     /**

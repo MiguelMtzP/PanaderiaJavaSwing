@@ -5,6 +5,7 @@
  */
 package pandaderia;
 
+import Models.BalanceCorte;
 import Models.Empleado;
 import java.awt.Dimension;
 import java.sql.PreparedStatement;
@@ -29,7 +30,10 @@ public class CorteAdmin extends javax.swing.JFrame {
     private int currentWeekSelected;
     private Date currentMonthSelected;
     private Corte currentcorteSelected;
-    
+    private BalanceCorte balancePorDia;
+    private BalanceCorte balancePorSemana; 
+    private BalanceCorte  balancePorMes;
+    private BalanceCorte  balancePorCorte;
     /**
      * Creates new form CorteAdmin
      */
@@ -48,7 +52,6 @@ public class CorteAdmin extends javax.swing.JFrame {
         initPorSemanaComponents();
         initPorMesComponents();
         initPorCorteComponents();
-        
         
     }
     
@@ -194,6 +197,11 @@ public class CorteAdmin extends javax.swing.JFrame {
     }
 
     private void getDataPorDia(){
+        
+         balancePorDia = new BalanceCorte();
+        /*balancePorSemana = new BalanceCorte(); estos van en cada uno de sus respectivos metodos
+        balancePorMes = new BalanceCorte();
+        balancePorCorte = new BalanceCorte();*/
         try {
             PreparedStatement pst = conexion.conectar.prepareStatement("SELECT Ventas.id_Pan, Inventario.nombre as nombre_pan ,SUM(Ventas.cantidad) as T_cantidad , sum(Ventas.Total) as Total" +
                                                                         "	FROM panaderia.Ventas" +
@@ -214,6 +222,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                 totalGananciasVentas += resultado.getFloat("Total");
                 modelo.addRow(row);
             }
+            balancePorDia.gananciasVentas = totalGananciasVentas;
             diaVentasGananciasTotalesLabel.setText("$"+String.valueOf(totalGananciasVentas));
         } catch (SQLException ex) {
             System.out.println("Fallo en Query de ventas");
@@ -250,6 +259,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                 totalPerdidasMermas += resultado.getFloat("totalPerdida");
                 modelo.addRow(row);
             }
+            balancePorDia.perdidasMermas  = totalPerdidasMermas * -1;
             diaMermasPerdidasTotalesLabel.setText("-$"+String.valueOf(totalPerdidasMermas));
         } catch (SQLException ex) {
             System.out.println("Fallo en Query de Mermas");
@@ -261,10 +271,12 @@ public class CorteAdmin extends javax.swing.JFrame {
                                                                 "        Pedidos.fecha_creacion as creado," +
                                                                 "        Pedidos.fecha_entrega as entrega," +
                                                                 "        Pedidos.tipo as tipo," +
-                                                                "        Pedidos.costo as total " +
+                                                                "        Pedidos.costo as total, " +
+                                                                "        Pedidos.status as status " +
                                                                 "	FROM panaderia.Pedidos " +
                                                                 "	join Cliente on Cliente.id_Cliente = Pedidos.id_Cliente " +
-                                                                "    where fecha_creacion = ?");
+                                                                "    where fecha_creacion = ? "
+                                                                + (diaMuestraPendientesYExternosCheckBox.isSelected()?"":"and Pedidos.tipo = 1 and status = 2"));
             
    
             pst.setDate(1,new java.sql.Date(seleccionaDiaDateChooser.getDate().getTime()));
@@ -280,13 +292,39 @@ public class CorteAdmin extends javax.swing.JFrame {
                 row[3] = resultado.getInt("tipo") == 1?"Normal":"Externo" ;
                 row[4] = resultado.getFloat("total");
                 totalPedidosGanancias += resultado.getFloat("total");
+                if(resultado.getInt("tipo") == 1 && resultado.getInt("status") == 2){
+                    balancePorDia.gananciasPedidos += resultado.getFloat("total");
+                }
                 modelo.addRow(row);
             }
-            diaPedidosGananciasTotalesLabel.setText("-$"+String.valueOf(totalPedidosGanancias));
+            diaPedidosGananciasTotalesLabel.setText("$"+String.valueOf(totalPedidosGanancias));
         } catch (SQLException ex) {
             System.out.println("Fallo en Query de Pedidos");
             System.out.println(ex.getMessage());
         }
+        
+        //Empieza llenado de seccion balance 
+        try {
+            PreparedStatement pst = conexion.conectar.prepareStatement("SELECT sum(costo) as fugas FROM panaderia.Pedidos where tipo = 2 and Pedidos.status = 2 and fecha_creacion = ?");
+            
+   
+            pst.setDate(1,new java.sql.Date(seleccionaDiaDateChooser.getDate().getTime()));
+            ResultSet resultado = pst.executeQuery();
+            if(resultado.next()){
+                balancePorDia.fugasPedidosExternos = resultado.getFloat("fugas") * -1;
+            }
+            diaBalanceGananciasPorVentasLabel.setText("$"+String.valueOf(balancePorDia.gananciasVentas));
+            diaBalancePasivosPorMermasLabel.setText("$"+String.valueOf(balancePorDia.perdidasMermas));
+            diaBalanceGananciasPorPedidosLabael.setText("$"+String.valueOf(balancePorDia.gananciasPedidos));
+            diaBalanceFugasPedidosExternosLabel.setText("$"+String.valueOf(balancePorDia.fugasPedidosExternos));
+            diaBalanceTotalLabel.setText("$"+String.valueOf(balancePorDia.getBalanceTotal()));
+            
+        } catch (SQLException ex) {
+            System.out.println("Fallo en Query de Pedidos");
+            System.out.println(ex.getMessage());
+        }
+        
+        
         
         
     }
@@ -321,7 +359,7 @@ public class CorteAdmin extends javax.swing.JFrame {
         pedidosPorDiajTable = new javax.swing.JTable();
         jLabel9 = new javax.swing.JLabel();
         diaPedidosGananciasTotalesLabel = new javax.swing.JLabel();
-        muestraPendientesYExternosCheckBox = new javax.swing.JCheckBox();
+        diaMuestraPendientesYExternosCheckBox = new javax.swing.JCheckBox();
         jSeparator3 = new javax.swing.JSeparator();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
@@ -355,7 +393,7 @@ public class CorteAdmin extends javax.swing.JFrame {
         pedidosPorSemanajTable = new javax.swing.JTable();
         jLabel30 = new javax.swing.JLabel();
         semanaPedidosGananciasTotalesLabel = new javax.swing.JLabel();
-        jCheckBox2 = new javax.swing.JCheckBox();
+        semanaMuestraPendientesYExternosCheckBox = new javax.swing.JCheckBox();
         jSeparator7 = new javax.swing.JSeparator();
         jLabel32 = new javax.swing.JLabel();
         jLabel33 = new javax.swing.JLabel();
@@ -390,7 +428,7 @@ public class CorteAdmin extends javax.swing.JFrame {
         PedidosPorMesjTable = new javax.swing.JTable();
         jLabel51 = new javax.swing.JLabel();
         mesPedidosGananciasTotalesLabel = new javax.swing.JLabel();
-        jCheckBox3 = new javax.swing.JCheckBox();
+        mesMuestraPendientesYExternosCheckBox = new javax.swing.JCheckBox();
         jSeparator11 = new javax.swing.JSeparator();
         jLabel53 = new javax.swing.JLabel();
         jLabel54 = new javax.swing.JLabel();
@@ -424,7 +462,7 @@ public class CorteAdmin extends javax.swing.JFrame {
         pedidosPorCortejTable = new javax.swing.JTable();
         jLabel72 = new javax.swing.JLabel();
         cortePedidosGananciasTotalesLabel = new javax.swing.JLabel();
-        jCheckBox4 = new javax.swing.JCheckBox();
+        corteMuestraPendientesYExternosCheckBox = new javax.swing.JCheckBox();
         jSeparator15 = new javax.swing.JSeparator();
         jLabel74 = new javax.swing.JLabel();
         jLabel75 = new javax.swing.JLabel();
@@ -534,7 +572,12 @@ public class CorteAdmin extends javax.swing.JFrame {
         diaPedidosGananciasTotalesLabel.setForeground(new java.awt.Color(189, 5, 5));
         diaPedidosGananciasTotalesLabel.setText("jLabel3");
 
-        muestraPendientesYExternosCheckBox.setText("Muestra pedidos pendientes y  externos");
+        diaMuestraPendientesYExternosCheckBox.setText("Muestra pedidos pendientes y  externos");
+        diaMuestraPendientesYExternosCheckBox.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                diaMuestraPendientesYExternosCheckBoxStateChanged(evt);
+            }
+        });
 
         jLabel11.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
         jLabel11.setText("Balance");
@@ -618,19 +661,18 @@ public class CorteAdmin extends javax.swing.JFrame {
                                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
                                             .addComponent(jLabel8)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(muestraPendientesYExternosCheckBox)))
+                                            .addComponent(diaMuestraPendientesYExternosCheckBox)))
                                     .addComponent(jLabel11))
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jLabel20)
-                                .addGap(476, 476, 476))))
+                                .addGap(0, 4, Short.MAX_VALUE))))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(309, 309, 309)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(diaBalanceTotalLabel)
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addComponent(jLabel20)
+                                        .addGap(96, 96, 96)
+                                        .addComponent(diaBalanceTotalLabel))
                                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addGroup(jPanel3Layout.createSequentialGroup()
                                             .addComponent(jLabel16)
@@ -683,7 +725,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(muestraPendientesYExternosCheckBox))
+                    .addComponent(diaMuestraPendientesYExternosCheckBox))
                 .addGap(20, 20, 20)
                 .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -798,7 +840,7 @@ public class CorteAdmin extends javax.swing.JFrame {
         semanaPedidosGananciasTotalesLabel.setForeground(new java.awt.Color(189, 5, 5));
         semanaPedidosGananciasTotalesLabel.setText("jLabel3");
 
-        jCheckBox2.setText("Muestra pedidos pendientes y  externos");
+        semanaMuestraPendientesYExternosCheckBox.setText("Muestra pedidos pendientes y  externos");
 
         jLabel32.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
         jLabel32.setText("Balance");
@@ -884,7 +926,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel7Layout.createSequentialGroup()
                                             .addComponent(jLabel29)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jCheckBox2)))
+                                            .addComponent(semanaMuestraPendientesYExternosCheckBox)))
                                     .addComponent(jLabel32))
                                 .addGap(0, 48, Short.MAX_VALUE))
                             .addGroup(jPanel7Layout.createSequentialGroup()
@@ -950,7 +992,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel29)
-                    .addComponent(jCheckBox2))
+                    .addComponent(semanaMuestraPendientesYExternosCheckBox))
                 .addGap(20, 20, 20)
                 .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -1065,7 +1107,7 @@ public class CorteAdmin extends javax.swing.JFrame {
         mesPedidosGananciasTotalesLabel.setForeground(new java.awt.Color(189, 5, 5));
         mesPedidosGananciasTotalesLabel.setText("jLabel3");
 
-        jCheckBox3.setText("Muestra pedidos pendientes y  externos");
+        mesMuestraPendientesYExternosCheckBox.setText("Muestra pedidos pendientes y  externos");
 
         jLabel53.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
         jLabel53.setText("Balance");
@@ -1150,7 +1192,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel8Layout.createSequentialGroup()
                                             .addComponent(jLabel50)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jCheckBox3)))
+                                            .addComponent(mesMuestraPendientesYExternosCheckBox)))
                                     .addComponent(jLabel53))
                                 .addGap(0, 45, Short.MAX_VALUE))
                             .addGroup(jPanel8Layout.createSequentialGroup()
@@ -1215,7 +1257,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel50)
-                    .addComponent(jCheckBox3))
+                    .addComponent(mesMuestraPendientesYExternosCheckBox))
                 .addGap(20, 20, 20)
                 .addComponent(jScrollPane13, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -1327,7 +1369,7 @@ public class CorteAdmin extends javax.swing.JFrame {
         cortePedidosGananciasTotalesLabel.setForeground(new java.awt.Color(189, 5, 5));
         cortePedidosGananciasTotalesLabel.setText("jLabel3");
 
-        jCheckBox4.setText("Muestra pedidos pendientes y  externos");
+        corteMuestraPendientesYExternosCheckBox.setText("Muestra pedidos pendientes y  externos");
 
         jLabel74.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
         jLabel74.setText("Balance");
@@ -1479,7 +1521,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel9Layout.createSequentialGroup()
                                             .addComponent(jLabel71)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jCheckBox4)))
+                                            .addComponent(corteMuestraPendientesYExternosCheckBox)))
                                     .addComponent(jLabel74))
                                 .addGap(0, 48, Short.MAX_VALUE))
                             .addGroup(jPanel9Layout.createSequentialGroup()
@@ -1556,7 +1598,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel71)
-                    .addComponent(jCheckBox4))
+                    .addComponent(corteMuestraPendientesYExternosCheckBox))
                 .addGap(20, 20, 20)
                 .addComponent(jScrollPane16, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -1637,6 +1679,12 @@ public class CorteAdmin extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_seleccionaDiaDateChooserPropertyChange
 
+    private void diaMuestraPendientesYExternosCheckBoxStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_diaMuestraPendientesYExternosCheckBoxStateChanged
+        // TODO add your handling code here:
+        System.out.println("lo clickearon ");
+        getDataPorDia();
+    }//GEN-LAST:event_diaMuestraPendientesYExternosCheckBoxStateChanged
+
     /**
      * @param args the command line arguments
      */
@@ -1680,6 +1728,7 @@ public class CorteAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel corteGananciasPorPedidoLabel;
     private javax.swing.JLabel corteGananciasPorVentasLabel;
     private javax.swing.JLabel corteMermasPerdidasTotalesLabel;
+    private javax.swing.JCheckBox corteMuestraPendientesYExternosCheckBox;
     private javax.swing.JLabel cortePasivosPorMermasLabel;
     private javax.swing.JLabel cortePedidosGananciasTotalesLabel;
     private javax.swing.JLabel corteSeleccionadoLabel;
@@ -1691,13 +1740,11 @@ public class CorteAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel diaBalancePasivosPorMermasLabel;
     private javax.swing.JLabel diaBalanceTotalLabel;
     private javax.swing.JLabel diaMermasPerdidasTotalesLabel;
+    private javax.swing.JCheckBox diaMuestraPendientesYExternosCheckBox;
     private javax.swing.JLabel diaPedidosGananciasTotalesLabel;
     private javax.swing.JLabel diaVentasGananciasTotalesLabel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JCheckBox jCheckBox3;
-    private javax.swing.JCheckBox jCheckBox4;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
@@ -1798,9 +1845,9 @@ public class CorteAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel mesBalancePasivosPorMermasLabel;
     private javax.swing.JLabel mesBalanceTotalLabel;
     private javax.swing.JLabel mesMermasPerdidasTotalesLabel;
+    private javax.swing.JCheckBox mesMuestraPendientesYExternosCheckBox;
     private javax.swing.JLabel mesPedidosGananciasTotalesLabel;
     private javax.swing.JLabel mesVentasGananciasTotalesLabel;
-    private javax.swing.JCheckBox muestraPendientesYExternosCheckBox;
     private javax.swing.JTable pedidosPorCortejTable;
     private javax.swing.JTable pedidosPorDiajTable;
     private javax.swing.JTable pedidosPorSemanajTable;
@@ -1813,6 +1860,7 @@ public class CorteAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel semanaBalancePasivosPorMermasLabel;
     private javax.swing.JLabel semanaBalanceTotalLabel;
     private javax.swing.JLabel semanaMermasPerdidasTotalesLabel;
+    private javax.swing.JCheckBox semanaMuestraPendientesYExternosCheckBox;
     private javax.swing.JLabel semanaPedidosGananciasTotalesLabel;
     private javax.swing.JLabel semanaVentasGananciasTotalesLabel;
     private javax.swing.JTable ventasPorCortejTable;
