@@ -21,6 +21,7 @@ public class Menu extends javax.swing.JFrame {
     private Corte ventanaCorte;
     private CorteAdmin ventanaCorteAdmin;
     private Login ventanaLogin;
+    private RegProveedor ventanaRegProveedor;
     private Conexion conexion;
     
     public Menu() {
@@ -100,7 +101,7 @@ public class Menu extends javax.swing.JFrame {
         Venta = new javax.swing.JButton();
         Empleados = new javax.swing.JButton();
         LogOut = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        proveedoresJBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -149,7 +150,12 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Proveedores");
+        proveedoresJBtn.setText("Proveedores");
+        proveedoresJBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                proveedoresJBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -161,33 +167,38 @@ public class Menu extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(LogOut))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(158, 158, 158)
+                        .addGap(25, 25, 25)
+                        .addComponent(proveedoresJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1)
-                            .addComponent(Empleados)
-                            .addComponent(Inventario))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(175, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(Corte)
-                    .addComponent(Venta))
-                .addGap(199, 199, 199))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(Empleados, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(Inventario, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(Venta, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(Corte, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(55, Short.MAX_VALUE)
-                .addComponent(Inventario)
-                .addGap(52, 52, 52)
-                .addComponent(Corte)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(Venta)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Empleados)
-                .addGap(26, 26, 26)
-                .addComponent(jButton1)
-                .addGap(46, 46, 46)
+                .addContainerGap(119, Short.MAX_VALUE)
+                .addComponent(Inventario, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(proveedoresJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Venta, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Corte, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(Empleados, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(79, 79, 79)
                 .addComponent(LogOut)
                 .addGap(20, 20, 20))
         );
@@ -241,6 +252,13 @@ public class Menu extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_VentaActionPerformed
 
+    private void proveedoresJBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proveedoresJBtnActionPerformed
+        ventanaRegProveedor = new RegProveedor(this, empleadoLoggeado, conexion, currentCorte);
+        System.out.println(empleadoLoggeado);
+        ventanaRegProveedor.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_proveedoresJBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -282,7 +300,7 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JButton Inventario;
     private javax.swing.JButton LogOut;
     private javax.swing.JButton Venta;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton proveedoresJBtn;
     // End of variables declaration//GEN-END:variables
 
   

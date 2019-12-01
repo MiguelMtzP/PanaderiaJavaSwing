@@ -11,6 +11,8 @@ import java.awt.Dimension;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
@@ -49,7 +51,6 @@ public class CorteAdmin extends javax.swing.JFrame {
         initComponents();
         
         initPorDiaComponents();
-        initPorSemanaComponents();
         initPorMesComponents();
         initPorCorteComponents();
         
@@ -91,40 +92,7 @@ public class CorteAdmin extends javax.swing.JFrame {
         diaBalanceTotalLabel.setText("$"+"0.0" );
     }
     
-    public void initPorSemanaComponents(){
-        DefaultTableModel modelo = new DefaultTableModel();
-        modelo.addColumn("Pan");
-        modelo.addColumn("Cantidad");
-        modelo.addColumn("Total");
-        ventasPorSemanajTable.setModel(modelo);
-        semanaVentasGananciasTotalesLabel.setText("$" + "0.0");
-        
-        modelo = new DefaultTableModel();
-        modelo.addColumn("Pan");
-        modelo.addColumn("Rotos");
-        modelo.addColumn("Comidos");
-        modelo.addColumn("Frios");
-        modelo.addColumn("Total Merma");
-        modelo.addColumn("Total Perdida");
-        mermasPorSemanajTable.setModel(modelo);
-        semanaMermasPerdidasTotalesLabel.setText("$" + "0.0");
-        
-        modelo = new DefaultTableModel();
-        modelo.addColumn("Cliente");
-        modelo.addColumn("Creado");
-        modelo.addColumn("Entrega");
-        //modelo.addColumn("Estado");
-        modelo.addColumn("Tipo");
-        modelo.addColumn("Total");
-        pedidosPorSemanajTable.setModel(modelo);
-        semanaPedidosGananciasTotalesLabel.setText("$" + "0.0");
-        
-        semanaBalanceGananciasPorVentasLabel.setText("$"+"0.0" );
-        semanaBalancePasivosPorMermasLabel.setText("$"+"0.0" );
-        semanaBalanceGananciasPorPedidosLabael.setText("$"+"0.0" );
-        semanaBalanceFugasPedidosExternosLabel.setText("$"+"0.0" );
-        semanaBalanceTotalLabel.setText("$"+"0.0" );
-    }
+
     public void initPorMesComponents(){
         DefaultTableModel modelo = new DefaultTableModel();
         modelo.addColumn("Pan");
@@ -150,7 +118,7 @@ public class CorteAdmin extends javax.swing.JFrame {
         //modelo.addColumn("Estado");
         modelo.addColumn("Tipo");
         modelo.addColumn("Total");
-        PedidosPorMesjTable.setModel(modelo);
+        pedidosPorMesjTable.setModel(modelo);
         mesPedidosGananciasTotalesLabel.setText("$" + "0.0");
         
         mesBalanceGananciasPorVentasLabel.setText("$"+"0.0" );
@@ -303,7 +271,7 @@ public class CorteAdmin extends javax.swing.JFrame {
             System.out.println(ex.getMessage());
         }
         
-        //Empieza llenado de seccion balance 
+        //Empieza llenado de seccion balance por dia
         try {
             PreparedStatement pst = conexion.conectar.prepareStatement("SELECT sum(costo) as fugas FROM panaderia.Pedidos where tipo = 2 and Pedidos.status = 2 and fecha_creacion = ?");
             
@@ -322,12 +290,281 @@ public class CorteAdmin extends javax.swing.JFrame {
         } catch (SQLException ex) {
             System.out.println("Fallo en Query de Pedidos");
             System.out.println(ex.getMessage());
-        }
-        
-        
-        
+        }     
         
     }
+    private void getDataPorMes(){
+        //Ventas
+        balancePorMes = new BalanceCorte();
+        //balancePorCorte = new BalanceCorte();
+        LocalDate lchoy = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate fechaInit = LocalDate.of(lchoy.getYear(), seleccionaMesMC.getMonth()+1, 1);
+        LocalDate fechaFin = LocalDate.of(lchoy.getYear(), seleccionaMesMC.getMonth()+1, fechaInit.getMonth().length(fechaInit.isLeapYear()));
+        System.out.println("fecha inicial ---> "+fechaInit.toString());
+        System.out.println("fecha fin --->"+fechaFin.toString());
+        try {
+            PreparedStatement pst = conexion.conectar.prepareStatement("SELECT Ventas.id_Pan, Inventario.nombre as nombre_pan ,SUM(Ventas.cantidad) as T_cantidad , sum(Ventas.Total) as Total" +
+                                                                        "	FROM panaderia.Ventas " +
+                                                                        "    join Inventario on Ventas.id_Pan = Inventario.id_Pan " +
+                                                                        "    where fecha between ? and ? " +
+                                                                        "    group by id_Pan ");
+            
+            
+            pst.setDate(1, new java.sql.Date(Date.from(fechaInit.atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime()));
+            pst.setDate(2, new java.sql.Date(Date.from(fechaFin.atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime()));
+            ResultSet resultado = pst.executeQuery();
+            DefaultTableModel modelo = (DefaultTableModel)ventasPorMesjTable.getModel();
+            modelo.setNumRows(0);
+            float totalGananciasVentas = 0;
+            while(resultado.next()){
+                Object row []= new Object[3];
+                row[0] = resultado.getString("nombre_pan");
+                row[1] = resultado.getInt("T_cantidad");
+                row[2] = resultado.getFloat("Total");
+                totalGananciasVentas += resultado.getFloat("Total");
+                modelo.addRow(row);
+            }
+            balancePorMes.gananciasVentas = totalGananciasVentas;
+            mesVentasGananciasTotalesLabel.setText("$"+String.valueOf(totalGananciasVentas));
+        } catch (SQLException ex) {
+            System.out.println("Fallo en Query de ventas");
+            System.out.println(ex.getMessage());
+        }
+        //Mermas
+        try {
+            PreparedStatement pst = conexion.conectar.prepareStatement("SELECT 	Merma.id_Pan as idPan, " +
+                                                                        "Inventario.nombre as nombre_pan, " +
+                                                                        "sum(Merma.comidos) as T_comidos," +
+                                                                        "sum(Merma.frios) as T_frios," +
+                                                                        "sum(Merma.rotos) as T_rotos," +
+                                                                        "sum(Merma.comidos + Merma.rotos + Merma.frios) as totalMerma," +
+                                                                        "Inventario.costo * sum(Merma.comidos + Merma.rotos + Merma.frios) as totalPerdida " +
+                                                                        "FROM panaderia.Merma " +
+                                                                        "join Inventario on Merma.id_Pan = Inventario.id_Pan " +
+                                                                        "where Merma.fecha  between ? and ? " +
+                                                                        "group by Merma.id_Pan");
+            
+            
+           
+            pst.setDate(1, new java.sql.Date(Date.from(fechaInit.atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime()));
+            pst.setDate(2, new java.sql.Date(Date.from(fechaFin.atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime()));
+            ResultSet resultado = pst.executeQuery();
+            DefaultTableModel modelo = (DefaultTableModel)MermasPorMesjTable.getModel();
+            
+            modelo.setNumRows(0);
+            float totalPerdidasMermas = 0;
+            while(resultado.next()){
+                Object row []= new Object[6];
+                row[0] = resultado.getString("nombre_pan");
+                row[1] = resultado.getInt("T_rotos");
+                row[2] = resultado.getInt("T_comidos");
+                row[3] = resultado.getInt("T_frios");
+                row[4] = resultado.getInt("totalMerma");
+                row[5] = resultado.getFloat("totalPerdida");
+                totalPerdidasMermas += resultado.getFloat("totalPerdida");
+                modelo.addRow(row);
+            }
+            balancePorMes.perdidasMermas  = totalPerdidasMermas * -1;
+            mesMermasPerdidasTotalesLabel.setText("-$"+String.valueOf(totalPerdidasMermas));
+        } catch (SQLException ex) {
+            System.out.println("Fallo en Query de Mermas por mes");
+            System.out.println(ex.getMessage());
+        }
+        //Pedidos
+        try {
+            PreparedStatement pst = conexion.conectar.prepareStatement("SELECT Pedidos.id_Pedidos as id_Pedidos," +
+                                                                "		concat(Cliente.paterno,\" \", Cliente.nombre) as cliente," +
+                                                                "        Pedidos.fecha_creacion as creado," +
+                                                                "        Pedidos.fecha_entrega as entrega," +
+                                                                "        Pedidos.tipo as tipo," +
+                                                                "        Pedidos.costo as total, " +
+                                                                "        Pedidos.status as status " +
+                                                                "	FROM panaderia.Pedidos " +
+                                                                "	join Cliente on Cliente.id_Cliente = Pedidos.id_Cliente " +
+                                                                "    where fecha_creacion  between ? and ? "
+                                                                + (mesMuestraPendientesYExternosCheckBox.isSelected()?"":"and Pedidos.tipo = 1 and status = 2"));
+            
+            
+            
+           
+            pst.setDate(1, new java.sql.Date(Date.from(fechaInit.atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime()));
+            pst.setDate(2, new java.sql.Date(Date.from(fechaFin.atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime()));
+            ResultSet resultado = pst.executeQuery();
+            DefaultTableModel modelo = (DefaultTableModel)pedidosPorMesjTable.getModel();
+
+            modelo.setNumRows(0);
+            float totalPedidosGanancias = 0;
+            while(resultado.next()){
+                Object row []= new Object[5];
+                row[0] = resultado.getString("cliente");
+                row[1] = resultado.getDate("creado");
+                row[2] = resultado.getDate("entrega");
+                row[3] = resultado.getInt("tipo") == 1?"Normal":"Externo" ;
+                row[4] = resultado.getFloat("total");
+                totalPedidosGanancias += resultado.getFloat("total");
+                if(resultado.getInt("tipo") == 1 && resultado.getInt("status") == 2){
+                    balancePorMes.gananciasPedidos += resultado.getFloat("total");
+                }
+                modelo.addRow(row);
+            }
+            mesPedidosGananciasTotalesLabel.setText("$"+String.valueOf(totalPedidosGanancias));
+        } catch (SQLException ex) {
+            System.out.println("Fallo en Query de Pedidos por mes");
+            System.out.println(ex.getMessage());
+        }
+        
+        //Empieza llenado de seccion balance 
+        try {
+            PreparedStatement pst = conexion.conectar.prepareStatement("SELECT sum(costo) as fugas FROM panaderia.Pedidos where tipo = 2 and Pedidos.status = 2 and fecha_creacion between ? and ? ");
+            
+   
+            pst.setDate(1, new java.sql.Date(Date.from(fechaInit.atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime()));
+            pst.setDate(2, new java.sql.Date(Date.from(fechaFin.atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime()));            
+            ResultSet resultado = pst.executeQuery();
+            if(resultado.next()){
+                balancePorMes.fugasPedidosExternos = resultado.getFloat("fugas") * -1;
+            }
+            mesBalanceGananciasPorVentasLabel.setText("$"+String.valueOf(balancePorMes.gananciasVentas));
+            mesBalancePasivosPorMermasLabel.setText("$"+String.valueOf(balancePorMes.perdidasMermas));
+            mesBalanceGananciasPorPedidosLabael.setText("$"+String.valueOf(balancePorMes.gananciasPedidos));
+            mesBalanceFugasPedidosExternosLabel.setText("$"+String.valueOf(balancePorMes.fugasPedidosExternos));
+            mesBalanceTotalLabel.setText("$"+String.valueOf(balancePorMes.getBalanceTotal()));
+            
+        } catch (SQLException ex) {
+            System.out.println("Fallo en Query de Pedidos");
+            System.out.println(ex.getMessage());
+        }  
+    }
+    private void getDataPorCorte(){
+        //Ventas
+        balancePorCorte = new BalanceCorte();
+        
+
+        try {
+            PreparedStatement pst = conexion.conectar.prepareStatement("SELECT Ventas.id_Pan, Inventario.nombre as nombre_pan ,SUM(Ventas.cantidad) as T_cantidad , sum(Ventas.Total) as Total" +
+                                                                        "	FROM panaderia.Ventas " +
+                                                                        "    join Inventario on Ventas.id_Pan = Inventario.id_Pan " +
+                                                                        "    where id_Corte = ? " +
+                                                                        "    group by id_Pan ");
+            ResultSet resultado = pst.executeQuery();
+            DefaultTableModel modelo = (DefaultTableModel)ventasPorCortejTable.getModel();
+            modelo.setNumRows(0);
+            float totalGananciasVentas = 0;
+            while(resultado.next()){
+                Object row []= new Object[3];
+                row[0] = resultado.getString("nombre_pan");
+                row[1] = resultado.getInt("T_cantidad");
+                row[2] = resultado.getFloat("Total");
+                totalGananciasVentas += resultado.getFloat("Total");
+                modelo.addRow(row);
+            }
+            balancePorCorte.gananciasVentas = totalGananciasVentas;
+            corteVentasGananciasTotalesLabel.setText("$"+String.valueOf(totalGananciasVentas));
+        } catch (SQLException ex) {
+            System.out.println("Fallo en Query de ventas");
+            System.out.println(ex.getMessage());
+        }
+        //Mermas
+        try {
+            PreparedStatement pst = conexion.conectar.prepareStatement("SELECT 	Merma.id_Pan as idPan, " +
+                                                                        "Inventario.nombre as nombre_pan, " +
+                                                                        "sum(Merma.comidos) as T_comidos," +
+                                                                        "sum(Merma.frios) as T_frios," +
+                                                                        "sum(Merma.rotos) as T_rotos," +
+                                                                        "sum(Merma.comidos + Merma.rotos + Merma.frios) as totalMerma," +
+                                                                        "Inventario.costo * sum(Merma.comidos + Merma.rotos + Merma.frios) as totalPerdida " +
+                                                                        "FROM panaderia.Merma " +
+                                                                        "join Inventario on Merma.id_Pan = Inventario.id_Pan " +
+                                                                        "where id_Corte = ? " +
+                                                                        "group by Merma.id_Pan");
+            
+            
+           
+            ResultSet resultado = pst.executeQuery();
+            DefaultTableModel modelo = (DefaultTableModel)mermasPorCortejTable.getModel();
+            
+            modelo.setNumRows(0);
+            float totalPerdidasMermas = 0;
+            while(resultado.next()){
+                Object row []= new Object[6];
+                row[0] = resultado.getString("nombre_pan");
+                row[1] = resultado.getInt("T_rotos");
+                row[2] = resultado.getInt("T_comidos");
+                row[3] = resultado.getInt("T_frios");
+                row[4] = resultado.getInt("totalMerma");
+                row[5] = resultado.getFloat("totalPerdida");
+                totalPerdidasMermas += resultado.getFloat("totalPerdida");
+                modelo.addRow(row);
+            }
+            balancePorCorte.perdidasMermas  = totalPerdidasMermas * -1;
+            corteMermasPerdidasTotalesLabel.setText("-$"+String.valueOf(totalPerdidasMermas));
+        } catch (SQLException ex) {
+            System.out.println("Fallo en Query de Mermas por mes");
+            System.out.println(ex.getMessage());
+        }
+        //Pedidos
+        try {
+            PreparedStatement pst = conexion.conectar.prepareStatement("SELECT Pedidos.id_Pedidos as id_Pedidos," +
+                                                                "		concat(Cliente.paterno,\" \", Cliente.nombre) as cliente," +
+                                                                "        Pedidos.fecha_creacion as creado," +
+                                                                "        Pedidos.fecha_entrega as entrega," +
+                                                                "        Pedidos.tipo as tipo," +
+                                                                "        Pedidos.costo as total, " +
+                                                                "        Pedidos.status as status " +
+                                                                "	FROM panaderia.Pedidos " +
+                                                                "	join Cliente on Cliente.id_Cliente = Pedidos.id_Cliente " +
+                                                                "    where id_Corte = ? "
+                                                                + (mesMuestraPendientesYExternosCheckBox.isSelected()?"":"and Pedidos.tipo = 1 and status = 2"));
+            
+            
+            
+           
+            ResultSet resultado = pst.executeQuery();
+            DefaultTableModel modelo = (DefaultTableModel)pedidosPorMesjTable.getModel();
+
+            modelo.setNumRows(0);
+            float totalPedidosGanancias = 0;
+            while(resultado.next()){
+                Object row []= new Object[5];
+                row[0] = resultado.getString("cliente");
+                row[1] = resultado.getDate("creado");
+                row[2] = resultado.getDate("entrega");
+                row[3] = resultado.getInt("tipo") == 1?"Normal":"Externo" ;
+                row[4] = resultado.getFloat("total");
+                totalPedidosGanancias += resultado.getFloat("total");
+                if(resultado.getInt("tipo") == 1 && resultado.getInt("status") == 2){
+                    balancePorCorte.gananciasPedidos += resultado.getFloat("total");
+                }
+                modelo.addRow(row);
+            }
+            cortePedidosGananciasTotalesLabel.setText("$"+String.valueOf(totalPedidosGanancias));
+        } catch (SQLException ex) {
+            System.out.println("Fallo en Query de Pedidos por mes");
+            System.out.println(ex.getMessage());
+        }
+        
+        //Empieza llenado de seccion balance 
+        try {
+            PreparedStatement pst = conexion.conectar.prepareStatement("SELECT sum(costo) as fugas FROM panaderia.Pedidos where tipo = 2 and Pedidos.status = 2 and id_Corte = ? ");
+            
+   
+            ResultSet resultado = pst.executeQuery();
+            if(resultado.next()){
+                balancePorCorte.fugasPedidosExternos = resultado.getFloat("fugas") * -1;
+            }
+            corteGananciasPorVentasLabel.setText("$"+String.valueOf(balancePorCorte.gananciasVentas));
+            cortePasivosPorMermasLabel.setText("$"+String.valueOf(balancePorCorte.perdidasMermas));
+            corteGananciasPorPedidoLabel.setText("$"+String.valueOf(balancePorCorte.gananciasPedidos));
+            corteFugasPorPedidosExternosLabel.setText("$"+String.valueOf(balancePorCorte.fugasPedidosExternos));
+            corteBalanceTotaljLabel.setText("$"+String.valueOf(balancePorCorte.getBalanceTotal()));
+            
+        } catch (SQLException ex) {
+            System.out.println("Fallo en Query de Pedidos");
+            System.out.println(ex.getMessage());
+        }  
+    }
+    
+   
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -373,41 +610,6 @@ public class CorteAdmin extends javax.swing.JFrame {
         jSeparator4 = new javax.swing.JSeparator();
         jLabel20 = new javax.swing.JLabel();
         diaBalanceTotalLabel = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jPanel7 = new javax.swing.JPanel();
-        jLabel22 = new javax.swing.JLabel();
-        jLabel23 = new javax.swing.JLabel();
-        jScrollPane8 = new javax.swing.JScrollPane();
-        ventasPorSemanajTable = new javax.swing.JTable();
-        semanaVentasGananciasTotalesLabel = new javax.swing.JLabel();
-        jLabel25 = new javax.swing.JLabel();
-        jSeparator5 = new javax.swing.JSeparator();
-        jScrollPane9 = new javax.swing.JScrollPane();
-        mermasPorSemanajTable = new javax.swing.JTable();
-        jLabel26 = new javax.swing.JLabel();
-        jLabel27 = new javax.swing.JLabel();
-        semanaMermasPerdidasTotalesLabel = new javax.swing.JLabel();
-        jSeparator6 = new javax.swing.JSeparator();
-        jLabel29 = new javax.swing.JLabel();
-        jScrollPane10 = new javax.swing.JScrollPane();
-        pedidosPorSemanajTable = new javax.swing.JTable();
-        jLabel30 = new javax.swing.JLabel();
-        semanaPedidosGananciasTotalesLabel = new javax.swing.JLabel();
-        semanaMuestraPendientesYExternosCheckBox = new javax.swing.JCheckBox();
-        jSeparator7 = new javax.swing.JSeparator();
-        jLabel32 = new javax.swing.JLabel();
-        jLabel33 = new javax.swing.JLabel();
-        semanaBalanceGananciasPorVentasLabel = new javax.swing.JLabel();
-        jLabel35 = new javax.swing.JLabel();
-        semanaBalancePasivosPorMermasLabel = new javax.swing.JLabel();
-        jLabel37 = new javax.swing.JLabel();
-        semanaBalanceGananciasPorPedidosLabael = new javax.swing.JLabel();
-        jLabel39 = new javax.swing.JLabel();
-        semanaBalanceFugasPedidosExternosLabel = new javax.swing.JLabel();
-        jSeparator8 = new javax.swing.JSeparator();
-        jLabel41 = new javax.swing.JLabel();
-        semanaBalanceTotalLabel = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
         jScrollPane4 = new javax.swing.JScrollPane();
         jPanel8 = new javax.swing.JPanel();
         jLabel43 = new javax.swing.JLabel();
@@ -425,7 +627,7 @@ public class CorteAdmin extends javax.swing.JFrame {
         jSeparator10 = new javax.swing.JSeparator();
         jLabel50 = new javax.swing.JLabel();
         jScrollPane13 = new javax.swing.JScrollPane();
-        PedidosPorMesjTable = new javax.swing.JTable();
+        pedidosPorMesjTable = new javax.swing.JTable();
         jLabel51 = new javax.swing.JLabel();
         mesPedidosGananciasTotalesLabel = new javax.swing.JLabel();
         mesMuestraPendientesYExternosCheckBox = new javax.swing.JCheckBox();
@@ -442,7 +644,7 @@ public class CorteAdmin extends javax.swing.JFrame {
         jSeparator12 = new javax.swing.JSeparator();
         jLabel62 = new javax.swing.JLabel();
         mesBalanceTotalLabel = new javax.swing.JLabel();
-        jMonthChooser1 = new com.toedter.calendar.JMonthChooser();
+        seleccionaMesMC = new com.toedter.calendar.JMonthChooser();
         jScrollPane5 = new javax.swing.JScrollPane();
         jPanel9 = new javax.swing.JPanel();
         jLabel65 = new javax.swing.JLabel();
@@ -573,9 +775,9 @@ public class CorteAdmin extends javax.swing.JFrame {
         diaPedidosGananciasTotalesLabel.setText("jLabel3");
 
         diaMuestraPendientesYExternosCheckBox.setText("Muestra pedidos pendientes y  externos");
-        diaMuestraPendientesYExternosCheckBox.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                diaMuestraPendientesYExternosCheckBoxStateChanged(evt);
+        diaMuestraPendientesYExternosCheckBox.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                diaMuestraPendientesYExternosCheckBoxMouseClicked(evt);
             }
         });
 
@@ -765,273 +967,6 @@ public class CorteAdmin extends javax.swing.JFrame {
 
         porDia.addTab("Por Dia", jScrollPane1);
 
-        jScrollPane3.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane3.setPreferredSize(new java.awt.Dimension(930, 660));
-
-        jLabel22.setFont(new java.awt.Font("Liberation Sans", 0, 15)); // NOI18N
-        jLabel22.setText("Selecciona semana del mes corriente");
-
-        jLabel23.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
-        jLabel23.setText("Ventas");
-
-        ventasPorSemanajTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane8.setViewportView(ventasPorSemanajTable);
-
-        semanaVentasGananciasTotalesLabel.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
-        semanaVentasGananciasTotalesLabel.setForeground(new java.awt.Color(189, 5, 5));
-        semanaVentasGananciasTotalesLabel.setText("jLabel3");
-
-        jLabel25.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
-        jLabel25.setText("Ganancias Totales");
-
-        mermasPorSemanajTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane9.setViewportView(mermasPorSemanajTable);
-
-        jLabel26.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
-        jLabel26.setText("Mermas");
-
-        jLabel27.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
-        jLabel27.setText("Perdidas Totales");
-
-        semanaMermasPerdidasTotalesLabel.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
-        semanaMermasPerdidasTotalesLabel.setForeground(new java.awt.Color(189, 5, 5));
-        semanaMermasPerdidasTotalesLabel.setText("jLabel3");
-
-        jLabel29.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
-        jLabel29.setText("Pedidos");
-
-        pedidosPorSemanajTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane10.setViewportView(pedidosPorSemanajTable);
-
-        jLabel30.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
-        jLabel30.setText("Ganancias Totales");
-
-        semanaPedidosGananciasTotalesLabel.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
-        semanaPedidosGananciasTotalesLabel.setForeground(new java.awt.Color(189, 5, 5));
-        semanaPedidosGananciasTotalesLabel.setText("jLabel3");
-
-        semanaMuestraPendientesYExternosCheckBox.setText("Muestra pedidos pendientes y  externos");
-
-        jLabel32.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
-        jLabel32.setText("Balance");
-
-        jLabel33.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
-        jLabel33.setText("Ganancias por ventas");
-
-        semanaBalanceGananciasPorVentasLabel.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
-        semanaBalanceGananciasPorVentasLabel.setForeground(new java.awt.Color(189, 5, 5));
-        semanaBalanceGananciasPorVentasLabel.setText("jLabel3");
-
-        jLabel35.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
-        jLabel35.setText("Pasivos por mermas");
-
-        semanaBalancePasivosPorMermasLabel.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
-        semanaBalancePasivosPorMermasLabel.setForeground(new java.awt.Color(189, 5, 5));
-        semanaBalancePasivosPorMermasLabel.setText("jLabel3");
-
-        jLabel37.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
-        jLabel37.setText("Ganancias por pedidos");
-
-        semanaBalanceGananciasPorPedidosLabael.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
-        semanaBalanceGananciasPorPedidosLabael.setForeground(new java.awt.Color(189, 5, 5));
-        semanaBalanceGananciasPorPedidosLabael.setText("jLabel3");
-
-        jLabel39.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
-        jLabel39.setText("Fugas por pedidos externos");
-
-        semanaBalanceFugasPedidosExternosLabel.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
-        semanaBalanceFugasPedidosExternosLabel.setForeground(new java.awt.Color(189, 5, 5));
-        semanaBalanceFugasPedidosExternosLabel.setText("jLabel3");
-
-        jLabel41.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
-        jLabel41.setText("BALANCE TOTAL");
-
-        semanaBalanceTotalLabel.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
-        semanaBalanceTotalLabel.setForeground(new java.awt.Color(189, 5, 5));
-        semanaBalanceTotalLabel.setText("jLabel3");
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1er semana", "2da semana", "3er semana", "4ta semana" }));
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jSeparator6)
-                            .addComponent(jSeparator7)
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addGroup(jPanel7Layout.createSequentialGroup()
-                                            .addComponent(jLabel30)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(semanaPedidosGananciasTotalesLabel))
-                                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel26)
-                                            .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                .addGroup(jPanel7Layout.createSequentialGroup()
-                                                    .addComponent(jLabel27)
-                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                    .addComponent(semanaMermasPerdidasTotalesLabel))
-                                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                        .addGroup(jPanel7Layout.createSequentialGroup()
-                                                            .addComponent(jLabel23)
-                                                            .addGap(391, 391, 391)
-                                                            .addComponent(jLabel22)
-                                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                        .addGroup(jPanel7Layout.createSequentialGroup()
-                                                            .addComponent(jLabel25)
-                                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                            .addComponent(semanaVentasGananciasTotalesLabel))
-                                                        .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 853, Short.MAX_VALUE)
-                                                        .addComponent(jSeparator5))
-                                                    .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 853, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                            .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 853, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel7Layout.createSequentialGroup()
-                                            .addComponent(jLabel29)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(semanaMuestraPendientesYExternosCheckBox)))
-                                    .addComponent(jLabel32))
-                                .addGap(0, 48, Short.MAX_VALUE))
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jLabel41)
-                                .addGap(476, 476, 476))))
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addGap(309, 309, 309)
-                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(semanaBalanceTotalLabel)
-                                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addGroup(jPanel7Layout.createSequentialGroup()
-                                            .addComponent(jLabel37)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(semanaBalanceGananciasPorPedidosLabael))
-                                        .addGroup(jPanel7Layout.createSequentialGroup()
-                                            .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(jLabel33)
-                                                .addComponent(jLabel35))
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(semanaBalancePasivosPorMermasLabel, javax.swing.GroupLayout.Alignment.TRAILING)
-                                                .addComponent(semanaBalanceGananciasPorVentasLabel, javax.swing.GroupLayout.Alignment.TRAILING)))
-                                        .addGroup(jPanel7Layout.createSequentialGroup()
-                                            .addComponent(jLabel39, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(semanaBalanceFugasPedidosExternosLabel)))))
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addGap(256, 256, 256)
-                                .addComponent(jSeparator8, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel23)
-                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel22)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(17, 17, 17)
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(semanaVentasGananciasTotalesLabel)
-                    .addComponent(jLabel25))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel26)
-                .addGap(21, 21, 21)
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(semanaMermasPerdidasTotalesLabel)
-                    .addComponent(jLabel27))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator6, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel29)
-                    .addComponent(semanaMuestraPendientesYExternosCheckBox))
-                .addGap(20, 20, 20)
-                .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(semanaPedidosGananciasTotalesLabel)
-                    .addComponent(jLabel30))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator7, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel32)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(semanaBalanceGananciasPorVentasLabel)
-                    .addComponent(jLabel33))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(semanaBalancePasivosPorMermasLabel)
-                    .addComponent(jLabel35))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(semanaBalanceGananciasPorPedidosLabael)
-                    .addComponent(jLabel37))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(semanaBalanceFugasPedidosExternosLabel)
-                    .addComponent(jLabel39))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator8, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(semanaBalanceTotalLabel)
-                    .addComponent(jLabel41))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jScrollPane3.setViewportView(jPanel7);
-
-        porDia.addTab("Por Semana", jScrollPane3);
-
         jScrollPane4.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane4.setPreferredSize(new java.awt.Dimension(930, 660));
 
@@ -1087,7 +1022,7 @@ public class CorteAdmin extends javax.swing.JFrame {
         jLabel50.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
         jLabel50.setText("Pedidos");
 
-        PedidosPorMesjTable.setModel(new javax.swing.table.DefaultTableModel(
+        pedidosPorMesjTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -1098,7 +1033,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane13.setViewportView(PedidosPorMesjTable);
+        jScrollPane13.setViewportView(pedidosPorMesjTable);
 
         jLabel51.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
         jLabel51.setText("Ganancias Totales");
@@ -1108,6 +1043,11 @@ public class CorteAdmin extends javax.swing.JFrame {
         mesPedidosGananciasTotalesLabel.setText("jLabel3");
 
         mesMuestraPendientesYExternosCheckBox.setText("Muestra pedidos pendientes y  externos");
+        mesMuestraPendientesYExternosCheckBox.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mesMuestraPendientesYExternosCheckBoxMouseClicked(evt);
+            }
+        });
 
         jLabel53.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
         jLabel53.setText("Balance");
@@ -1147,6 +1087,12 @@ public class CorteAdmin extends javax.swing.JFrame {
         mesBalanceTotalLabel.setForeground(new java.awt.Color(189, 5, 5));
         mesBalanceTotalLabel.setText("jLabel3");
 
+        seleccionaMesMC.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                seleccionaMesMCPropertyChange(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -1179,7 +1125,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                                                             .addGap(539, 539, 539)
                                                             .addComponent(jLabel43)
                                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                            .addComponent(jMonthChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                            .addComponent(seleccionaMesMC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                             .addGap(1, 1, 1))
                                                         .addGroup(jPanel8Layout.createSequentialGroup()
                                                             .addComponent(jLabel46)
@@ -1235,7 +1181,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel44)
                     .addComponent(jLabel43)
-                    .addComponent(jMonthChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(seleccionaMesMC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(21, 21, 21)
                 .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1247,7 +1193,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel47)
                 .addGap(21, 21, 21)
-                .addComponent(jScrollPane12, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane12, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(mesMermasPerdidasTotalesLabel)
@@ -1662,8 +1608,14 @@ public class CorteAdmin extends javax.swing.JFrame {
         // TODO add your handling code here:
         seleccionaCortePanel.setVisible(true);
         corteSeleccionadoPanel.setVisible(false);
+        
+        getCortesEnExistencia();
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    public void getCortesEnExistencia(){
+        //PreparedStatement pst = conexion.conectar.prepareStatement("Select ")
+    }
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         seleccionaCortePanel.setVisible(false);
@@ -1679,11 +1631,19 @@ public class CorteAdmin extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_seleccionaDiaDateChooserPropertyChange
 
-    private void diaMuestraPendientesYExternosCheckBoxStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_diaMuestraPendientesYExternosCheckBoxStateChanged
-        // TODO add your handling code here:
-        System.out.println("lo clickearon ");
+    private void seleccionaMesMCPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_seleccionaMesMCPropertyChange
+       
+       getDataPorMes();
+    }//GEN-LAST:event_seleccionaMesMCPropertyChange
+
+    private void mesMuestraPendientesYExternosCheckBoxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mesMuestraPendientesYExternosCheckBoxMouseClicked
+       getDataPorMes();
+
+    }//GEN-LAST:event_mesMuestraPendientesYExternosCheckBoxMouseClicked
+
+    private void diaMuestraPendientesYExternosCheckBoxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_diaMuestraPendientesYExternosCheckBoxMouseClicked
         getDataPorDia();
-    }//GEN-LAST:event_diaMuestraPendientesYExternosCheckBoxStateChanged
+    }//GEN-LAST:event_diaMuestraPendientesYExternosCheckBoxMouseClicked
 
     /**
      * @param args the command line arguments
@@ -1722,7 +1682,6 @@ public class CorteAdmin extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable MermasPorMesjTable;
-    private javax.swing.JTable PedidosPorMesjTable;
     private javax.swing.JLabel corteBalanceTotaljLabel;
     private javax.swing.JLabel corteFugasPorPedidosExternosLabel;
     private javax.swing.JLabel corteGananciasPorPedidoLabel;
@@ -1745,7 +1704,6 @@ public class CorteAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel diaVentasGananciasTotalesLabel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -1754,20 +1712,7 @@ public class CorteAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
-    private javax.swing.JLabel jLabel25;
-    private javax.swing.JLabel jLabel26;
-    private javax.swing.JLabel jLabel27;
-    private javax.swing.JLabel jLabel29;
-    private javax.swing.JLabel jLabel30;
-    private javax.swing.JLabel jLabel32;
-    private javax.swing.JLabel jLabel33;
-    private javax.swing.JLabel jLabel35;
-    private javax.swing.JLabel jLabel37;
-    private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel41;
     private javax.swing.JLabel jLabel43;
     private javax.swing.JLabel jLabel44;
     private javax.swing.JLabel jLabel46;
@@ -1797,13 +1742,10 @@ public class CorteAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel81;
     private javax.swing.JLabel jLabel83;
     private javax.swing.JLabel jLabel9;
-    private com.toedter.calendar.JMonthChooser jMonthChooser1;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane12;
     private javax.swing.JScrollPane jScrollPane13;
@@ -1812,13 +1754,10 @@ public class CorteAdmin extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane16;
     private javax.swing.JScrollPane jScrollPane17;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
-    private javax.swing.JScrollPane jScrollPane8;
-    private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator10;
     private javax.swing.JSeparator jSeparator11;
@@ -1830,15 +1769,10 @@ public class CorteAdmin extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
-    private javax.swing.JSeparator jSeparator5;
-    private javax.swing.JSeparator jSeparator6;
-    private javax.swing.JSeparator jSeparator7;
-    private javax.swing.JSeparator jSeparator8;
     private javax.swing.JSeparator jSeparator9;
     private javax.swing.JTable listaCortesjTable;
     private javax.swing.JTable mermasPorCortejTable;
     private javax.swing.JTable mermasPorDiajTable;
-    private javax.swing.JTable mermasPorSemanajTable;
     private javax.swing.JLabel mesBalanceFugasPedidosExternosLabel;
     private javax.swing.JLabel mesBalanceGananciasPorPedidosLabael;
     private javax.swing.JLabel mesBalanceGananciasPorVentasLabel;
@@ -1850,22 +1784,13 @@ public class CorteAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel mesVentasGananciasTotalesLabel;
     private javax.swing.JTable pedidosPorCortejTable;
     private javax.swing.JTable pedidosPorDiajTable;
-    private javax.swing.JTable pedidosPorSemanajTable;
+    private javax.swing.JTable pedidosPorMesjTable;
     private javax.swing.JTabbedPane porDia;
     private javax.swing.JPanel seleccionaCortePanel;
     private com.toedter.calendar.JDateChooser seleccionaDiaDateChooser;
-    private javax.swing.JLabel semanaBalanceFugasPedidosExternosLabel;
-    private javax.swing.JLabel semanaBalanceGananciasPorPedidosLabael;
-    private javax.swing.JLabel semanaBalanceGananciasPorVentasLabel;
-    private javax.swing.JLabel semanaBalancePasivosPorMermasLabel;
-    private javax.swing.JLabel semanaBalanceTotalLabel;
-    private javax.swing.JLabel semanaMermasPerdidasTotalesLabel;
-    private javax.swing.JCheckBox semanaMuestraPendientesYExternosCheckBox;
-    private javax.swing.JLabel semanaPedidosGananciasTotalesLabel;
-    private javax.swing.JLabel semanaVentasGananciasTotalesLabel;
+    private com.toedter.calendar.JMonthChooser seleccionaMesMC;
     private javax.swing.JTable ventasPorCortejTable;
     private javax.swing.JTable ventasPorDiajTable;
     private javax.swing.JTable ventasPorMesjTable;
-    private javax.swing.JTable ventasPorSemanajTable;
     // End of variables declaration//GEN-END:variables
 }
