@@ -320,21 +320,21 @@
             <Component class="javax.swing.JLabel" name="totalVentasJTF">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Ubuntu" size="15" style="2"/>
+                  <Font name="Liberation Sans" size="14" style="3"/>
                 </Property>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="57" green="57" red="63" type="rgb"/>
+                  <Color blue="ba" green="98" red="14" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="jLabel6"/>
+                <Property name="text" type="java.lang.String" value="7 -- $78"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="totalMermasJTF">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Ubuntu" size="15" style="2"/>
+                  <Font name="Liberation Sans" size="14" style="3"/>
                 </Property>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="57" green="57" red="63" type="rgb"/>
+                  <Color blue="ba" green="98" red="14" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="jLabel6"/>
               </Properties>

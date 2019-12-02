@@ -40,16 +40,13 @@ public class Corte extends javax.swing.JFrame {
         fechaHoraJTF.setText(corte.getFechaInicio().toString());
         turnoJTF.setText(corte.getTurno());
         nombreEmpJTF.setText(corte.getIdTrabajador().getFullName());
-        totalVentasJTF.setText(String.valueOf(corte.getTotalVentas()));
-        totalMermasJTF.setText(String.valueOf(corte.getTotalMermas()));
+
         estatusJTF.setText(corte.getEstatus() == 0 ? "Abierto" : "Cerrado" ) ;
         estatusJTF.setForeground(corte.getEstatus() == 0 ? Color.BLUE : estatusJTF.getForeground() );
         
         try {
-            int tVentas = getTotalVentasByCorte();
-            int tMermas = getTotalMermasByCorte();
-            totalMermasJTF.setText(String.valueOf(tMermas));
-            totalVentasJTF.setText(String.valueOf(tVentas));
+            getTotalVentasByCorte();
+            getTotalMermasByCorte();
         } catch (SQLException ex) {
             Logger.getLogger(Corte.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -154,12 +151,12 @@ public class Corte extends javax.swing.JFrame {
         turnoJTF.setForeground(new java.awt.Color(99, 87, 87));
         turnoJTF.setText("jLabel6");
 
-        totalVentasJTF.setFont(new java.awt.Font("Ubuntu", 2, 15)); // NOI18N
-        totalVentasJTF.setForeground(new java.awt.Color(99, 87, 87));
-        totalVentasJTF.setText("jLabel6");
+        totalVentasJTF.setFont(new java.awt.Font("Liberation Sans", 3, 14)); // NOI18N
+        totalVentasJTF.setForeground(new java.awt.Color(20, 152, 186));
+        totalVentasJTF.setText("7 -- $78");
 
-        totalMermasJTF.setFont(new java.awt.Font("Ubuntu", 2, 15)); // NOI18N
-        totalMermasJTF.setForeground(new java.awt.Color(99, 87, 87));
+        totalMermasJTF.setFont(new java.awt.Font("Liberation Sans", 3, 14)); // NOI18N
+        totalMermasJTF.setForeground(new java.awt.Color(20, 152, 186));
         totalMermasJTF.setText("jLabel6");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -340,14 +337,16 @@ public class Corte extends javax.swing.JFrame {
     
     
     private int getTotalVentasByCorte() throws SQLException{
-        PreparedStatement pst = conexion.conectar.prepareStatement("select sum(cantidad) as totalVentas from Ventas where id_Corte = ?");
+        PreparedStatement pst = conexion.conectar.prepareStatement("select sum(cantidad) as totalVentas, sum(Total) as totalGanancias from Ventas where id_Corte = ?");
         pst.setInt(1, currentCorte.getIdCorte());
         ResultSet res = pst.executeQuery();
         if(res.next()){
-            int value = res.getInt("totalVentas");
-            totalVentasJTF.setText(String.valueOf(value));
-            return value;
+            int ventas = res.getInt("totalVentas");
+            float ganancias = res.getFloat("totalGanancias");
+            totalVentasJTF.setText(String.valueOf(ventas)+ " --> $"+String.valueOf(ganancias));
+            return ventas;
         }
+        totalVentasJTF.setText("0 --> $0.0");
         return 0;
     }
     private void regresarJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_regresarJButtonActionPerformed
@@ -365,10 +364,8 @@ public class Corte extends javax.swing.JFrame {
     public void thismissVentanaMermas(){
         
         try {
-            int tVentas = getTotalVentasByCorte();
-            int tMermas = getTotalMermasByCorte();
-            totalMermasJTF.setText(String.valueOf(tMermas));
-            totalVentasJTF.setText(String.valueOf(tVentas));
+            getTotalVentasByCorte();
+            getTotalMermasByCorte();
         } catch (SQLException ex) {
             Logger.getLogger(Corte.class.getName()).log(Level.SEVERE, null, ex);
         }

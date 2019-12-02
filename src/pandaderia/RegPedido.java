@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -448,6 +449,11 @@ public class RegPedido extends javax.swing.JFrame {
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel11.setText("ID Cliente");
 
+        idClienteSelectedJTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                idClienteSelectedJTFActionPerformed(evt);
+            }
+        });
         idClienteSelectedJTF.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 idClienteSelectedJTFKeyReleased(evt);
@@ -789,9 +795,9 @@ public class RegPedido extends javax.swing.JFrame {
         String input = nombreBuscaClienteJTF.getText();
         for (Clientes cliente : clientesExistentes) {
             if (input.isEmpty()
-                ||cliente.getAppMat().contains(input)
-                ||cliente.getAppPat().contains(input)
-                ||cliente.getnombre().contains(input)){
+                ||cliente.getAppMat().toUpperCase().contains(input.toUpperCase())
+                ||cliente.getAppPat().toUpperCase().contains(input.toUpperCase())
+                ||cliente.getnombre().toUpperCase().contains(input.toUpperCase())){
                 filtrados.add(cliente);
             }
         }
@@ -827,6 +833,10 @@ public class RegPedido extends javax.swing.JFrame {
     private void nombreBuscaClienteJTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nombreBuscaClienteJTFActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_nombreBuscaClienteJTFActionPerformed
+
+    private void idClienteSelectedJTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idClienteSelectedJTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_idClienteSelectedJTFActionPerformed
     
     public void validaRegistroCompleto(){
         if(currentSelectedCliente != null

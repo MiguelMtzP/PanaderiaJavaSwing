@@ -4,9 +4,27 @@ public class Proveedores {
     
     private int idProveedor;
     private String nombre;
+    private String paterno;
+
+    private String materno;
     private String telefono;
     private String correo;
 
+    public String getPaterno() {
+        return paterno;
+    }
+
+    public void setPaterno(String paterno) {
+        this.paterno = paterno;
+    }
+
+    public String getMaterno() {
+        return materno;
+    }
+
+    public void setMaterno(String materno) {
+        this.materno = materno;
+    }
     public int getIdProveedor() {
         return idProveedor;
     }
@@ -39,4 +57,7 @@ public class Proveedores {
         this.correo = correo;
     }
     
+    public String fullName(){
+        return paterno + " "+materno+" "+nombre; 
+    }
 }

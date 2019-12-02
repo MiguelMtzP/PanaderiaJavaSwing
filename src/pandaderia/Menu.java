@@ -79,7 +79,15 @@ public class Menu extends javax.swing.JFrame {
         }
     }
     public void thismissCorteAdminViewer(){
+        ventanaCorteAdmin.setVisible(false);
+        this.setVisible(true);
+        ventanaCorteAdmin = null;
         
+    }
+    public void thismissRegProveedor(){
+        ventanaRegProveedor.setVisible(false);
+        this.setVisible(true);
+        ventanaRegProveedor = null;
     }
     public void thismissInventario(){
         System.out.println(empleadoLoggeado);

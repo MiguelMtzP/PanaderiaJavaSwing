@@ -7,6 +7,7 @@ package pandaderia;
 
 import Models.Clientes;
 import Models.Empleado;
+import Models.Proveedores;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,7 +26,7 @@ public class NuevoProveedor extends javax.swing.JFrame {
     
     public NuevoProveedor() {
         initComponents();
-        setTitle("Nuevo cliente");
+        setTitle("Nuevo Provvedor");
         setLocationRelativeTo(null);
         setResizable(false);
     }
@@ -211,35 +212,34 @@ public class NuevoProveedor extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Ingrese todos los datos");
         }else{
           
-                    Clientes nuevoCliente = new Clientes();
-                    nuevoCliente.setnombre(NomClientJtf.getText());
-                    nuevoCliente.setAppPat(PaternoClientJtf.getText());
-                    nuevoCliente.setAppMat(MaternoClientJtf.getText());
-                    nuevoCliente.setTelefono(TelClientJtf.getText());
-                    nuevoCliente.setCorreo(emailClientJtf.getText());
+                    Proveedores nuevoProveedor = new Proveedores();
+                    nuevoProveedor.setNombre(NomClientJtf.getText());
+                    nuevoProveedor.setPaterno(PaternoClientJtf.getText());
+                    nuevoProveedor.setMaterno(MaternoClientJtf.getText());
+                    nuevoProveedor.setTelefono(TelClientJtf.getText());
+                    nuevoProveedor.setCorreo(emailClientJtf.getText());
             try {
-                    PreparedStatement pst= cc.conectar.prepareStatement("INSERT INTO Cliente (nombre, paterno, materno, telefono, correo, empresa) VALUES(?,?,?,?,?, ? )",Statement.RETURN_GENERATED_KEYS);       
+                    PreparedStatement pst= cc.conectar.prepareStatement("INSERT INTO Proveedor (nombre, paterno, materno, telefono, correo) VALUES(?,?,?,?,?)",Statement.RETURN_GENERATED_KEYS);       
 
-                    pst.setString(1,nuevoCliente.getnombre() );
-                    pst.setString(2,nuevoCliente.getAppPat() ); 
-                    pst.setString(3,nuevoCliente.getAppMat() );
-                    pst.setString(4,nuevoCliente.getTelefono() );
-                    pst.setString(5,nuevoCliente.getCorreo() );
-                    pst.setString(6,nuevoCliente.getEmpresa() );
+                    pst.setString(1,nuevoProveedor.getNombre());
+                    pst.setString(2,nuevoProveedor.getPaterno()); 
+                    pst.setString(3,nuevoProveedor.getMaterno());
+                    pst.setString(4,nuevoProveedor.getTelefono() );
+                    pst.setString(5,nuevoProveedor.getCorreo() );
                     pst.execute();
                     
                     ResultSet idCreated = pst.getGeneratedKeys();
                     if(idCreated.next()){
-                        int idCliente = idCreated.getInt(1);
-                        nuevoCliente.setIdCliente(idCliente);
+                        int idProveedor = idCreated.getInt(1);
+                        nuevoProveedor.setIdProveedor(idProveedor);
                     }
 
                     JOptionPane.showMessageDialog(null, "GUARDADO");                    
-                    //ventanaRegProveedor.seleccionaNuevoClienteRegistrado(nuevoCliente);
+                    ventanaRegProveedor.seleccionaNuevoProveedorRegistrado(nuevoProveedor);
                     
                 
             }catch (SQLException e) {
-                //System.out.println(e);
+                System.out.println(e);
                 JOptionPane.showMessageDialog(null, "ERROR");
             }
         }    

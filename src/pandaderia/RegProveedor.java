@@ -4,9 +4,12 @@ import Models.Clientes;
 import Models.CorteModel;
 import Models.RegistroPedido;
 import Models.Empleado;
+import Models.GastoMateriaPrima;
 import Models.ItemPedido;
+import Models.MateriaPrima;
 import Models.Pan;
 import Models.Pedido;
+import Models.Proveedores;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,7 +34,10 @@ public class RegProveedor extends javax.swing.JFrame {
     private NuevoProveedor ventanaNuevoProveedor;
     private Conexion conexion;
     private CorteModel currentCorte;
-    private Clientes currentSelectedCliente;
+    private Proveedores currentProveedor;
+    private ArrayList<MateriaPrima> materiaPrimaExistente;
+    private ArrayList<GastoMateriaPrima> gastosMTRegistrados;
+    private ArrayList<Proveedores> proveedoresExistentes;
     
     public DefaultTableModel modelo ;
     public DefaultTableModel modeloProveedores ;
@@ -45,11 +51,17 @@ public class RegProveedor extends javax.swing.JFrame {
     public RegProveedor(Menu previewView, Empleado emp, Conexion c, CorteModel current){
         empleadoLoggeado = emp;
         currentCorte = current;
+        
+        materiaPrimaExistente = new ArrayList<MateriaPrima>(0);
+        gastosMTRegistrados = new ArrayList<GastoMateriaPrima>(0);
+        proveedoresExistentes = new ArrayList<Proveedores>(0);
+        currentProveedor = new Proveedores();
         //clientesExistentes = new ArrayList<Clientes>(0);
         //currentPedido = new Pedido();
         conexion = c;
         
         initComponents();
+        cargaCB();
         setLocationRelativeTo(previewView);
         modelo = new DefaultTableModel();
         modelo.addColumn("Producto");
@@ -66,7 +78,7 @@ public class RegProveedor extends javax.swing.JFrame {
         modeloProveedores.addColumn("Nombre");
         modeloProveedores.addColumn("Teléfono");
         clientesJTable.setModel(modeloProveedores);
-        //cargaClientes();
+        cargaProveedores();
         
         setTitle("Registro proveedor");
         //cargaCB();
@@ -75,12 +87,12 @@ public class RegProveedor extends javax.swing.JFrame {
         setResizable(false);
     }
     
-    public void validaCantPan(){
+    public void validaCantProducto(){
         try {
-            System.out.println("El valor es --->"+CantPanJtf.getText());
-            int cantidad = Integer.parseInt(CantPanJtf.getText());
+            System.out.println("El valor es --->"+CantProductoJtf.getText());
+            int cantidad = Integer.parseInt(CantProductoJtf.getText());
             //CantPan.setText(String.valueOf(cantidad));
-            agregarJBtn.setEnabled(CbPan.getSelectedIndex() > 0);
+            agregarJBtn.setEnabled(CbProducto.getSelectedIndex() > 0);
          } catch (Exception e) {
              agregarJBtn.setEnabled(false);
          }
@@ -93,84 +105,90 @@ public class RegProveedor extends javax.swing.JFrame {
         ventanaNuevoProveedor = null;
     }
     
-    /*public void cargaClientes(){
+    public void cargaCB(){
         try {
-            PreparedStatement pst = conexion.conectar.prepareStatement("select * from Cliente order by paterno asc");
+            CbProducto.removeAllItems();
+            CbProducto.addItem("Seleccione un producto");
+            PreparedStatement pst = conexion.conectar.prepareStatement("select * from MateriaPrima order by nombre asc");
+            ResultSet rs = pst.executeQuery();
+            materiaPrimaExistente = new ArrayList<MateriaPrima>(0);
+            while(rs.next()){
+                MateriaPrima materiaPrima = new MateriaPrima();
+                materiaPrima.setNombre(rs.getString("nombre"));
+                materiaPrima.setCostoUnitario(rs.getFloat("cosUnitario"));
+                materiaPrima.setUnidadMedida(rs.getString("uMedida"));
+                materiaPrima.setIdMateriPrima(rs.getInt("id_MateriaPrima"));
+                
+                
+                materiaPrimaExistente.add(materiaPrima);
+                
+                CbProducto.addItem(materiaPrima.getNombre());
+                        
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("ERROR  "+e.getMessage());
+        }
+    }
+    
+    public void cargaProveedores(){
+        try {
+            PreparedStatement pst = conexion.conectar.prepareStatement("select * from Proveedor order by paterno asc");
             ResultSet rs = pst.executeQuery();
             while(rs.next()){
-                Clientes nuevoCliente = new Clientes();
-                nuevoCliente.setAppMat(rs.getString("materno"));
-                nuevoCliente.setAppPat(rs.getString("paterno"));
-                nuevoCliente.setnombre(rs.getString("nombre"));
-                nuevoCliente.setTelefono(rs.getString("telefono"));
-                nuevoCliente.setCorreo(rs.getString("correo"));
-                nuevoCliente.setEmpresa(rs.getString("empresa"));
-                nuevoCliente.setIdCliente(rs.getInt("id_Cliente"));
-                clientesExistentes.add(nuevoCliente);
+                Proveedores nuevoProveedor = new Proveedores();
+                nuevoProveedor.setMaterno(rs.getString("materno"));
+                nuevoProveedor.setPaterno(rs.getString("paterno"));
+                nuevoProveedor.setNombre(rs.getString("nombre"));
+                nuevoProveedor.setTelefono(rs.getString("telefono"));
+                nuevoProveedor.setCorreo(rs.getString("correo"));
+                nuevoProveedor.setIdProveedor(rs.getInt("id_Proveedor"));
+                proveedoresExistentes.add(nuevoProveedor);
                 
                 Object row[] = new Object[4];
-                row[0] = nuevoCliente.getAppPat();
-                row[1] = nuevoCliente.getAppMat();
-                row[2] = nuevoCliente.getnombre();
-                row[3] = nuevoCliente.getEmpresa();
+                row[0] = nuevoProveedor.getPaterno();
+                row[1] = nuevoProveedor.getMaterno();
+                row[2] = nuevoProveedor.getNombre();
+                row[3] = nuevoProveedor.getTelefono();
                 
-                modeloClientes.addRow(row);
+                modeloProveedores.addRow(row);
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "ERROR!");
             System.out.println(ex);        
         }
-    }*/
+    }
+       
     
-    /*public void cargaCB(){
-        
-                //System.out.println("aaaaa");
-        try {
-                PreparedStatement pst= conexion.conectar.prepareStatement("SELECT * FROM Inventario order by nombre asc ");
-                ResultSet rs = pst.executeQuery();
-                CbPan.addItem("Seleccione un pan");
-                
-                while(rs.next()){
-                    Pan nuevoPan = new Pan();
-                    nuevoPan.setidPan(rs.getInt("id_Pan"));
-                    nuevoPan.setcosto(rs.getFloat("costo"));
-                    nuevoPan.setexistencia(rs.getInt("existencia"));
-                    nuevoPan.setnombre(rs.getString("nombre"));
-                    
-                    panesExistencia.add(nuevoPan);
-                    
-                    CbPan.addItem(nuevoPan.getnombre());
-                }                
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "ERROR!");
-            System.out.println(e);
-        }
-    }*/
-    
-    
-    /*public void seleccionaNuevoClienteRegistrado(Clientes nuevoCliente){
-        clientesExistentes.add(nuevoCliente);
-        String nombreCompleto = nuevoCliente.getAppPat() + " "+nuevoCliente.getAppMat()+" "+nuevoCliente.getnombre();
-        nombreBuscaClienteJTF.setText(nombreCompleto);
-        idClienteSelectedJTF.setText(String.valueOf(nuevoCliente.getIdCliente()));
+    public void seleccionaNuevoProveedorRegistrado(Proveedores nuevoProveedor){
+        proveedoresExistentes.add(nuevoProveedor);
+        String nombreCompleto = nuevoProveedor.getPaterno()+ " "+nuevoProveedor.getMaterno()+" "+nuevoProveedor.getNombre();
+        nombreBuscaProveedorJTF.setText(nombreCompleto);
+        idProveedorSelectedJTF.setText(String.valueOf(nuevoProveedor.getIdProveedor()));
         
         Object row[] = new Object[4];
-        row[0] = nuevoCliente.getAppPat();
-        row[1] = nuevoCliente.getAppMat();
-        row[2] = nuevoCliente.getnombre();
-        row[3] = nuevoCliente.getEmpresa();
+        row[0] = nuevoProveedor.getPaterno();
+        row[1] = nuevoProveedor.getMaterno();
+        row[2] = nuevoProveedor.getNombre();
 
-        modeloClientes.addRow(row);
+        modeloProveedores.addRow(row);
         
-        currentSelectedCliente  = nuevoCliente;
+        currentProveedor  = nuevoProveedor;
         
-        //currentPedido.setCliente(nuevoCliente);
-        selectedProveedorJTF.setText(nuevoCliente.FullName());
+        selectedProveedorJTF.setText(nombreCompleto);
 
-        //ventanaNuevoCliente.setVisible(false);
+        ventanaNuevoProveedor.setVisible(false);
         this.setVisible(true);
-        //ventanaNuevoCliente = null;
-    }*/
+        ventanaNuevoProveedor = null;
+    }
+    
+    public void calculaTotal(){
+        float total = 0;
+        for (GastoMateriaPrima gasto : gastosMTRegistrados) {
+            total += gasto.getTotalCosto();
+        }
+        totalGastosJL.setText(String.valueOf(Math.round(total*100)/100.0));
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -183,14 +201,14 @@ public class RegProveedor extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        CbPan = new javax.swing.JComboBox<>();
+        CbProducto = new javax.swing.JComboBox<>();
         agregarJBtn = new javax.swing.JButton();
         addProveedorJButton = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         Regresar = new javax.swing.JButton();
-        CantPanJtf = new javax.swing.JTextField();
+        CantProductoJtf = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        totalPedidoJL = new javax.swing.JLabel();
+        totalGastosJL = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         itemsPedidoJTable = new javax.swing.JTable();
@@ -198,21 +216,21 @@ public class RegProveedor extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         clientesJTable = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
-        nombreBuscaClienteJTF = new javax.swing.JTextField();
+        nombreBuscaProveedorJTF = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        idClienteSelectedJTF = new javax.swing.JTextField();
+        idProveedorSelectedJTF = new javax.swing.JTextField();
         nuevoProveedorJBtn = new javax.swing.JButton();
         invalidIdJLabel = new javax.swing.JLabel();
         selectedProveedorJTF = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        nombreProductoJTF = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        precioUnitarioJTF = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
+        unidadMedidaJTF = new javax.swing.JTextField();
+        agregarProductoJBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -221,9 +239,9 @@ public class RegProveedor extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
         jLabel1.setText("Producto");
 
-        CbPan.addActionListener(new java.awt.event.ActionListener() {
+        CbProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CbPanActionPerformed(evt);
+                CbProductoActionPerformed(evt);
             }
         });
 
@@ -236,7 +254,7 @@ public class RegProveedor extends javax.swing.JFrame {
         });
 
         addProveedorJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/add_Pedido.png"))); // NOI18N
-        addProveedorJButton.setText("Agregar provicion");
+        addProveedorJButton.setText("Agregar provisión");
         addProveedorJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addProveedorJButtonActionPerformed(evt);
@@ -254,9 +272,9 @@ public class RegProveedor extends javax.swing.JFrame {
             }
         });
 
-        CantPanJtf.addKeyListener(new java.awt.event.KeyAdapter() {
+        CantProductoJtf.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                CantPanJtfKeyReleased(evt);
+                CantProductoJtfKeyReleased(evt);
             }
         });
 
@@ -264,9 +282,9 @@ public class RegProveedor extends javax.swing.JFrame {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Cantidad");
 
-        totalPedidoJL.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
-        totalPedidoJL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        totalPedidoJL.setText("0");
+        totalGastosJL.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
+        totalGastosJL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        totalGastosJL.setText("0");
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Panes agregados al pedido", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 0, 12), new java.awt.Color(113, 113, 113))); // NOI18N
 
@@ -334,9 +352,9 @@ public class RegProveedor extends javax.swing.JFrame {
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel10.setText("Nombre");
 
-        nombreBuscaClienteJTF.addKeyListener(new java.awt.event.KeyAdapter() {
+        nombreBuscaProveedorJTF.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                nombreBuscaClienteJTFKeyReleased(evt);
+                nombreBuscaProveedorJTFKeyReleased(evt);
             }
         });
 
@@ -344,9 +362,9 @@ public class RegProveedor extends javax.swing.JFrame {
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel11.setText("ID proveedor");
 
-        idClienteSelectedJTF.addKeyListener(new java.awt.event.KeyAdapter() {
+        idProveedorSelectedJTF.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                idClienteSelectedJTFKeyReleased(evt);
+                idProveedorSelectedJTFKeyReleased(evt);
             }
         });
 
@@ -372,13 +390,13 @@ public class RegProveedor extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(nombreBuscaClienteJTF, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(nombreBuscaProveedorJTF, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
                         .addComponent(jLabel11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(invalidIdJLabel)
-                            .addComponent(idClienteSelectedJTF, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(idProveedorSelectedJTF, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(nuevoProveedorJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -389,9 +407,9 @@ public class RegProveedor extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(nombreBuscaClienteJTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nombreBuscaProveedorJTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11)
-                    .addComponent(idClienteSelectedJTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(idProveedorSelectedJTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(invalidIdJLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -413,9 +431,9 @@ public class RegProveedor extends javax.swing.JFrame {
 
         jLabel4.setText("Nombre del producto:");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        nombreProductoJTF.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                nombreProductoJTFActionPerformed(evt);
             }
         });
 
@@ -423,13 +441,18 @@ public class RegProveedor extends javax.swing.JFrame {
 
         jLabel6.setText("Unidad de medida:");
 
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+        unidadMedidaJTF.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+                unidadMedidaJTFActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Agregar producto");
+        agregarProductoJBtn.setText("Agregar producto");
+        agregarProductoJBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                agregarProductoJBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -445,13 +468,13 @@ public class RegProveedor extends javax.swing.JFrame {
                             .addComponent(jLabel6))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nombreProductoJTF, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jTextField3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
-                                .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.LEADING))))
+                                .addComponent(unidadMedidaJTF, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                                .addComponent(precioUnitarioJTF, javax.swing.GroupLayout.Alignment.LEADING))))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(103, 103, 103)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(agregarProductoJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(63, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -460,17 +483,17 @@ public class RegProveedor extends javax.swing.JFrame {
                 .addGap(22, 22, 22)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(nombreProductoJTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(precioUnitarioJTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(unidadMedidaJTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jButton2)
+                .addComponent(agregarProductoJBtn)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -484,11 +507,11 @@ public class RegProveedor extends javax.swing.JFrame {
                     .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(CbPan, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(CbProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(31, 31, 31)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(CantPanJtf, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(CantProductoJtf, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(agregarJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -508,10 +531,9 @@ public class RegProveedor extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(totalPedidoJL, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(totalGastosJL, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(addProveedorJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
@@ -527,8 +549,8 @@ public class RegProveedor extends javax.swing.JFrame {
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(CbPan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(CantPanJtf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(CbProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(CantProductoJtf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel3)
                                 .addComponent(agregarJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -546,7 +568,7 @@ public class RegProveedor extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(totalPedidoJL)
+                    .addComponent(totalGastosJL)
                     .addComponent(addProveedorJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Regresar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -571,80 +593,69 @@ public class RegProveedor extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void CantPanJtfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CantPanJtfKeyReleased
-        //validaCantPan();
-    }//GEN-LAST:event_CantPanJtfKeyReleased
+    private void CantProductoJtfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CantProductoJtfKeyReleased
+        validaCantProducto();
+    }//GEN-LAST:event_CantProductoJtfKeyReleased
 
     private void RegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegresarActionPerformed
-        //ventanaVenta.thismissRegPedido();
+        ventanaMenu.thismissRegProveedor();
     }//GEN-LAST:event_RegresarActionPerformed
 
     private void addProveedorJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addProveedorJButtonActionPerformed
-        /*try {
-            PreparedStatement pst = conexion.conectar.prepareStatement("insert into Pedidos "+
-                                                                        "(id_Trabajador,id_corte,id_Cliente,costo,abono,tipo,fecha_entrega,fecha_creacion)"+
-                                                                        " values (?,?,?,?,?,?,?, now())",Statement.RETURN_GENERATED_KEYS);
-            pst.setInt(1, currentCorte.getIdTrabajador().getIdEmpleado());
-            pst.setInt(2, currentCorte.getIdCorte());
-            pst.setInt(3, currentPedido.getCliente().getIdCliente());
-            pst.setFloat(4, currentPedido.getCosto());
-            pst.setFloat(5, currentPedido.getAbono());
-            pst.setFloat(6, currentPedido.getTipo());
-            pst.setDate(7, currentPedido.getFechaEntrega());
-            pst.execute();
-            ResultSet idNuevoPedido = pst.getGeneratedKeys();
-            if (idNuevoPedido.next()){
-                currentPedido.setIdPedido(idNuevoPedido.getInt(1));
-                for (ItemPedido itemPedido : currentPedido.getItemsEnPedido()) {                
-                    pst = conexion.conectar.prepareStatement("insert into Pedidos_Inventario "
-                                                             +"(id_Pan,id_Pedidos,cantidad) "
-                                                             +"values(?,?,?)");
-                    pst.setInt(1, itemPedido.getPan().getidPan());
-                    pst.setInt(2, currentPedido.getIdPedido());
-                    pst.setInt(3, itemPedido.getCantidad());
-                    pst.execute();
-                }
-                
-            }else System.out.println("valio vergaa!!!!");
+        try {
+            
+            for (GastoMateriaPrima gasto : gastosMTRegistrados) {                
+                PreparedStatement pst = conexion.conectar.prepareStatement("insert into GastoMateriaPrima "
+                                                         +"(totalCosto,cantidadProducto,id_Corte,id_Proveedor,id_MateriaPrima,fecha) "
+                                                         +"values(?,?,?,?,?, now())");
+                pst.setFloat(1, gasto.getTotalCosto());
+                pst.setInt(2, gasto.getCantProducto());
+                pst.setInt(3, gasto.getIdCorte());
+                pst.setInt(4, currentProveedor.getIdProveedor());
+                pst.setInt(5, gasto.getMateriaPrima().getIdMateriPrima());
+                pst.execute();
+            }
             JOptionPane.showMessageDialog(null, "Registro Guardado exitosamente!");
-            ventanaVenta.thismissRegPedido();
+            ventanaMenu.thismissRegProveedor();
         } catch (SQLException ex) {
             System.out.println("ERROR:  "+ex);
-        }*/
+        }
     }//GEN-LAST:event_addProveedorJButtonActionPerformed
 
     private void agregarJBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarJBtnActionPerformed
-        /*int idPanSelected = CbPan.getSelectedIndex();
-        Pan panEncontrado = panesExistencia.get(idPanSelected-1);
+        int idProdSelected = CbProducto.getSelectedIndex();
+        MateriaPrima MTEncontrado = materiaPrimaExistente.get(idProdSelected-1);
       
         
-        if (null != panEncontrado){
+        if (null != MTEncontrado){
             
-            int cantidad = Integer.parseInt(CantPanJtf.getText());
-            ItemPedido nuevoItem = new ItemPedido();
-            nuevoItem.setCantidad(cantidad);
-            nuevoItem.setPan(panEncontrado);
-            float total = cantidad * panEncontrado.getcosto();
-            //currentPedido.setCosto(total+currentPedido.getCosto());
-            //totalPedidoJL.setText(String.valueOf(currentPedido.getCosto()));
-            //currentPedido.getItemsEnPedido().add(nuevoItem);
-            
+            int cantidad = Integer.parseInt(CantProductoJtf.getText());
+            GastoMateriaPrima nuevoItem = new GastoMateriaPrima();
+            nuevoItem.setCantProducto(cantidad);
+            nuevoItem.setIdCorte(currentCorte.getIdCorte());
+            nuevoItem.setMateriaPrima(MTEncontrado);
+            nuevoItem.setTotalCosto(MTEncontrado.getCostoUnitario()*cantidad);
+           
             //agregar a oa tabla
-            Object row[] = new Object[4];
-            row [0]= panEncontrado.getnombre();
-            row [1]= panEncontrado.getcosto();
-            row [2]= nuevoItem.getCantidad();
-            row [3]= total;
+            Object row[] = new Object[5];
+            row [0]= nuevoItem.getMateriaPrima().getNombre();
+            row [1]= nuevoItem.getCantProducto();
+            row [2]= nuevoItem.getMateriaPrima().getCostoUnitario();
+            row [3]= nuevoItem.getMateriaPrima().getUnidadMedida();
+            row [4]= nuevoItem.getTotalCosto();
             
             modelo.addRow(row);
-            CantPanJtf.setText("");
-            CbPan.setSelectedIndex(0);
-        }*/ 
+            
+            gastosMTRegistrados.add(nuevoItem);
+            CantProductoJtf.setText("");
+            CbProducto.setSelectedIndex(0);
+            calculaTotal();
+        }
     }//GEN-LAST:event_agregarJBtnActionPerformed
 
-    private void CbPanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CbPanActionPerformed
-        validaCantPan();
-    }//GEN-LAST:event_CbPanActionPerformed
+    private void CbProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CbProductoActionPerformed
+        validaCantProducto();
+    }//GEN-LAST:event_CbProductoActionPerformed
 
     private void nuevoProveedorJBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoProveedorJBtnActionPerformed
         // TODO add your handling code here:
@@ -654,7 +665,7 @@ public class RegProveedor extends javax.swing.JFrame {
 
     }//GEN-LAST:event_nuevoProveedorJBtnActionPerformed
 
-    private void idClienteSelectedJTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idClienteSelectedJTFKeyReleased
+    private void idProveedorSelectedJTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idProveedorSelectedJTFKeyReleased
         // TODO add your handling code here:
         /*try{
             ArrayList<Clientes> filtrados = new ArrayList<Clientes>(0);
@@ -693,55 +704,97 @@ public class RegProveedor extends javax.swing.JFrame {
                 invalidIdJLabel.setVisible(true);
             }
         }*/
-    }//GEN-LAST:event_idClienteSelectedJTFKeyReleased
+    }//GEN-LAST:event_idProveedorSelectedJTFKeyReleased
 
-    private void nombreBuscaClienteJTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nombreBuscaClienteJTFKeyReleased
-        /*
-        ArrayList<Clientes> filtrados = new ArrayList<Clientes>(0);
-        String input = nombreBuscaClienteJTF.getText();
-        for (Clientes cliente : clientesExistentes) {
+    private void nombreBuscaProveedorJTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nombreBuscaProveedorJTFKeyReleased
+        
+        ArrayList<Proveedores> filtrados = new ArrayList<Proveedores>(0);
+        String input = nombreBuscaProveedorJTF.getText();
+        for (Proveedores proveedor : proveedoresExistentes) {
             if (input.isEmpty()
-                ||cliente.getAppMat().contains(input)
-                ||cliente.getAppPat().contains(input)
-                ||cliente.getnombre().contains(input)){
-                filtrados.add(cliente);
+                ||proveedor.getMaterno().toUpperCase().contains(input.toUpperCase())
+                ||proveedor.getPaterno().toUpperCase().contains(input.toUpperCase())
+                ||proveedor.getNombre().toUpperCase().contains(input.toUpperCase())){
+                filtrados.add(proveedor);
             }
         }
         if(filtrados.size()>0){
-            modeloClientes.setRowCount(0);
-            for (Clientes filtrado : filtrados) {
+            modeloProveedores.setRowCount(0);
+            for (Proveedores filtrado : filtrados) {
                 Object row[] = new Object[4];
-                row[0] = filtrado.getAppPat();
-                row[1] = filtrado.getAppMat();
-                row[2] = filtrado.getnombre();
-                row[3] = filtrado.getEmpresa();
+                row[0] = filtrado.getPaterno();
+                row[1] = filtrado.getMaterno();
+                row[2] = filtrado.getNombre();
+                row[3] = filtrado.getTelefono();
 
-                modeloClientes.addRow(row);
+                modeloProveedores.addRow(row);
             }
-        }else if(!nombreBuscaClienteJTF.getText().isEmpty())
-        modeloClientes.setRowCount(0);*/
-    }//GEN-LAST:event_nombreBuscaClienteJTFKeyReleased
+        }else if(!nombreBuscaProveedorJTF.getText().isEmpty())
+        modeloProveedores.setRowCount(0);
+    }//GEN-LAST:event_nombreBuscaProveedorJTFKeyReleased
 
     private void clientesJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clientesJTableMouseClicked
-        /*
+        
         int id = clientesJTable.getSelectedRow();
         if (id >= 0){
-            currentSelectedCliente  = clientesExistentes.get(id);
-            selectedProveedorJTF.setText(clientesExistentes.get(id).FullName());
-            nombreBuscaClienteJTF.setText(clientesExistentes.get(id).FullName());
-            idClienteSelectedJTF.setText(String.valueOf(clientesExistentes.get(id).getIdCliente()));
-            //currentPedido.setCliente(currentSelectedCliente);
-        }*/
+            currentProveedor  = proveedoresExistentes.get(id);
+            selectedProveedorJTF.setText(proveedoresExistentes.get(id).fullName());
+            nombreBuscaProveedorJTF.setText(proveedoresExistentes.get(id).fullName());
+            idProveedorSelectedJTF.setText(String.valueOf(proveedoresExistentes.get(id).getIdProveedor()));
+        }
     }//GEN-LAST:event_clientesJTableMouseClicked
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void nombreProductoJTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nombreProductoJTFActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_nombreProductoJTFActionPerformed
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+    private void unidadMedidaJTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unidadMedidaJTFActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
+    }//GEN-LAST:event_unidadMedidaJTFActionPerformed
+
+    private void agregarProductoJBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarProductoJBtnActionPerformed
+        try {
+            PreparedStatement pst = conexion.conectar.prepareStatement("INSERT INTO MateriaPrima ( nombre, cosUnitario, uMedida) VALUES(?,?,?)",Statement.RETURN_GENERATED_KEYS);
+            
+            MateriaPrima nuevaMateriaPrima = new MateriaPrima();
+            nuevaMateriaPrima.setNombre(nombreProductoJTF.getText());
+            nuevaMateriaPrima.setCostoUnitario(Float.parseFloat(precioUnitarioJTF.getText()));
+            nuevaMateriaPrima.setUnidadMedida(unidadMedidaJTF.getText());
+            pst.setString(1, nuevaMateriaPrima.getNombre());
+            pst.setFloat(2, nuevaMateriaPrima.getCostoUnitario());
+            pst.setString(3, nuevaMateriaPrima.getUnidadMedida());
+            pst.execute();
+            ResultSet rs = pst.getGeneratedKeys();
+            if (rs.next()) {
+                int idGenerado = rs.getInt(1);
+                nuevaMateriaPrima.setIdMateriPrima(idGenerado);
+                cargaCB();
+                seleccionaCB(idGenerado);
+            }
+            
+            JOptionPane.showMessageDialog(null, "GUARDADO!");
+           
+            
+            
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            JOptionPane.showMessageDialog(null, "ERROR!");
+
+        }
+    }//GEN-LAST:event_agregarProductoJBtnActionPerformed
     
+    public void seleccionaCB(int id){
+        int indexArreglo = 0;
+        
+        for (int i = 0; i < materiaPrimaExistente.size(); i++) {
+            if(materiaPrimaExistente.get(i).getIdMateriPrima() == id){
+                indexArreglo = i+1;
+                break;
+            }
+        }
+        
+        CbProducto.setSelectedIndex(indexArreglo);
+    }
     /**
      * @param args the command line arguments
      */
@@ -779,16 +832,16 @@ public class RegProveedor extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField CantPanJtf;
-    private javax.swing.JComboBox<String> CbPan;
+    private javax.swing.JTextField CantProductoJtf;
+    private javax.swing.JComboBox<String> CbProducto;
     private javax.swing.JButton Regresar;
     private javax.swing.JButton addProveedorJButton;
     private javax.swing.JButton agregarJBtn;
+    private javax.swing.JButton agregarProductoJBtn;
     private javax.swing.JTable clientesJTable;
-    private javax.swing.JTextField idClienteSelectedJTF;
+    private javax.swing.JTextField idProveedorSelectedJTF;
     private javax.swing.JLabel invalidIdJLabel;
     private javax.swing.JTable itemsPedidoJTable;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -804,12 +857,12 @@ public class RegProveedor extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField nombreBuscaClienteJTF;
+    private javax.swing.JTextField nombreBuscaProveedorJTF;
+    private javax.swing.JTextField nombreProductoJTF;
     private javax.swing.JButton nuevoProveedorJBtn;
+    private javax.swing.JTextField precioUnitarioJTF;
     private javax.swing.JLabel selectedProveedorJTF;
-    private javax.swing.JLabel totalPedidoJL;
+    private javax.swing.JLabel totalGastosJL;
+    private javax.swing.JTextField unidadMedidaJTF;
     // End of variables declaration//GEN-END:variables
 }

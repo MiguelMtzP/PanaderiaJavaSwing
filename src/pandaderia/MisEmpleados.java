@@ -45,10 +45,10 @@ public class MisEmpleados extends javax.swing.JFrame {
         this.ventanaMenu = previewView;
         empleadoLoggeado = emp;
         setResizable(false);
+        validateButtons();
         rolButton = new ButtonGroup();
         rolButton.add(gerenteOptionRadioButton);
         rolButton.add(empleadoOptionRadioButton);
-        validateButtons();
         Actualizar("");
     }
     
@@ -107,7 +107,9 @@ public class MisEmpleados extends javax.swing.JFrame {
         if (idTrabajadorField.getText().isEmpty()){
             ModificarButton.setEnabled(false);
             BorrarButton.setEnabled(false);
+            System.out.println("entro 1");
         }else{
+            System.out.println("entro 2");
             BorrarButton.setEnabled(true);
             if((!gerenteOptionRadioButton.isSelected()&&!empleadoOptionRadioButton.isSelected())||
             PaternoField.getText().isEmpty()||
@@ -115,9 +117,11 @@ public class MisEmpleados extends javax.swing.JFrame {
             NombreField.getText().isEmpty()||
             NumeroField.getText().isEmpty()||
             PasswField.getText().isEmpty()){
-                ModificarButton.setEnabled(false);
+            System.out.println("entro 3");
+            ModificarButton.setEnabled(false);
             }else{
                 ModificarButton.setEnabled(true);
+                System.out.println("entro 4");
             }
         }
         if (!idTrabajadorField.getText().isEmpty()||
@@ -127,9 +131,11 @@ public class MisEmpleados extends javax.swing.JFrame {
             NombreField.getText().isEmpty()||
             NumeroField.getText().isEmpty()||
             PasswField.getText().isEmpty()){
+            System.out.println("entro 5");
             GuardarButton.setEnabled(false);
         }else{
             GuardarButton.setEnabled(true);
+            System.out.println("entro 6");
         }
     }
     

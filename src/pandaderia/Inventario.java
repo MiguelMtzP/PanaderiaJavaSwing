@@ -2,13 +2,17 @@ package pandaderia;
 import Models.Empleado;
 import Models.Pan;
 import java.awt.Component;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -21,7 +25,7 @@ public class Inventario extends javax.swing.JFrame {
     Conexion conexion ;
     private Menu ventanaMenu;
     private ArrayList <Pan> panesExistencia;
-    
+    private TableRowSorter trs;
     
     public Inventario() {
         initComponents();
@@ -35,7 +39,7 @@ public class Inventario extends javax.swing.JFrame {
         
         empleadoLoggeado = logged;
         initComponents();
-        Buscar.setVisible(empleadoLoggeado.getRol() != 1);
+        BuscarJBtn.setVisible(empleadoLoggeado.getRol() != 1);
         this.setLocationRelativeTo(father);
         setTitle("Inventario");
         Actualizar("");
@@ -63,7 +67,7 @@ public class Inventario extends javax.swing.JFrame {
         IdPanJLabel.setEnabled(false);
         String sql = "";
         
-        if(valor.equals("")){
+        if(valor.isEmpty()){
             sql = "SELECT * FROM Inventario";
         }else{
             sql  = "SELECT * FROM Inventario WHERE id_Pan = '"+valor+"'";
@@ -71,7 +75,7 @@ public class Inventario extends javax.swing.JFrame {
         
         try {
             modelo = new DefaultTableModel();
-            InventTabla.setModel(modelo);
+            InventTablaJTable.setModel(modelo);
             PreparedStatement pst= conexion.conectar.prepareStatement("select * from Inventario ");
             //System.out.println(pst);
             ResultSet a = pst.executeQuery(sql);
@@ -86,7 +90,7 @@ public class Inventario extends javax.swing.JFrame {
             int[] anchos = {50,50,50,50};
             
             for(int j=0; j< numColumns; j++){
-                InventTabla.getColumnModel().getColumn(j).setPreferredWidth(anchos[j]);
+                InventTablaJTable.getColumnModel().getColumn(j).setPreferredWidth(anchos[j]);
             }
             
             while(a.next()){  //Recorremos los datos de la consulta //En cada ciclo me va a dar los datos de una sola fila
@@ -98,10 +102,12 @@ public class Inventario extends javax.swing.JFrame {
                 }
                 modelo.addRow(filas);
             }
-            InventTabla.setModel(modelo);
+            InventTablaJTable.setModel(modelo);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null,e.toString());
+            System.out.println("ERROR --->"+e.getMessage());
         }
+        
     }
     
     public void buscaPorNombre(){
@@ -109,7 +115,7 @@ public class Inventario extends javax.swing.JFrame {
             String sql = buscaPorNombrejTField.getText();
             try {
             modelo = new DefaultTableModel();
-            InventTabla.setModel(modelo);
+            InventTablaJTable.setModel(modelo);
             PreparedStatement pst= conexion.conectar.prepareStatement("select nombre from Inventario ");
             //System.out.println(pst);
             ResultSet a = pst.executeQuery(sql);
@@ -124,7 +130,7 @@ public class Inventario extends javax.swing.JFrame {
             int[] anchos = {50,50,50,50};
             
             for(int j=0; j< numColumns; j++){
-                InventTabla.getColumnModel().getColumn(j).setPreferredWidth(anchos[j]);
+                InventTablaJTable.getColumnModel().getColumn(j).setPreferredWidth(anchos[j]);
             }
             
             while(a.next()){  //Recorremos los datos de la consulta //En cada ciclo me va a dar los datos de una sola fila
@@ -136,7 +142,7 @@ public class Inventario extends javax.swing.JFrame {
                 }
                 modelo.addRow(filas);
             }
-            InventTabla.setModel(modelo);
+            InventTablaJTable.setModel(modelo);
         } catch (SQLException e) {
                 System.out.println(e);
            //JOptionPane.showMessageDialog(null,e.toString());
@@ -154,7 +160,7 @@ public class Inventario extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        InventTabla = new javax.swing.JTable();
+        InventTablaJTable = new javax.swing.JTable();
         Regresar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         IngresPanJLabel = new javax.swing.JTextField();
@@ -172,17 +178,16 @@ public class Inventario extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         TextBuscaJTField = new javax.swing.JTextField();
-        Buscar = new javax.swing.JButton();
+        BuscarJBtn = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         buscaPorNombrejTField = new javax.swing.JTextField();
-        buscarPorNombreJBtn = new javax.swing.JButton();
         ActualizarTablaJBtn = new javax.swing.JButton();
 
         jButton1.setText("jButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        InventTabla.setModel(new javax.swing.table.DefaultTableModel(
+        InventTablaJTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -201,12 +206,12 @@ public class Inventario extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        InventTabla.addMouseListener(new java.awt.event.MouseAdapter() {
+        InventTablaJTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                InventTablaMouseClicked(evt);
+                InventTablaJTableMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(InventTabla);
+        jScrollPane1.setViewportView(InventTablaJTable);
 
         Regresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/regresar.png"))); // NOI18N
         Regresar.setText("Regresar");
@@ -337,11 +342,11 @@ public class Inventario extends javax.swing.JFrame {
 
         jLabel4.setText("Buscar por ID:");
 
-        Buscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/buscar.png"))); // NOI18N
-        Buscar.setText("Buscar");
-        Buscar.addActionListener(new java.awt.event.ActionListener() {
+        BuscarJBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/buscar.png"))); // NOI18N
+        BuscarJBtn.setText("Buscar");
+        BuscarJBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BuscarActionPerformed(evt);
+                BuscarJBtnActionPerformed(evt);
             }
         });
 
@@ -353,16 +358,11 @@ public class Inventario extends javax.swing.JFrame {
             }
         });
         buscaPorNombrejTField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                buscaPorNombrejTFieldKeyTyped(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 buscaPorNombrejTFieldKeyReleased(evt);
-            }
-        });
-
-        buscarPorNombreJBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/buscar.png"))); // NOI18N
-        buscarPorNombreJBtn.setText("Buscar");
-        buscarPorNombreJBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buscarPorNombreJBtnActionPerformed(evt);
             }
         });
 
@@ -381,17 +381,15 @@ public class Inventario extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(buscaPorNombrejTField, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(TextBuscaJTField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(buscarPorNombreJBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
-                                    .addComponent(Buscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                                .addComponent(BuscarJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(buscaPorNombrejTField)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(129, 129, 129)
                         .addComponent(ActualizarTablaJBtn)))
@@ -403,15 +401,13 @@ public class Inventario extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(buscaPorNombrejTField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buscarPorNombreJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(buscaPorNombrejTField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(TextBuscaJTField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(BuscarJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(ActualizarTablaJBtn)
                 .addContainerGap(20, Short.MAX_VALUE))
@@ -470,17 +466,17 @@ public class Inventario extends javax.swing.JFrame {
             ventanaMenu.thismissInventario();
     }//GEN-LAST:event_RegresarActionPerformed
 
-    private void BuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuscarActionPerformed
+    private void BuscarJBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuscarJBtnActionPerformed
             Actualizar(TextBuscaJTField.getText());
-    }//GEN-LAST:event_BuscarActionPerformed
+    }//GEN-LAST:event_BuscarJBtnActionPerformed
 
-    private void InventTablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InventTablaMouseClicked
+    private void InventTablaJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_InventTablaJTableMouseClicked
         
                 
         try {
 
-            int Fila = InventTabla.getSelectedRow();
-            String codigo = InventTabla.getValueAt(Fila, 0).toString();
+            int Fila = InventTablaJTable.getSelectedRow();
+            String codigo = InventTablaJTable.getValueAt(Fila, 0).toString();
             
             PreparedStatement pst= conexion.conectar.prepareStatement("select * from Inventario where id_Pan = ?");
             //System.out.println(pst);
@@ -500,7 +496,7 @@ public class Inventario extends javax.swing.JFrame {
             //System.out.println(e.toString());
             JOptionPane.showMessageDialog(null, "ERROR!");
         }
-    }//GEN-LAST:event_InventTablaMouseClicked
+    }//GEN-LAST:event_InventTablaJTableMouseClicked
 
     private void GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GuardarActionPerformed
             
@@ -522,7 +518,7 @@ public class Inventario extends javax.swing.JFrame {
                     modelo.addRow(fila);
                     
                 }catch (SQLException e) {
-                        JOptionPane.showMessageDialog(null, "No hay datos que guardar");
+                        JOptionPane.showMessageDialog(null, "Ingrese todos los campos");
                         System.out.println(e);
         }
     }//GEN-LAST:event_GuardarActionPerformed
@@ -531,9 +527,9 @@ public class Inventario extends javax.swing.JFrame {
             
             
             try {
-                    int fila = InventTabla.getSelectedRow();
+                    int fila = InventTablaJTable.getSelectedRow();
                     System.out.println(fila);
-                    int idPan = (int)InventTabla.getValueAt(fila, 0);
+                    int idPan = (int)InventTablaJTable.getValueAt(fila, 0);
                     PreparedStatement pst= conexion.conectar.prepareStatement("DELETE FROM Inventario WHERE id_Pan = ?");
                     pst.setInt(1, idPan);
                     pst.execute();
@@ -580,12 +576,36 @@ public class Inventario extends javax.swing.JFrame {
     }//GEN-LAST:event_ActualizarTablaJBtnActionPerformed
 
     private void buscaPorNombrejTFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_buscaPorNombrejTFieldKeyReleased
-        
+        /*try {
+            ArrayList<Pan> filtrados = new ArrayList<Pan>(0);
+            String input = buscaPorNombrejTField.getText();
+            for(Pan panes : panesExistencia){
+                if(input.isEmpty()
+                    || panes.getnombre().contains(input)
+                    || panes.getcosto().contains(input)
+                    || panes.getexistencia().contains(input)){
+                    filtrados.add(panes);
+                }
+            }
+        } catch (Exception e) {
+        }*/
     }//GEN-LAST:event_buscaPorNombrejTFieldKeyReleased
 
-    private void buscarPorNombreJBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarPorNombreJBtnActionPerformed
-        buscaPorNombre();
-    }//GEN-LAST:event_buscarPorNombreJBtnActionPerformed
+    private void buscaPorNombrejTFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_buscaPorNombrejTFieldKeyTyped
+        
+        /*buscaPorNombrejTField.addKeyListener(new KeyAdapter (){
+        
+        @Override
+        public void keyReleased(KeyEvent ke){
+            
+            trs.setRowFilter(RowFilter.regexFilter("(?i)"+buscaPorNombrejTField.getText(), 1));
+        }
+        });
+        
+        trs = new TableRowSorter(modelo);
+        InventTablaJTable.setRowSorter(trs);*/
+        
+    }//GEN-LAST:event_buscaPorNombrejTFieldKeyTyped
 
     /**
      * @param args the command line arguments
@@ -625,18 +645,17 @@ public class Inventario extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ActualizarTablaJBtn;
     private javax.swing.JButton Borrar;
-    private javax.swing.JButton Buscar;
+    private javax.swing.JButton BuscarJBtn;
     private javax.swing.JButton Guardar;
     private javax.swing.JTextField IdPanJLabel;
     private javax.swing.JTextField IngresPanJLabel;
-    private javax.swing.JTable InventTabla;
+    private javax.swing.JTable InventTablaJTable;
     private javax.swing.JButton Modificar;
     private javax.swing.JTextField NomPanJLabel;
     private javax.swing.JTextField PrecioPanJLabel;
     private javax.swing.JButton Regresar;
     private javax.swing.JTextField TextBuscaJTField;
     private javax.swing.JTextField buscaPorNombrejTField;
-    private javax.swing.JButton buscarPorNombreJBtn;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

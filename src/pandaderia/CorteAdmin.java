@@ -6,6 +6,7 @@
 package pandaderia;
 
 import Models.BalanceCorte;
+import Models.CorteModel;
 import Models.Empleado;
 import java.awt.Dimension;
 import java.sql.PreparedStatement;
@@ -13,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
@@ -31,7 +33,8 @@ public class CorteAdmin extends javax.swing.JFrame {
     private Date currentDaySelected;
     private int currentWeekSelected;
     private Date currentMonthSelected;
-    private Corte currentcorteSelected;
+    private CorteModel currentcorteSelected;
+    private ArrayList<CorteModel> cortesExistentes;
     private BalanceCorte balancePorDia;
     private BalanceCorte balancePorSemana; 
     private BalanceCorte  balancePorMes;
@@ -48,6 +51,7 @@ public class CorteAdmin extends javax.swing.JFrame {
         this.ventanaMenu = ventanaMenu;
         this.conexion = conexion;
         this.logueado = logueado;
+        cortesExistentes = new ArrayList<CorteModel>(0);
         initComponents();
         
         initPorDiaComponents();
@@ -134,6 +138,13 @@ public class CorteAdmin extends javax.swing.JFrame {
         modelo.addColumn("Total");
         ventasPorCortejTable.setModel(modelo);
         corteVentasGananciasTotalesLabel.setText("$" + "0.0");
+        
+        
+        modelo = new DefaultTableModel();
+        modelo.addColumn("Nombre");
+        modelo.addColumn("Fecha");
+        modelo.addColumn("Turno");
+        listaCortesjTable.setModel(modelo);
         
         modelo = new DefaultTableModel();
         modelo.addColumn("Pan");
@@ -446,6 +457,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                                                                         "    join Inventario on Ventas.id_Pan = Inventario.id_Pan " +
                                                                         "    where id_Corte = ? " +
                                                                         "    group by id_Pan ");
+            pst.setInt(1, currentcorteSelected.getIdCorte());
             ResultSet resultado = pst.executeQuery();
             DefaultTableModel modelo = (DefaultTableModel)ventasPorCortejTable.getModel();
             modelo.setNumRows(0);
@@ -479,7 +491,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                                                                         "group by Merma.id_Pan");
             
             
-           
+           pst.setInt(1, currentcorteSelected.getIdCorte());
             ResultSet resultado = pst.executeQuery();
             DefaultTableModel modelo = (DefaultTableModel)mermasPorCortejTable.getModel();
             
@@ -514,13 +526,13 @@ public class CorteAdmin extends javax.swing.JFrame {
                                                                 "	FROM panaderia.Pedidos " +
                                                                 "	join Cliente on Cliente.id_Cliente = Pedidos.id_Cliente " +
                                                                 "    where id_Corte = ? "
-                                                                + (mesMuestraPendientesYExternosCheckBox.isSelected()?"":"and Pedidos.tipo = 1 and status = 2"));
+                                                                + (corteMuestraPendientesYExternosCheckBox.isSelected()?"":"and Pedidos.tipo = 1 and status = 2"));
             
-            
+            pst.setInt(1, currentcorteSelected.getIdCorte());
             
            
             ResultSet resultado = pst.executeQuery();
-            DefaultTableModel modelo = (DefaultTableModel)pedidosPorMesjTable.getModel();
+            DefaultTableModel modelo = (DefaultTableModel)pedidosPorCortejTable.getModel();
 
             modelo.setNumRows(0);
             float totalPedidosGanancias = 0;
@@ -547,6 +559,7 @@ public class CorteAdmin extends javax.swing.JFrame {
         try {
             PreparedStatement pst = conexion.conectar.prepareStatement("SELECT sum(costo) as fugas FROM panaderia.Pedidos where tipo = 2 and Pedidos.status = 2 and id_Corte = ? ");
             
+            pst.setInt(1, currentcorteSelected.getIdCorte());
    
             ResultSet resultado = pst.executeQuery();
             if(resultado.next()){
@@ -564,6 +577,40 @@ public class CorteAdmin extends javax.swing.JFrame {
         }  
     }
     
+    public void getCortesEnExistencia(){
+        try {
+            DefaultTableModel modelo = (DefaultTableModel) listaCortesjTable.getModel();
+            modelo.setRowCount(0);
+            PreparedStatement pst = conexion.conectar.prepareStatement("SELECT 	Corte.id_Corte as idCorte, " +
+                    "		concat(Usuarios.paterno,\" \",Usuarios.nombre) as nombreEmpleado,  " +
+                    "		Corte.fecha_inicio as inicio, " +
+                    "        Corte.turno  as turno " +
+                    "FROM panaderia.Corte " +
+                    "join Usuarios on Corte.id_Trabajador = Usuarios.id_Trabajador " +
+                    "order by inicio,nombreEmpleado;");
+            
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                CorteModel nuevoCorte = new CorteModel();
+                nuevoCorte.setIdCorte(rs.getInt("idCorte"));
+                Empleado emp = new Empleado();
+                emp.setNombre(rs.getString("nombreEmpleado"));
+                nuevoCorte.setIdTrabajador(emp);
+                nuevoCorte.setFechaInicio(rs.getDate("inicio"));
+                nuevoCorte.setTurno(rs.getString("turno"));
+                
+                Object[] obj = new Object[3];
+                obj[0] = nuevoCorte.getIdTrabajador().getNombre();
+                obj[1] = nuevoCorte.getFechaInicio();
+                obj[2] = nuevoCorte.getTurno();
+                modelo.addRow(obj);
+                cortesExistentes.add(nuevoCorte);
+            }
+            confirmaSeleccionCortejButton.setEnabled(false);
+        } catch (SQLException ex) {
+            Logger.getLogger(CorteAdmin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
    
     /**
      * This method is called from within the constructor to initialize the form.
@@ -681,14 +728,15 @@ public class CorteAdmin extends javax.swing.JFrame {
         seleccionaCortePanel = new javax.swing.JPanel();
         jScrollPane17 = new javax.swing.JScrollPane();
         listaCortesjTable = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        confirmaSeleccionCortejButton = new javax.swing.JButton();
         corteSeleccionadoPanel = new javax.swing.JPanel();
         corteSeleccionadoLabel = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cortes");
-        setPreferredSize(new java.awt.Dimension(936, 660));
+        setPreferredSize(new java.awt.Dimension(936, 710));
         setResizable(false);
 
         porDia.setPreferredSize(new java.awt.Dimension(930, 650));
@@ -1316,6 +1364,11 @@ public class CorteAdmin extends javax.swing.JFrame {
         cortePedidosGananciasTotalesLabel.setText("jLabel3");
 
         corteMuestraPendientesYExternosCheckBox.setText("Muestra pedidos pendientes y  externos");
+        corteMuestraPendientesYExternosCheckBox.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                corteMuestraPendientesYExternosCheckBoxMouseClicked(evt);
+            }
+        });
 
         jLabel74.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
         jLabel74.setText("Balance");
@@ -1368,12 +1421,17 @@ public class CorteAdmin extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        listaCortesjTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listaCortesjTableMouseClicked(evt);
+            }
+        });
         jScrollPane17.setViewportView(listaCortesjTable);
 
-        jButton1.setText("Ok");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        confirmaSeleccionCortejButton.setText("Ok");
+        confirmaSeleccionCortejButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                confirmaSeleccionCortejButtonActionPerformed(evt);
             }
         });
 
@@ -1387,7 +1445,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, seleccionaCortePanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(confirmaSeleccionCortejButton)
                 .addContainerGap())
         );
         seleccionaCortePanelLayout.setVerticalGroup(
@@ -1396,7 +1454,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane17, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1))
+                .addComponent(confirmaSeleccionCortejButton))
         );
 
         corteSeleccionadoLabel.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
@@ -1584,21 +1642,33 @@ public class CorteAdmin extends javax.swing.JFrame {
 
         porDia.addTab("Por Corte", jScrollPane5);
 
+        jButton3.setText("Regresar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(porDia, javax.swing.GroupLayout.PREFERRED_SIZE, 891, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(porDia, javax.swing.GroupLayout.PREFERRED_SIZE, 891, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(porDia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton3))
         );
 
         pack();
@@ -1612,15 +1682,14 @@ public class CorteAdmin extends javax.swing.JFrame {
         getCortesEnExistencia();
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    public void getCortesEnExistencia(){
-        //PreparedStatement pst = conexion.conectar.prepareStatement("Select ")
-    }
     
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+    private void confirmaSeleccionCortejButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmaSeleccionCortejButtonActionPerformed
+        
         seleccionaCortePanel.setVisible(false);
         corteSeleccionadoPanel.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+        corteSeleccionadoLabel.setText(currentcorteSelected.getIdTrabajador().getNombre().toUpperCase());
+        getDataPorCorte();
+    }//GEN-LAST:event_confirmaSeleccionCortejButtonActionPerformed
 
     private void seleccionaDiaDateChooserPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_seleccionaDiaDateChooserPropertyChange
         // TODO add your handling code here:
@@ -1644,6 +1713,25 @@ public class CorteAdmin extends javax.swing.JFrame {
     private void diaMuestraPendientesYExternosCheckBoxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_diaMuestraPendientesYExternosCheckBoxMouseClicked
         getDataPorDia();
     }//GEN-LAST:event_diaMuestraPendientesYExternosCheckBoxMouseClicked
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        ventanaMenu.thismissCorteAdminViewer();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void listaCortesjTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listaCortesjTableMouseClicked
+
+        int selectedIndex = listaCortesjTable.getSelectedRow();
+        if(selectedIndex >= 0 ){
+            currentcorteSelected = cortesExistentes.get(selectedIndex);
+            confirmaSeleccionCortejButton.setEnabled(true);
+            System.out.println("seleccionado "+ currentcorteSelected);
+        }
+    }//GEN-LAST:event_listaCortesjTableMouseClicked
+
+    private void corteMuestraPendientesYExternosCheckBoxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_corteMuestraPendientesYExternosCheckBoxMouseClicked
+        getDataPorCorte();
+    }//GEN-LAST:event_corteMuestraPendientesYExternosCheckBoxMouseClicked
 
     /**
      * @param args the command line arguments
@@ -1682,6 +1770,7 @@ public class CorteAdmin extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable MermasPorMesjTable;
+    private javax.swing.JButton confirmaSeleccionCortejButton;
     private javax.swing.JLabel corteBalanceTotaljLabel;
     private javax.swing.JLabel corteFugasPorPedidosExternosLabel;
     private javax.swing.JLabel corteGananciasPorPedidoLabel;
@@ -1702,8 +1791,8 @@ public class CorteAdmin extends javax.swing.JFrame {
     private javax.swing.JCheckBox diaMuestraPendientesYExternosCheckBox;
     private javax.swing.JLabel diaPedidosGananciasTotalesLabel;
     private javax.swing.JLabel diaVentasGananciasTotalesLabel;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
