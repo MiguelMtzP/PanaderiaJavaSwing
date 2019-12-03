@@ -323,14 +323,23 @@ public class Corte extends javax.swing.JFrame {
     }//GEN-LAST:event_terminaCorteJButtonActionPerformed
 
     private int getTotalMermasByCorte() throws SQLException{
-        PreparedStatement pst = conexion.conectar.prepareStatement("select sum(frios + comidos + rotos) as totalMerma from Merma where id_Corte = ?");
+        PreparedStatement pst = conexion.conectar.prepareStatement("select  Merma.id_Corte as idCorte, " +
+                                                                    "   sum(Merma.frios + Merma.comidos + Merma.rotos) as totalMerma, " +
+                                                                    "   sum(Merma.frios*Inventario.costo + Merma.comidos*Inventario.costo + Merma.rotos*Inventario.costo) as totalPerdidas " +
+                                                                    "from Merma  " +
+                                                                    "join Inventario on Merma.id_Pan = Inventario.id_Pan " +
+                                                                    " where Merma.id_Corte = ? "+
+                                                                    "group  by Merma.id_Corte;  ");
         pst.setInt(1, currentCorte.getIdCorte());
         ResultSet res = pst.executeQuery();
         if(res.next()){
-            int value = res.getInt("totalMerma");
-            totalMermasJTF.setText(String.valueOf(value));
-            return value;
+            int totalMermas = res.getInt("totalMerma");
+            float totalPerdidas = res.getFloat("totalPerdidas");
+            totalMermasJTF.setText(String.valueOf(totalMermas)+" --> $"+String.valueOf(totalPerdidas));
+            return totalMermas;
         }
+        System.out.println("corte "+currentCorte.getIdCorte());
+        totalMermasJTF.setText("0 --> $0.0");
         return 0;
     }
     
