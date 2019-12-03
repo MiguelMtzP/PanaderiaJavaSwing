@@ -63,19 +63,22 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="Regresar" alignment="0" min="-2" pref="120" max="-2" attributes="0"/>
-                              <Group type="103" alignment="0" groupAlignment="1" attributes="0">
+                              <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
                                   <Component id="jScrollPane1" alignment="0" min="-2" pref="915" max="-2" attributes="0"/>
-                                  <Group type="102" alignment="1" attributes="0">
-                                      <Component id="RegPedido" min="-2" pref="194" max="-2" attributes="0"/>
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Component id="RegVenta" min="-2" pref="194" max="-2" attributes="0"/>
-                                  </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <EmptySpace min="-2" pref="731" max="-2" attributes="0"/>
                                       <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Component id="totalJLabel" min="-2" pref="110" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" attributes="0">
+                                      <Component id="Regresar" min="-2" pref="140" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="entregaPedidoJBtn" min="-2" pref="180" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="RegPedido" min="-2" pref="180" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="RegVenta" min="-2" pref="180" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
@@ -130,7 +133,8 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="RegVenta" alignment="3" min="-2" pref="60" max="-2" attributes="0"/>
                       <Component id="RegPedido" alignment="3" min="-2" pref="61" max="-2" attributes="0"/>
-                      <Component id="Regresar" alignment="3" min="-2" pref="61" max="-2" attributes="0"/>
+                      <Component id="Regresar" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="entregaPedidoJBtn" alignment="3" min="-2" pref="61" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
               </Group>
@@ -244,6 +248,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="RegPedido">
           <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/Images/inventario.png"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Registrar Pedido"/>
           </Properties>
           <Events>
@@ -270,7 +277,6 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="CantPanJtfActionPerformed"/>
-            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="CantPanJtfKeyTyped"/>
             <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="CantPanJtfKeyReleased"/>
           </Events>
         </Component>
@@ -390,7 +396,6 @@
                 <Property name="horizontalAlignment" type="int" value="0"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="recibiJTFActionPerformed"/>
                 <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="recibiJTFKeyReleased"/>
               </Events>
             </Component>
@@ -417,6 +422,17 @@
             </Property>
             <Property name="text" type="java.lang.String" value="jLabel6"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="entregaPedidoJBtn">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/Images/iconfinder_delivery-cart-1_3338971.png"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Entregar pedido"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="entregaPedidoJBtnActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

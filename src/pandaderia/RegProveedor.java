@@ -62,6 +62,9 @@ public class RegProveedor extends javax.swing.JFrame {
         
         initComponents();
         cargaCB();
+        //validaAgregarProvision();
+        agregarProductoJBtn.setEnabled(false);
+        //addProveedorJButton.setEnabled(false);
         setLocationRelativeTo(previewView);
         modelo = new DefaultTableModel();
         modelo.addColumn("Producto");
@@ -119,11 +122,9 @@ public class RegProveedor extends javax.swing.JFrame {
                 materiaPrima.setUnidadMedida(rs.getString("uMedida"));
                 materiaPrima.setIdMateriPrima(rs.getInt("id_MateriaPrima"));
                 
-                
                 materiaPrimaExistente.add(materiaPrima);
                 
-                CbProducto.addItem(materiaPrima.getNombre());
-                        
+                CbProducto.addItem(materiaPrima.getNombre());         
             }
             
         } catch (SQLException e) {
@@ -188,6 +189,26 @@ public class RegProveedor extends javax.swing.JFrame {
             total += gasto.getTotalCosto();
         }
         totalGastosJL.setText(String.valueOf(Math.round(total*100)/100.0));
+    }
+    
+    public void validaAgregarProducto(){
+        agregarJBtn.setEnabled(false);
+        if((nombreProductoJTF.getText().isEmpty()) 
+            || (precioUnitarioJTF.getText().isEmpty()) 
+            ||(unidadMedidaJTF.getText().isEmpty())){
+            JOptionPane.showMessageDialog(null, "Ingrese todos los datos");
+        }else{
+            agregarProductoJBtn.setEnabled(true);
+        }
+    }
+    
+    public void validaAgregarProvision(){
+        //Estoy validando boton de agregar provision!!!!!
+        if(nombreBuscaProveedorJTF.getText().equals("")){
+            addProveedorJButton.setEnabled(false);
+        }else{
+            addProveedorJButton.setEnabled(true);
+        }
     }
     
     /**
@@ -436,14 +457,30 @@ public class RegProveedor extends javax.swing.JFrame {
                 nombreProductoJTFActionPerformed(evt);
             }
         });
+        nombreProductoJTF.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                nombreProductoJTFKeyReleased(evt);
+            }
+        });
 
         jLabel5.setText("Precio unitario:");
+
+        precioUnitarioJTF.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                precioUnitarioJTFKeyReleased(evt);
+            }
+        });
 
         jLabel6.setText("Unidad de medida:");
 
         unidadMedidaJTF.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 unidadMedidaJTFActionPerformed(evt);
+            }
+        });
+        unidadMedidaJTF.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                unidadMedidaJTFKeyReleased(evt);
             }
         });
 
@@ -511,10 +548,11 @@ public class RegProveedor extends javax.swing.JFrame {
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(31, 31, 31)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(CantProductoJtf, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(agregarJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(CantProductoJtf, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(12, 12, 12)
+                                .addComponent(agregarJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(53, 53, 53)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(selectedProveedorJTF, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -546,14 +584,16 @@ public class RegProveedor extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(28, 28, 28))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(CbProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(CantProductoJtf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel3)
-                                .addComponent(agregarJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(agregarJBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(CbProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(CantProductoJtf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(jLabel7)
@@ -595,6 +635,7 @@ public class RegProveedor extends javax.swing.JFrame {
 
     private void CantProductoJtfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CantProductoJtfKeyReleased
         validaCantProducto();
+        
     }//GEN-LAST:event_CantProductoJtfKeyReleased
 
     private void RegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegresarActionPerformed
@@ -603,21 +644,26 @@ public class RegProveedor extends javax.swing.JFrame {
 
     private void addProveedorJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addProveedorJButtonActionPerformed
         try {
-            
-            for (GastoMateriaPrima gasto : gastosMTRegistrados) {                
-                PreparedStatement pst = conexion.conectar.prepareStatement("insert into GastoMateriaPrima "
-                                                         +"(totalCosto,cantidadProducto,id_Corte,id_Proveedor,id_MateriaPrima,fecha) "
-                                                         +"values(?,?,?,?,?, now())");
-                pst.setFloat(1, gasto.getTotalCosto());
-                pst.setInt(2, gasto.getCantProducto());
-                pst.setInt(3, gasto.getIdCorte());
-                pst.setInt(4, currentProveedor.getIdProveedor());
-                pst.setInt(5, gasto.getMateriaPrima().getIdMateriPrima());
-                pst.execute();
+            if(gastosMTRegistrados.isEmpty()){
+                JOptionPane.showMessageDialog(null, "No hay un productos seleccionados");
+            }else{
+                
+                for (GastoMateriaPrima gasto : gastosMTRegistrados) {                
+                    PreparedStatement pst = conexion.conectar.prepareStatement("insert into GastoMateriaPrima "
+                                                             +"(totalCosto,cantidadProducto,id_Corte,id_Proveedor,id_MateriaPrima,fecha) "
+                                                             +"values(?,?,?,?,?, now())");
+                    pst.setFloat(1, gasto.getTotalCosto());
+                    pst.setInt(2, gasto.getCantProducto());
+                    pst.setInt(3, gasto.getIdCorte());
+                    pst.setInt(4, currentProveedor.getIdProveedor());
+                    pst.setInt(5, gasto.getMateriaPrima().getIdMateriPrima());
+                    pst.execute();
+                }
+                JOptionPane.showMessageDialog(null, "Registro Guardado exitosamente!");
+                ventanaMenu.thismissRegProveedor();
             }
-            JOptionPane.showMessageDialog(null, "Registro Guardado exitosamente!");
-            ventanaMenu.thismissRegProveedor();
         } catch (SQLException ex) {
+            
             System.out.println("ERROR:  "+ex);
         }
     }//GEN-LAST:event_addProveedorJButtonActionPerformed
@@ -626,31 +672,35 @@ public class RegProveedor extends javax.swing.JFrame {
         int idProdSelected = CbProducto.getSelectedIndex();
         MateriaPrima MTEncontrado = materiaPrimaExistente.get(idProdSelected-1);
       
-        
-        if (null != MTEncontrado){
-            
-            int cantidad = Integer.parseInt(CantProductoJtf.getText());
-            GastoMateriaPrima nuevoItem = new GastoMateriaPrima();
-            nuevoItem.setCantProducto(cantidad);
-            nuevoItem.setIdCorte(currentCorte.getIdCorte());
-            nuevoItem.setMateriaPrima(MTEncontrado);
-            nuevoItem.setTotalCosto(MTEncontrado.getCostoUnitario()*cantidad);
-           
-            //agregar a oa tabla
-            Object row[] = new Object[5];
-            row [0]= nuevoItem.getMateriaPrima().getNombre();
-            row [1]= nuevoItem.getCantProducto();
-            row [2]= nuevoItem.getMateriaPrima().getCostoUnitario();
-            row [3]= nuevoItem.getMateriaPrima().getUnidadMedida();
-            row [4]= nuevoItem.getTotalCosto();
-            
-            modelo.addRow(row);
-            
-            gastosMTRegistrados.add(nuevoItem);
-            CantProductoJtf.setText("");
-            CbProducto.setSelectedIndex(0);
-            calculaTotal();
+        try {
+            if (null != MTEncontrado){
+
+                int cantidad = Integer.parseInt(CantProductoJtf.getText());
+                GastoMateriaPrima nuevoItem = new GastoMateriaPrima();
+                nuevoItem.setCantProducto(cantidad);
+                nuevoItem.setIdCorte(currentCorte.getIdCorte());
+                nuevoItem.setMateriaPrima(MTEncontrado);
+                nuevoItem.setTotalCosto(MTEncontrado.getCostoUnitario()*cantidad);
+
+                //agregar a oa tabla
+                Object row[] = new Object[5];
+                row [0]= nuevoItem.getMateriaPrima().getNombre();
+                row [1]= nuevoItem.getCantProducto();
+                row [2]= nuevoItem.getMateriaPrima().getCostoUnitario();
+                row [3]= nuevoItem.getMateriaPrima().getUnidadMedida();
+                row [4]= nuevoItem.getTotalCosto();
+
+                modelo.addRow(row);
+
+                gastosMTRegistrados.add(nuevoItem);
+                CantProductoJtf.setText("");
+                CbProducto.setSelectedIndex(0);
+                calculaTotal();
+            }
+        } catch (Exception e) {
+            System.out.println(e);
         }
+ 
     }//GEN-LAST:event_agregarJBtnActionPerformed
 
     private void CbProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CbProductoActionPerformed
@@ -708,29 +758,34 @@ public class RegProveedor extends javax.swing.JFrame {
 
     private void nombreBuscaProveedorJTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nombreBuscaProveedorJTFKeyReleased
         
-        ArrayList<Proveedores> filtrados = new ArrayList<Proveedores>(0);
-        String input = nombreBuscaProveedorJTF.getText();
-        for (Proveedores proveedor : proveedoresExistentes) {
-            if (input.isEmpty()
-                ||proveedor.getMaterno().toUpperCase().contains(input.toUpperCase())
-                ||proveedor.getPaterno().toUpperCase().contains(input.toUpperCase())
-                ||proveedor.getNombre().toUpperCase().contains(input.toUpperCase())){
-                filtrados.add(proveedor);
+        if(nombreBuscaProveedorJTF.getText().isEmpty()){
+            addProveedorJButton.setEnabled(false);
+        }else{
+            addProveedorJButton.setEnabled(true);
+            ArrayList<Proveedores> filtrados = new ArrayList<Proveedores>(0);
+            String input = nombreBuscaProveedorJTF.getText();
+            for (Proveedores proveedor : proveedoresExistentes) {
+                if (input.isEmpty()
+                    ||proveedor.getMaterno().toUpperCase().contains(input.toUpperCase())
+                    ||proveedor.getPaterno().toUpperCase().contains(input.toUpperCase())
+                    ||proveedor.getNombre().toUpperCase().contains(input.toUpperCase())){
+                    filtrados.add(proveedor);
+                }
             }
-        }
-        if(filtrados.size()>0){
-            modeloProveedores.setRowCount(0);
-            for (Proveedores filtrado : filtrados) {
-                Object row[] = new Object[4];
-                row[0] = filtrado.getPaterno();
-                row[1] = filtrado.getMaterno();
-                row[2] = filtrado.getNombre();
-                row[3] = filtrado.getTelefono();
+            if(filtrados.size()>0){
+                modeloProveedores.setRowCount(0);
+                for (Proveedores filtrado : filtrados) {
+                    Object row[] = new Object[4];
+                    row[0] = filtrado.getPaterno();
+                    row[1] = filtrado.getMaterno();
+                    row[2] = filtrado.getNombre();
+                    row[3] = filtrado.getTelefono();
 
-                modeloProveedores.addRow(row);
-            }
-        }else if(!nombreBuscaProveedorJTF.getText().isEmpty())
-        modeloProveedores.setRowCount(0);
+                    modeloProveedores.addRow(row);
+                }
+            }else if(!nombreBuscaProveedorJTF.getText().isEmpty())
+            modeloProveedores.setRowCount(0);
+        }
     }//GEN-LAST:event_nombreBuscaProveedorJTFKeyReleased
 
     private void clientesJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clientesJTableMouseClicked
@@ -753,35 +808,64 @@ public class RegProveedor extends javax.swing.JFrame {
     }//GEN-LAST:event_unidadMedidaJTFActionPerformed
 
     private void agregarProductoJBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarProductoJBtnActionPerformed
-        try {
-            PreparedStatement pst = conexion.conectar.prepareStatement("INSERT INTO MateriaPrima ( nombre, cosUnitario, uMedida) VALUES(?,?,?)",Statement.RETURN_GENERATED_KEYS);
+        if((nombreProductoJTF.getText().isEmpty()) 
+            || (precioUnitarioJTF.getText().isEmpty()) 
+            ||(unidadMedidaJTF.getText().isEmpty())){
+            JOptionPane.showMessageDialog(null, "Ingrese todos los datos");
+        }else{
             
-            MateriaPrima nuevaMateriaPrima = new MateriaPrima();
-            nuevaMateriaPrima.setNombre(nombreProductoJTF.getText());
-            nuevaMateriaPrima.setCostoUnitario(Float.parseFloat(precioUnitarioJTF.getText()));
-            nuevaMateriaPrima.setUnidadMedida(unidadMedidaJTF.getText());
-            pst.setString(1, nuevaMateriaPrima.getNombre());
-            pst.setFloat(2, nuevaMateriaPrima.getCostoUnitario());
-            pst.setString(3, nuevaMateriaPrima.getUnidadMedida());
-            pst.execute();
-            ResultSet rs = pst.getGeneratedKeys();
-            if (rs.next()) {
-                int idGenerado = rs.getInt(1);
-                nuevaMateriaPrima.setIdMateriPrima(idGenerado);
-                cargaCB();
-                seleccionaCB(idGenerado);
-            }
-            
-            JOptionPane.showMessageDialog(null, "GUARDADO!");
-           
-            
-            
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            JOptionPane.showMessageDialog(null, "ERROR!");
+            try {
+                PreparedStatement pst = conexion.conectar.prepareStatement("INSERT INTO MateriaPrima ( nombre, cosUnitario, uMedida) VALUES(?,?,?)",Statement.RETURN_GENERATED_KEYS);
 
+                MateriaPrima nuevaMateriaPrima = new MateriaPrima();
+                nuevaMateriaPrima.setNombre(nombreProductoJTF.getText());
+                nuevaMateriaPrima.setCostoUnitario(Float.parseFloat(precioUnitarioJTF.getText()));
+                nuevaMateriaPrima.setUnidadMedida(unidadMedidaJTF.getText());
+                pst.setString(1, nuevaMateriaPrima.getNombre());
+                pst.setFloat(2, nuevaMateriaPrima.getCostoUnitario());
+                pst.setString(3, nuevaMateriaPrima.getUnidadMedida());
+                pst.execute();
+                ResultSet rs = pst.getGeneratedKeys();
+                if (rs.next()) {
+                    int idGenerado = rs.getInt(1);
+                    nuevaMateriaPrima.setIdMateriPrima(idGenerado);
+                    cargaCB();
+                    seleccionaCB(idGenerado);
+                }
+
+                JOptionPane.showMessageDialog(null, "GUARDADO!");
+
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                JOptionPane.showMessageDialog(null, "ERROR!");
+            }
         }
+        
     }//GEN-LAST:event_agregarProductoJBtnActionPerformed
+
+    private void nombreProductoJTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nombreProductoJTFKeyReleased
+        if(nombreProductoJTF.getText().isEmpty()){
+            agregarProductoJBtn.setEnabled(false);
+        }else{
+            agregarProductoJBtn.setEnabled(true);
+        }
+    }//GEN-LAST:event_nombreProductoJTFKeyReleased
+
+    private void precioUnitarioJTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_precioUnitarioJTFKeyReleased
+        if(precioUnitarioJTF.getText().isEmpty()){
+            agregarProductoJBtn.setEnabled(false);
+        }else{
+            agregarProductoJBtn.setEnabled(true);
+        }
+    }//GEN-LAST:event_precioUnitarioJTFKeyReleased
+
+    private void unidadMedidaJTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_unidadMedidaJTFKeyReleased
+        if(unidadMedidaJTF.getText().isEmpty()){
+            agregarProductoJBtn.setEnabled(false);
+        }else{
+            agregarProductoJBtn.setEnabled(true);
+        }
+    }//GEN-LAST:event_unidadMedidaJTFKeyReleased
     
     public void seleccionaCB(int id){
         int indexArreglo = 0;

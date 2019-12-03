@@ -23,11 +23,18 @@ public class Pedido {
     private float costo;
     private int status;
     private float abono;
+    private float resta;
+
+    public float getResta() {
+        return resta;
+    }
+
+    public void setResta(float resta) {
+        this.resta = resta;
+    }
     private int tipo;
     private ArrayList<ItemPedido> itemsEnPedido;
-    
-    
-    
+     
     public Pedido(){
         costo = abono = 0;
         itemsEnPedido = new ArrayList(0);

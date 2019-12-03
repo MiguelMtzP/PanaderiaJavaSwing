@@ -13,6 +13,9 @@ package Models;
 public class MateriaPrima {
     
     private int idMateriPrima;
+    private String nombre;
+    private String unidadMedida;
+    private float costoUnitario;
 
     public int getIdMateriPrima() {
         return idMateriPrima;
@@ -21,9 +24,6 @@ public class MateriaPrima {
     public void setIdMateriPrima(int idMateriPrima) {
         this.idMateriPrima = idMateriPrima;
     }
-    private String nombre;
-    private String unidadMedida;
-    private float costoUnitario;
 
     public String getNombre() {
         return nombre;

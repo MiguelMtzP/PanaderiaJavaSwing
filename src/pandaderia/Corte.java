@@ -315,7 +315,6 @@ public class Corte extends javax.swing.JFrame {
                 estatusJTF.setText("Cerrado");
                 terminaCorteJButton.setEnabled(false);
                 registraMermaJButton.setEnabled(false);
-
                 
             } catch (SQLException ex) {
                 Logger.getLogger(Corte.class.getName()).log(Level.SEVERE, null, ex);

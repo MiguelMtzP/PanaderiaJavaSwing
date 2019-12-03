@@ -87,14 +87,7 @@ public class RegPedido extends javax.swing.JFrame {
         setResizable(false);
     }
     
-    public void thismissNewClient(){
-        
-        ventanaNuevoCliente.setVisible(false);
-        this.setVisible(true);
-        ventanaNuevoCliente = null;
-    }
-    
-    
+       
     public void cargaClientes(){
         try {
             PreparedStatement pst = conexion.conectar.prepareStatement("select * from Cliente order by paterno asc");
@@ -149,7 +142,6 @@ public class RegPedido extends javax.swing.JFrame {
         }
     }
     
-    
     public void seleccionaNuevoClienteRegistrado(Clientes nuevoCliente){
         clientesExistentes.add(nuevoCliente);
         String nombreCompleto = nuevoCliente.getAppPat() + " "+nuevoCliente.getAppMat()+" "+nuevoCliente.getnombre();
@@ -174,6 +166,13 @@ public class RegPedido extends javax.swing.JFrame {
         this.setVisible(true);
         ventanaNuevoCliente = null;
         validaRegistroCompleto();
+    }
+    
+    public void thismissNewClient(){
+        
+        ventanaNuevoCliente.setVisible(false);
+        this.setVisible(true);
+        ventanaNuevoCliente = null;
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -303,7 +302,9 @@ public class RegPedido extends javax.swing.JFrame {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "configura el Pedido", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Gargi", 1, 12), new java.awt.Color(155, 96, 96))); // NOI18N
@@ -434,6 +435,7 @@ public class RegPedido extends javax.swing.JFrame {
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel10.setText("Nombre");
 
+        nombreBuscaClienteJTF.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         nombreBuscaClienteJTF.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nombreBuscaClienteJTFActionPerformed(evt);
@@ -485,7 +487,7 @@ public class RegPedido extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(nombreBuscaClienteJTF, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(nombreBuscaClienteJTF, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -595,12 +597,12 @@ public class RegPedido extends javax.swing.JFrame {
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(Regresar)))
-                .addGap(0, 12, Short.MAX_VALUE))
+                .addGap(0, 0, 0))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(10, 10, 10)
                     .addComponent(jLabel7)
-                    .addContainerGap(601, Short.MAX_VALUE)))
+                    .addContainerGap(581, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -616,7 +618,8 @@ public class RegPedido extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();

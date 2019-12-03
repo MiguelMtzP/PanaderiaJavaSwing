@@ -30,6 +30,7 @@ public class Venta extends javax.swing.JFrame {
     private Menu ventanaMenu;
     private RegPedido ventanaRegPedido;
     private AddPedido ventanaAddPedido;
+    private EntregaPedido ventanaEntregaPedidos;
     private ArrayList <Pan> panesExistencia;
     private ArrayList <RegVenta> panesVendidos;
     private Conexion conexion;
@@ -62,6 +63,7 @@ public class Venta extends javax.swing.JFrame {
         empleadoLoggeado = emp;
         
         initComponents();
+        //validaRegistraVenta();
         panesIsuficientesLabel.setVisible(false);
         modelo = new DefaultTableModel();
         modelo.addColumn("Pan");
@@ -94,8 +96,7 @@ public class Venta extends javax.swing.JFrame {
         
         total = Float.parseFloat(totalJLabel.getText());
         recibi = Float.parseFloat(recibiJTF.getText());
-        
-        
+   
         if(recibi>total){
            resta = recibi-total;
            CambioJlabel.setText(formato.format(resta));
@@ -132,30 +133,44 @@ public class Venta extends javax.swing.JFrame {
         }
     }
     
-    public void agregarProducto(){
-        
+    
+    
+    public void validaRegistraVenta(){
+        if(panesVendidos.isEmpty()){
+            //JOptionPane.showMessageDialog(null, "No hay panes seleccionados");
+            RegVenta.setEnabled(false);
+        }else{
+            RegVenta.setEnabled(true);
+        }  
     }
     
     public void registraVenta(){        
         try {
-            for (RegVenta elem : panesVendidos) {
-                PreparedStatement pst= conexion.conectar.prepareStatement("INSERT INTO Ventas  (id_Trabajador, id_Pan, id_Corte, fecha, cantidad, Total ) VALUES(?,?,?,now(),?,?)");
-                System.out.println(elem);
+            if(panesVendidos.isEmpty()){
+                   JOptionPane.showMessageDialog(null, "No hay panes seleccionados");
+                   //RegVenta.setEnabled(false);
+            }else{
                 
-                pst.setInt(1, elem.getIdTrabajador());
-                pst.setInt(2, elem.getIdPan());
-                pst.setInt(3,currentCorte.getIdCorte());
-                pst.setInt(4, elem.getCantidad());
-                pst.setFloat(5, elem.getTotal());
-                pst.execute();
-                
-                pst = conexion.conectar.prepareStatement("update Inventario set existencia = existencia - ? where id_Pan = ?");
-                pst.setInt(1, elem.getCantidad());
-                pst.setInt(2, elem.getIdPan());
-                pst.execute();
-             }
-                JOptionPane.showMessageDialog(null, "Venta registrada exitosamente");
-                limpiaVentana();
+                for (RegVenta elem : panesVendidos) {
+                    PreparedStatement pst= conexion.conectar.prepareStatement("INSERT INTO Ventas  (id_Trabajador, id_Pan, id_Corte, fecha, cantidad, Total ) VALUES(?,?,?,now(),?,?)");
+                    System.out.println(elem);
+
+                    pst.setInt(1, elem.getIdTrabajador());
+                    pst.setInt(2, elem.getIdPan());
+                    pst.setInt(3,currentCorte.getIdCorte());
+                    pst.setInt(4, elem.getCantidad());
+                    pst.setFloat(5, elem.getTotal());
+                    pst.execute();
+
+                    pst = conexion.conectar.prepareStatement("update Inventario set existencia = existencia - ? where id_Pan = ?");
+                    pst.setInt(1, elem.getCantidad());
+                    pst.setInt(2, elem.getIdPan());
+                    pst.execute();
+
+                }
+                    JOptionPane.showMessageDialog(null, "Venta registrada exitosamente");
+                    limpiaVentana();
+            }
         }catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "ERROR!!");
             System.out.println(e);
@@ -177,6 +192,13 @@ public class Venta extends javax.swing.JFrame {
         ventanaRegPedido.setVisible(false);
         this.setVisible(true);
         ventanaRegPedido = null;
+    }
+    
+    public void thismissEntregaPedido(){
+        System.out.println(empleadoLoggeado);
+        ventanaEntregaPedidos.setVisible(false);
+        this.setVisible(true);
+        ventanaEntregaPedidos = null;
     }
 
     /**
@@ -208,6 +230,7 @@ public class Venta extends javax.swing.JFrame {
         recibiJTF = new javax.swing.JTextField();
         genCambioJBtn = new javax.swing.JButton();
         panesIsuficientesLabel = new javax.swing.JLabel();
+        entregaPedidoJBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -263,6 +286,7 @@ public class Venta extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
         jLabel3.setText("TOTAL:");
 
+        RegPedido.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/inventario.png"))); // NOI18N
         RegPedido.setText("Registrar Pedido");
         RegPedido.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -286,9 +310,6 @@ public class Venta extends javax.swing.JFrame {
             }
         });
         CantPanJtf.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                CantPanJtfKeyTyped(evt);
-            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 CantPanJtfKeyReleased(evt);
             }
@@ -316,11 +337,6 @@ public class Venta extends javax.swing.JFrame {
 
         recibiJTF.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
         recibiJTF.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        recibiJTF.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                recibiJTFActionPerformed(evt);
-            }
-        });
         recibiJTF.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 recibiJTFKeyReleased(evt);
@@ -378,6 +394,14 @@ public class Venta extends javax.swing.JFrame {
         panesIsuficientesLabel.setForeground(new java.awt.Color(221, 1, 1));
         panesIsuficientesLabel.setText("jLabel6");
 
+        entregaPedidoJBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/iconfinder_delivery-cart-1_3338971.png"))); // NOI18N
+        entregaPedidoJBtn.setText("Entregar pedido");
+        entregaPedidoJBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                entregaPedidoJBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -400,18 +424,21 @@ public class Venta extends javax.swing.JFrame {
                         .addGap(21, 21, 21))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(Regresar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 915, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(RegPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(RegVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                     .addGap(731, 731, 731)
                                     .addComponent(jLabel3)
                                     .addGap(18, 18, 18)
-                                    .addComponent(totalJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(totalJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(Regresar, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(entregaPedidoJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(RegPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(RegVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addGap(266, 266, 266)
@@ -450,7 +477,8 @@ public class Venta extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(RegVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(RegPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Regresar, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Regresar)
+                    .addComponent(entregaPedidoJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(22, 22, 22))
         );
 
@@ -518,7 +546,6 @@ public class Venta extends javax.swing.JFrame {
        }else{
            CantPanJtf.setEnabled(false);
            CantPanJtf.setText("");
-           
        }
     }//GEN-LAST:event_CbPanActionPerformed
 
@@ -540,17 +567,9 @@ public class Venta extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_genCambioJBtnActionPerformed
 
-    private void recibiJTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recibiJTFActionPerformed
-        
-    }//GEN-LAST:event_recibiJTFActionPerformed
-
     private void CantPanJtfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CantPanJtfActionPerformed
         
     }//GEN-LAST:event_CantPanJtfActionPerformed
-
-    private void CantPanJtfKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CantPanJtfKeyTyped
-        
-    }//GEN-LAST:event_CantPanJtfKeyTyped
 
     private void CantPanJtfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CantPanJtfKeyReleased
         // TODO add your handling code here:
@@ -562,6 +581,12 @@ public class Venta extends javax.swing.JFrame {
         validaEntradaDinero();
         
     }//GEN-LAST:event_recibiJTFKeyReleased
+
+    private void entregaPedidoJBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_entregaPedidoJBtnActionPerformed
+        ventanaEntregaPedidos = new EntregaPedido(this, currentCorte, conexion);
+        ventanaEntregaPedidos.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_entregaPedidoJBtnActionPerformed
 
     public void validaEntradaDinero(){
         try {
@@ -640,6 +665,7 @@ public class Venta extends javax.swing.JFrame {
     private javax.swing.JButton Regresar;
     private javax.swing.JTable VentaPanJTable;
     private javax.swing.JButton agregarJBtn;
+    private javax.swing.JButton entregaPedidoJBtn;
     private javax.swing.JButton genCambioJBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

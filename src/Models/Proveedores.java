@@ -5,7 +5,6 @@ public class Proveedores {
     private int idProveedor;
     private String nombre;
     private String paterno;
-
     private String materno;
     private String telefono;
     private String correo;
