@@ -23,6 +23,7 @@ public class Login extends javax.swing.JFrame {
         setTitle("Bienvenido");
         setResizable(false);
         conection = new Conexion();
+        this.getContentPane().setBackground(Color.BLUE);
     }
     
     

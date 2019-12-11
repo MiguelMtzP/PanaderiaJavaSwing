@@ -47,13 +47,13 @@ public class Menu extends javax.swing.JFrame {
         this.currentCorte = currentCorte;
         initComponents();
         Empleados.setVisible(empleadoLoggeado.getRol() == 1);
-        Inventario.setVisible(empleadoLoggeado.getRol() == 1);
+        //Inventario.setVisible(empleadoLoggeado.getRol() == 1);
         setTitle("Menu");
         setLocationRelativeTo(previewView);
         this.ventanaLogin = previewView;
         this.setVisible(rootPaneCheckingEnabled);
         setResizable(false);
-        //this.getContentPane().setBackground(Color.orange);
+        this.getContentPane().setBackground(Color.BLUE);
     }
 
     public void thismissVentas(){
