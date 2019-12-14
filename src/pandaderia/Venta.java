@@ -35,7 +35,7 @@ public class Venta extends javax.swing.JFrame {
     private ArrayList <RegVenta> panesVendidos;
     private Conexion conexion;
     private CorteModel currentCorte;    
-    public DecimalFormat formato = new DecimalFormat("#.0"); 
+    private DecimalFormat formato = new DecimalFormat("#.0"); 
     
     
     public Venta() {
@@ -71,6 +71,7 @@ public class Venta extends javax.swing.JFrame {
         modelo.addColumn("Cantidad");
         modelo.addColumn("Total");
         VentaPanJTable.setModel(modelo);
+        //validaRegistraVenta();
         setLocationRelativeTo(previewView);
         setTitle("Ventas");
         this.ventanaMenu = previewView;
@@ -79,6 +80,13 @@ public class Venta extends javax.swing.JFrame {
         setResizable(false);
     }
     
+    public void validaRegistrarVenta(){
+        if(panesVendidos.isEmpty()){
+            RegVenta.setEnabled(false);
+        }else{
+            RegVenta.setEnabled(true);
+        }
+    }
     
     public float calculaTotalTicket(){
         float suma = 0;
@@ -100,7 +108,7 @@ public class Venta extends javax.swing.JFrame {
         if(recibi>total){
            resta = recibi-total;
            CambioJlabel.setText(formato.format(resta));
-           System.out.println(formato.format(resta)); 
+           //System.out.println(formato.format(resta)); 
         }else{
             JOptionPane.showMessageDialog(null, "¡MONTO INGRESADO INSUFICIENTE!");
         }
@@ -253,6 +261,11 @@ public class Venta extends javax.swing.JFrame {
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+        });
+        VentaPanJTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                VentaPanJTableMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(VentaPanJTable);
@@ -441,8 +454,8 @@ public class Venta extends javax.swing.JFrame {
                                     .addComponent(RegVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel1)
-                                .addGap(266, 266, 266)
-                                .addComponent(panesIsuficientesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(264, 264, 264)
+                                .addComponent(panesIsuficientesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -588,6 +601,15 @@ public class Venta extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_entregaPedidoJBtnActionPerformed
 
+    private void VentaPanJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_VentaPanJTableMouseClicked
+        int fila = VentaPanJTable.getSelectedRow();
+        if(fila > 0){
+            RegVenta.setEnabled(true);
+        }else{
+            RegVenta.setEnabled(false);
+        }
+    }//GEN-LAST:event_VentaPanJTableMouseClicked
+
     public void validaEntradaDinero(){
         try {
             Integer.parseInt(recibiJTF.getText());
@@ -596,6 +618,7 @@ public class Venta extends javax.swing.JFrame {
             genCambioJBtn.setEnabled(false);
         }
     }
+    
     public void validaCantidadPan(){
         try {
             int index = CbPan.getSelectedIndex()-1;

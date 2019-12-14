@@ -36,6 +36,7 @@ public class NuevoClient extends javax.swing.JFrame {
         setTitle("Nuevo proveedor");
         empleadoLoggeado = emp;
         setResizable(false);
+        validabotonAgregarCliente();
     }
     
     public void limpiaVentana(){
@@ -44,6 +45,14 @@ public class NuevoClient extends javax.swing.JFrame {
         MaternoClientJtf.setText("");
         TelClientJtf.setText("");
         emailClientJtf.setText("");
+    }
+    public void validabotonAgregarCliente(){
+        AddClienteJButton.setEnabled((!NomClientJtf.getText().isEmpty()) 
+                                  && (!PaternoClientJtf.getText().isEmpty()) 
+                                  && (!MaternoClientJtf.getText().isEmpty())
+                                  && (!TelClientJtf.getText().isEmpty())
+                                  && (!emailClientJtf.getText().isEmpty())
+                                  && (!empresaJTF.getText().isEmpty()));
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -61,7 +70,7 @@ public class NuevoClient extends javax.swing.JFrame {
         PaternoClientJtf = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         MaternoClientJtf = new javax.swing.JTextField();
-        AddCliente = new javax.swing.JButton();
+        AddClienteJButton = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         TelClientJtf = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
@@ -81,22 +90,37 @@ public class NuevoClient extends javax.swing.JFrame {
                 NomClientJtfActionPerformed(evt);
             }
         });
+        NomClientJtf.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                NomClientJtfKeyReleased(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
         jLabel2.setText("A Paterno: ");
 
         PaternoClientJtf.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
+        PaternoClientJtf.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                PaternoClientJtfKeyReleased(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
         jLabel3.setText("A Materno:");
 
         MaternoClientJtf.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
+        MaternoClientJtf.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                MaternoClientJtfKeyReleased(evt);
+            }
+        });
 
-        AddCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/addUser.png"))); // NOI18N
-        AddCliente.setText("Agregar Cliente");
-        AddCliente.addActionListener(new java.awt.event.ActionListener() {
+        AddClienteJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/addUser.png"))); // NOI18N
+        AddClienteJButton.setText("Agregar Cliente");
+        AddClienteJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AddClienteActionPerformed(evt);
+                AddClienteJButtonActionPerformed(evt);
             }
         });
 
@@ -104,16 +128,31 @@ public class NuevoClient extends javax.swing.JFrame {
         jLabel4.setText("Teléfono:");
 
         TelClientJtf.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
+        TelClientJtf.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                TelClientJtfKeyReleased(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
         jLabel5.setText("Correo:");
 
         emailClientJtf.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
+        emailClientJtf.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                emailClientJtfKeyReleased(evt);
+            }
+        });
 
         jLabel6.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
         jLabel6.setText("Empresa:");
 
         empresaJTF.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
+        empresaJTF.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                empresaJTFKeyReleased(evt);
+            }
+        });
 
         jToggleButton1.setText("Cancelar");
         jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -127,9 +166,9 @@ public class NuevoClient extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
+                .addGap(80, 80, 80)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -139,40 +178,37 @@ public class NuevoClient extends javax.swing.JFrame {
                                     .addComponent(jLabel6))
                                 .addGap(18, 18, Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(MaternoClientJtf, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
-                                    .addComponent(emailClientJtf)
-                                    .addComponent(empresaJTF)))
+                                    .addComponent(emailClientJtf, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
+                                    .addComponent(empresaJTF)
+                                    .addComponent(MaternoClientJtf, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(TelClientJtf)))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel2)
                                     .addComponent(jLabel1))
                                 .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(PaternoClientJtf, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(NomClientJtf, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE))))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(NomClientJtf)
+                                    .addComponent(PaternoClientJtf))))
+                        .addGap(80, 80, 80))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(AddCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(TelClientJtf, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(28, Short.MAX_VALUE))
+                        .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
+                        .addComponent(AddClienteJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(38, 38, 38))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(66, Short.MAX_VALUE)
+                .addContainerGap(53, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(NomClientJtf, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(17, 17, 17)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(PaternoClientJtf, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
                     .addComponent(MaternoClientJtf, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -180,7 +216,7 @@ public class NuevoClient extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
                     .addComponent(TelClientJtf, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(emailClientJtf, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -188,10 +224,11 @@ public class NuevoClient extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(empresaJTF, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(36, 36, 36)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(AddCliente, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                    .addComponent(jToggleButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(24, 24, 24)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(AddClienteJButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -218,7 +255,7 @@ public class NuevoClient extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_NomClientJtfActionPerformed
 
-    private void AddClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddClienteActionPerformed
+    private void AddClienteJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddClienteJButtonActionPerformed
         Conexion cc = new Conexion();
         
         if((NomClientJtf.getText().isEmpty()) 
@@ -261,12 +298,36 @@ public class NuevoClient extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "ERROR");
             }
         }
-    }//GEN-LAST:event_AddClienteActionPerformed
+    }//GEN-LAST:event_AddClienteJButtonActionPerformed
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
         // TODO add your handling code here:
         ventanaRegPedido.thismissNewClient();
     }//GEN-LAST:event_jToggleButton1ActionPerformed
+
+    private void NomClientJtfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_NomClientJtfKeyReleased
+        validabotonAgregarCliente();
+    }//GEN-LAST:event_NomClientJtfKeyReleased
+
+    private void PaternoClientJtfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PaternoClientJtfKeyReleased
+        validabotonAgregarCliente();
+    }//GEN-LAST:event_PaternoClientJtfKeyReleased
+
+    private void MaternoClientJtfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MaternoClientJtfKeyReleased
+        validabotonAgregarCliente();
+    }//GEN-LAST:event_MaternoClientJtfKeyReleased
+
+    private void TelClientJtfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TelClientJtfKeyReleased
+        validabotonAgregarCliente();
+    }//GEN-LAST:event_TelClientJtfKeyReleased
+
+    private void emailClientJtfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_emailClientJtfKeyReleased
+        validabotonAgregarCliente();
+    }//GEN-LAST:event_emailClientJtfKeyReleased
+
+    private void empresaJTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_empresaJTFKeyReleased
+        validabotonAgregarCliente();
+    }//GEN-LAST:event_empresaJTFKeyReleased
 
     /**
      * @param args the command line arguments
@@ -304,7 +365,7 @@ public class NuevoClient extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton AddCliente;
+    private javax.swing.JButton AddClienteJButton;
     private javax.swing.JTextField MaternoClientJtf;
     private javax.swing.JTextField NomClientJtf;
     private javax.swing.JTextField PaternoClientJtf;

@@ -22,15 +22,13 @@ public class MisEmpleados extends javax.swing.JFrame {
 
         initComponents();
         setLocationRelativeTo(null);
-        setTitle("Mis Empleados");
+        
         Actualizar("");
         setResizable(false);
     }
  
     public MisEmpleados(Component father,Empleado logged) { //aqui  sobreescribo el constructor
         initComponents();
-        setTitle("Mis Empleados");
-        Actualizar("");
         setResizable(false);
         empleadoLoggeado = logged;
         //Empleados.setVisible(empleadoLoggeado.getRol() == 1);
@@ -191,7 +189,7 @@ public class MisEmpleados extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 3, Short.MAX_VALUE)
+            .addGap(0, 15, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -215,9 +213,16 @@ public class MisEmpleados extends javax.swing.JFrame {
             Class[] types = new Class [] {
                 java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         EmpleadosTabla.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -287,6 +292,14 @@ public class MisEmpleados extends javax.swing.JFrame {
         jLabel5.setText("id Trabajador:");
 
         idTrabajadorField.setEditable(false);
+        idTrabajadorField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                idTrabajadorFieldKeyTyped(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                idTrabajadorFieldKeyReleased(evt);
+            }
+        });
 
         label1.setText("Nombre: ");
 
@@ -295,8 +308,19 @@ public class MisEmpleados extends javax.swing.JFrame {
                 NombreFieldActionPerformed(evt);
             }
         });
+        NombreField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                NombreFieldKeyReleased(evt);
+            }
+        });
 
         jLabel2.setText("Paterno: ");
+
+        PaternoField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                PaternoFieldKeyReleased(evt);
+            }
+        });
 
         jLabel3.setText("Materno: ");
 
@@ -304,15 +328,31 @@ public class MisEmpleados extends javax.swing.JFrame {
 
         label4.setText("Contraseña: ");
 
+        PasswField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                PasswFieldKeyReleased(evt);
+            }
+        });
+
         NumeroField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 NumeroFieldActionPerformed(evt);
+            }
+        });
+        NumeroField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                NumeroFieldKeyReleased(evt);
             }
         });
 
         MaternoField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MaternoFieldActionPerformed(evt);
+            }
+        });
+        MaternoField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                MaternoFieldKeyReleased(evt);
             }
         });
 
@@ -456,17 +496,13 @@ public class MisEmpleados extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(Regresar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1033, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(Regresar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1033, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)))
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -624,6 +660,34 @@ public class MisEmpleados extends javax.swing.JFrame {
     private void limpiaCamposActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_limpiaCamposActionPerformed
         limpiaFields();
     }//GEN-LAST:event_limpiaCamposActionPerformed
+
+    private void NombreFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_NombreFieldKeyReleased
+        validateButtons();
+    }//GEN-LAST:event_NombreFieldKeyReleased
+
+    private void idTrabajadorFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idTrabajadorFieldKeyReleased
+        validateButtons();
+    }//GEN-LAST:event_idTrabajadorFieldKeyReleased
+
+    private void PaternoFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PaternoFieldKeyReleased
+        validateButtons();
+    }//GEN-LAST:event_PaternoFieldKeyReleased
+
+    private void MaternoFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MaternoFieldKeyReleased
+        validateButtons();
+    }//GEN-LAST:event_MaternoFieldKeyReleased
+
+    private void NumeroFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_NumeroFieldKeyReleased
+        validateButtons();
+    }//GEN-LAST:event_NumeroFieldKeyReleased
+
+    private void PasswFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PasswFieldKeyReleased
+        validateButtons();
+    }//GEN-LAST:event_PasswFieldKeyReleased
+
+    private void idTrabajadorFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idTrabajadorFieldKeyTyped
+        validateButtons();
+    }//GEN-LAST:event_idTrabajadorFieldKeyTyped
 
     /**
      * @param args the command line arguments

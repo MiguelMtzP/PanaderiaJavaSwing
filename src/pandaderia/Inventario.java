@@ -45,7 +45,9 @@ public class Inventario extends javax.swing.JFrame {
         setLocationRelativeTo(previewView);
         setTitle("Inventario");
         this.ventanaMenu = previewView;
-        
+        IdPanJTF.setEnabled(empleadoLoggeado.getRol() == 1);
+        nombrePanJTF.setEnabled(empleadoLoggeado.getRol() == 1);
+        PrecioPanJTF.setEnabled(empleadoLoggeado.getRol() == 1);
         modelo = (DefaultTableModel)InventTablaJTable.getModel();
         Actualizar("");
         setResizable(false);
@@ -146,13 +148,14 @@ public class Inventario extends javax.swing.JFrame {
         nombrePanJTF.setText("");
         nombrePanSelectedjLabel.setText("-----");
         PrecioPanJTF.setText("");
+        nuevosPanesJtf.setText("0");
     }
     
     public void validaDatos(){
         BorrarjButton.setEnabled(currentPanSelected != null && empleadoLoggeado.getRol() == 1);
         ModificarjButton.setEnabled(currentPanSelected != null && empleadoLoggeado.getRol() == 1 && !nombrePanJTF.getText().isEmpty()&&!PrecioPanJTF.getText().isEmpty());
         GuardarjButton.setEnabled(currentPanSelected == null && empleadoLoggeado.getRol() == 1 && !nombrePanJTF.getText().isEmpty()&&!PrecioPanJTF.getText().isEmpty());
-        agregaExistenciasjButton.setEnabled(currentPanSelected !=null && (int)nuevosPanesjSpinner.getValue() > 0);
+        //agregaExistenciasjButton.setEnabled(currentPanSelected !=null && Integer.parseInt(nuevosPanesJtf.getText()) > 0);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -187,8 +190,8 @@ public class Inventario extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         nombrePanSelectedjLabel = new javax.swing.JLabel();
-        nuevosPanesjSpinner = new javax.swing.JSpinner();
         agregaExistenciasjButton = new javax.swing.JButton();
+        nuevosPanesJtf = new javax.swing.JTextField();
 
         jButton1.setText("jButton1");
 
@@ -307,11 +310,9 @@ public class Inventario extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(17, 17, 17)
                         .addComponent(jLabel2))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(GuardarjButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(PrecioPanJTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(GuardarjButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(PrecioPanJTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(limpajButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -319,6 +320,7 @@ public class Inventario extends javax.swing.JFrame {
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Busca y selecciona un pan", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Liberation Sans", 1, 15))); // NOI18N
 
+        InventTablaJTable.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         InventTablaJTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -421,30 +423,16 @@ public class Inventario extends javax.swing.JFrame {
         nombrePanSelectedjLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         nombrePanSelectedjLabel.setText("-----");
 
-        nuevosPanesjSpinner.setFont(new java.awt.Font("Liberation Sans", 1, 36)); // NOI18N
-        nuevosPanesjSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 1000, 1));
-        nuevosPanesjSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                nuevosPanesjSpinnerStateChanged(evt);
-            }
-        });
-        nuevosPanesjSpinner.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                nuevosPanesjSpinnerPropertyChange(evt);
-            }
-        });
-        nuevosPanesjSpinner.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                nuevosPanesjSpinnerKeyReleased(evt);
-            }
-        });
-
         agregaExistenciasjButton.setText("Actualizar");
         agregaExistenciasjButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 agregaExistenciasjButtonActionPerformed(evt);
             }
         });
+
+        nuevosPanesJtf.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
+        nuevosPanesJtf.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        nuevosPanesJtf.setText("0");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -454,9 +442,8 @@ public class Inventario extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(nuevosPanesjSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(43, 43, 43)
+                        .addComponent(nuevosPanesJtf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(agregaExistenciasjButton, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(45, 45, 45))
                     .addGroup(jPanel5Layout.createSequentialGroup()
@@ -473,9 +460,9 @@ public class Inventario extends javax.swing.JFrame {
                     .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(nombrePanSelectedjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nuevosPanesjSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(agregaExistenciasjButton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(agregaExistenciasjButton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nuevosPanesJtf, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(17, 17, 17))
         );
 
@@ -528,6 +515,7 @@ public class Inventario extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void RegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegresarActionPerformed
@@ -544,7 +532,6 @@ public class Inventario extends javax.swing.JFrame {
             nombrePanSelectedjLabel.setText(encontrado.getnombre());
             PrecioPanJTF.setText(String.valueOf(encontrado.getcosto()));
         }
-        
         validaDatos();
     }//GEN-LAST:event_InventTablaJTableMouseClicked
 
@@ -658,7 +645,7 @@ public class Inventario extends javax.swing.JFrame {
             String nombre = currentPanSelected.getnombre();
             PreparedStatement pst = conexion.conectar.prepareStatement("update Inventario set existencia = existencia + ? where id_Pan = ?");
             
-            pst.setInt(1,(int)nuevosPanesjSpinner.getValue());
+            pst.setInt(1,Integer.parseInt(nuevosPanesJtf.getText()));
             pst.setInt(2, currentPanSelected.getidPan());
             pst.executeUpdate();
             Actualizar("");
@@ -718,26 +705,12 @@ public class Inventario extends javax.swing.JFrame {
         validaDatos();
     }//GEN-LAST:event_PrecioPanJTFKeyReleased
 
-    private void nuevosPanesjSpinnerKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nuevosPanesjSpinnerKeyReleased
-        // TODO add your handling code here:
-        validaDatos();
-    }//GEN-LAST:event_nuevosPanesjSpinnerKeyReleased
-
-    private void nuevosPanesjSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_nuevosPanesjSpinnerStateChanged
-        System.out.println("State cambio");
-    }//GEN-LAST:event_nuevosPanesjSpinnerStateChanged
-
     private void limpajButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_limpajButtonActionPerformed
         // TODO add your handling code here:
         currentPanSelected = null;
         limpiaCampos();
         validaDatos();
     }//GEN-LAST:event_limpajButtonActionPerformed
-
-    private void nuevosPanesjSpinnerPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_nuevosPanesjSpinnerPropertyChange
-        // TODO add your handling code here:
-        System.out.println("cambio properties");
-    }//GEN-LAST:event_nuevosPanesjSpinnerPropertyChange
 
     /**
      * @param args the command line arguments
@@ -800,6 +773,6 @@ public class Inventario extends javax.swing.JFrame {
     private javax.swing.JButton limpajButton;
     private javax.swing.JTextField nombrePanJTF;
     private javax.swing.JLabel nombrePanSelectedjLabel;
-    private javax.swing.JSpinner nuevosPanesjSpinner;
+    private javax.swing.JTextField nuevosPanesJtf;
     // End of variables declaration//GEN-END:variables
 }
