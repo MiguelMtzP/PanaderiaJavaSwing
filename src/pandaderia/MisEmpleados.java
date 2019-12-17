@@ -200,6 +200,7 @@ public class MisEmpleados extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
+        EmpleadosTabla.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         EmpleadosTabla.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
@@ -248,14 +249,19 @@ public class MisEmpleados extends javax.swing.JFrame {
 
         jLabel4.setText("Buscar por ID:");
 
+        TextBuscar.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         TextBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 TextBuscarActionPerformed(evt);
             }
         });
+        TextBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                TextBuscarKeyReleased(evt);
+            }
+        });
 
-        Buscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/buscar.png"))); // NOI18N
-        Buscar.setText("Buscar");
+        Buscar.setText("Actualizar tabla");
         Buscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BuscarActionPerformed(evt);
@@ -269,10 +275,8 @@ public class MisEmpleados extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(TextBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(Buscar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(TextBuscar)
+                    .addComponent(Buscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(26, 26, 26)
@@ -296,6 +300,7 @@ public class MisEmpleados extends javax.swing.JFrame {
         jLabel5.setText("id Trabajador:");
 
         idTrabajadorField.setEditable(false);
+        idTrabajadorField.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         idTrabajadorField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 idTrabajadorFieldKeyTyped(evt);
@@ -307,6 +312,7 @@ public class MisEmpleados extends javax.swing.JFrame {
 
         label1.setText("Nombre: ");
 
+        NombreField.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         NombreField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 NombreFieldActionPerformed(evt);
@@ -320,6 +326,7 @@ public class MisEmpleados extends javax.swing.JFrame {
 
         jLabel2.setText("Paterno: ");
 
+        PaternoField.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         PaternoField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 PaternoFieldKeyReleased(evt);
@@ -332,12 +339,14 @@ public class MisEmpleados extends javax.swing.JFrame {
 
         label4.setText("Contraseña: ");
 
+        PasswField.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         PasswField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 PasswFieldKeyReleased(evt);
             }
         });
 
+        NumeroField.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         NumeroField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 NumeroFieldActionPerformed(evt);
@@ -349,6 +358,7 @@ public class MisEmpleados extends javax.swing.JFrame {
             }
         });
 
+        MaternoField.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         MaternoField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MaternoFieldActionPerformed(evt);
@@ -363,8 +373,18 @@ public class MisEmpleados extends javax.swing.JFrame {
         label6.setText("Rol:  ");
 
         gerenteOptionRadioButton.setText("Gerente");
+        gerenteOptionRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gerenteOptionRadioButtonActionPerformed(evt);
+            }
+        });
 
         empleadoOptionRadioButton.setText("Empleado");
+        empleadoOptionRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                empleadoOptionRadioButtonActionPerformed(evt);
+            }
+        });
 
         limpiaCampos.setText("Limpiar campos de texto");
         limpiaCampos.addActionListener(new java.awt.event.ActionListener() {
@@ -499,13 +519,13 @@ public class MisEmpleados extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(Regresar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1033, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -544,7 +564,7 @@ public class MisEmpleados extends javax.swing.JFrame {
     }//GEN-LAST:event_NumeroFieldActionPerformed
 
     private void BuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuscarActionPerformed
-       Actualizar(TextBuscar.getText());
+       Actualizar("");
        TextBuscar.setText("");
     }//GEN-LAST:event_BuscarActionPerformed
 
@@ -667,6 +687,9 @@ public class MisEmpleados extends javax.swing.JFrame {
     private void limpiaCamposActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_limpiaCamposActionPerformed
         limpiaFields();
         validateButtons();
+        empleadoOptionRadioButton.setSelected(false);
+        gerenteOptionRadioButton.setSelected(false);
+        
     }//GEN-LAST:event_limpiaCamposActionPerformed
 
     private void NombreFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_NombreFieldKeyReleased
@@ -696,6 +719,19 @@ public class MisEmpleados extends javax.swing.JFrame {
     private void idTrabajadorFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idTrabajadorFieldKeyTyped
         validateButtons();
     }//GEN-LAST:event_idTrabajadorFieldKeyTyped
+
+    private void TextBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TextBuscarKeyReleased
+        Actualizar(TextBuscar.getText());
+       
+    }//GEN-LAST:event_TextBuscarKeyReleased
+
+    private void gerenteOptionRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gerenteOptionRadioButtonActionPerformed
+        validateButtons();
+    }//GEN-LAST:event_gerenteOptionRadioButtonActionPerformed
+
+    private void empleadoOptionRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_empleadoOptionRadioButtonActionPerformed
+        validateButtons();
+    }//GEN-LAST:event_empleadoOptionRadioButtonActionPerformed
 
     /**
      * @param args the command line arguments

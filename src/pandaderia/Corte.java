@@ -129,7 +129,7 @@ public class Corte extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(26, 16, 16));
-        jLabel2.setText("Fecha/Hora:");
+        jLabel2.setText("Fecha:");
 
         jLabel3.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(26, 16, 16));

@@ -25,13 +25,13 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="28" pref="28" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="Regresar" min="-2" pref="120" max="-2" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="1033" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jPanel2" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
@@ -88,6 +88,9 @@
       <SubComponents>
         <Component class="javax.swing.JTable" name="EmpleadosTabla">
           <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Liberation Sans" size="15" style="1"/>
+            </Property>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="7" rowCount="7">
                 <Column editable="false" title="id_Trabajador" type="java.lang.Integer"/>
@@ -174,11 +177,8 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <Component id="TextBuscar" min="-2" pref="132" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      </Group>
-                      <Component id="Buscar" alignment="1" max="32767" attributes="0"/>
+                      <Component id="TextBuscar" max="32767" attributes="0"/>
+                      <Component id="Buscar" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -210,16 +210,19 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="TextBuscar">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Liberation Sans" size="15" style="1"/>
+            </Property>
+          </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="TextBuscarActionPerformed"/>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="TextBuscarKeyReleased"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="Buscar">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/Images/buscar.png"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Buscar"/>
+            <Property name="text" type="java.lang.String" value="Actualizar tabla"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BuscarActionPerformed"/>
@@ -371,6 +374,9 @@
         <Component class="javax.swing.JTextField" name="idTrabajadorField">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Liberation Sans" size="15" style="1"/>
+            </Property>
           </Properties>
           <Events>
             <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="idTrabajadorFieldKeyTyped"/>
@@ -383,6 +389,11 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="NombreField">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Liberation Sans" size="15" style="1"/>
+            </Property>
+          </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="NombreFieldActionPerformed"/>
             <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="NombreFieldKeyReleased"/>
@@ -394,6 +405,11 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="PaternoField">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Liberation Sans" size="15" style="1"/>
+            </Property>
+          </Properties>
           <Events>
             <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="PaternoFieldKeyReleased"/>
           </Events>
@@ -414,17 +430,32 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="PasswField">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Liberation Sans" size="15" style="1"/>
+            </Property>
+          </Properties>
           <Events>
             <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="PasswFieldKeyReleased"/>
           </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="NumeroField">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Liberation Sans" size="15" style="1"/>
+            </Property>
+          </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="NumeroFieldActionPerformed"/>
             <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="NumeroFieldKeyReleased"/>
           </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="MaternoField">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Liberation Sans" size="15" style="1"/>
+            </Property>
+          </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MaternoFieldActionPerformed"/>
             <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="MaternoFieldKeyReleased"/>
@@ -439,11 +470,17 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Gerente"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gerenteOptionRadioButtonActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JRadioButton" name="empleadoOptionRadioButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Empleado"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="empleadoOptionRadioButtonActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="limpiaCampos">
           <Properties>
