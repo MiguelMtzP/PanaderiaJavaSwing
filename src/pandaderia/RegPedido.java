@@ -28,7 +28,7 @@ public class RegPedido extends javax.swing.JFrame {
 
     private Empleado empleadoLoggeado; 
     private Venta ventanaVenta;
-    private AddPedido ventanaAddPedido;
+    //private AddPedido ventanaAddPedido;
     private NuevoClient ventanaNuevoCliente;
     private ArrayList <Pan> panesExistencia;
     private ArrayList <Clientes> clientesExistentes;
@@ -70,7 +70,7 @@ public class RegPedido extends javax.swing.JFrame {
         modelo.addColumn("Cantidad");
         modelo.addColumn("Total");
         itemsPedidoJTable.setModel(modelo);
-        invalidIdJLabel.setVisible(false);
+        
 
         modeloClientes =  new DefaultTableModel();
         modeloClientes.addColumn("Apellido Paterno");
@@ -172,7 +172,7 @@ public class RegPedido extends javax.swing.JFrame {
         clientesExistentes.add(nuevoCliente);
         String nombreCompleto = nuevoCliente.getAppPat() + " "+nuevoCliente.getAppMat()+" "+nuevoCliente.getnombre();
         nombreBuscaClienteJTF.setText(nombreCompleto);
-        idClienteSelectedJTF.setText(String.valueOf(nuevoCliente.getIdCliente()));
+        //idClienteSelectedJTF.setText(String.valueOf(nuevoCliente.getIdCliente()));
         
         Object row[] = new Object[4];
         row[0] = nuevoCliente.getAppPat();
@@ -236,10 +236,7 @@ public class RegPedido extends javax.swing.JFrame {
         clientesJTable = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
         nombreBuscaClienteJTF = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
-        idClienteSelectedJTF = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        invalidIdJLabel = new javax.swing.JLabel();
         selectedClienteJTF = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         panesIsuficientesLabel = new javax.swing.JLabel();
@@ -285,6 +282,7 @@ public class RegPedido extends javax.swing.JFrame {
             }
         });
 
+        CantPanJtf.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
         CantPanJtf.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 CantPanJtfKeyReleased(evt);
@@ -350,6 +348,7 @@ public class RegPedido extends javax.swing.JFrame {
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel9.setText("Anticipo");
 
+        anticipoJTF.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         anticipoJTF.setText("0");
         anticipoJTF.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -434,6 +433,7 @@ public class RegPedido extends javax.swing.JFrame {
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Busca y  Selecciona Cliente", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Gargi", 1, 12), new java.awt.Color(155, 96, 96))); // NOI18N
 
+        clientesJTable.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         clientesJTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -476,31 +476,12 @@ public class RegPedido extends javax.swing.JFrame {
             }
         });
 
-        jLabel11.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
-        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel11.setText("ID Cliente");
-
-        idClienteSelectedJTF.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                idClienteSelectedJTFActionPerformed(evt);
-            }
-        });
-        idClienteSelectedJTF.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                idClienteSelectedJTFKeyReleased(evt);
-            }
-        });
-
         jButton1.setText("Nuevo Cliente");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
-
-        invalidIdJLabel.setFont(new java.awt.Font("Ubuntu", 3, 12)); // NOI18N
-        invalidIdJLabel.setForeground(new java.awt.Color(242, 46, 46));
-        invalidIdJLabel.setText("invalid ID");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -509,7 +490,7 @@ public class RegPedido extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton1))
@@ -517,12 +498,7 @@ public class RegPedido extends javax.swing.JFrame {
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(nombreBuscaClienteJTF, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(invalidIdJLabel)
-                            .addComponent(idClienteSelectedJTF, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(36, 284, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -530,12 +506,8 @@ public class RegPedido extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(nombreBuscaClienteJTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11)
-                    .addComponent(idClienteSelectedJTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(invalidIdJLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(nombreBuscaClienteJTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(27, 27, 27)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1))
@@ -783,73 +755,38 @@ public class RegPedido extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void idClienteSelectedJTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idClienteSelectedJTFKeyReleased
-        // TODO add your handling code here:
-        try{
-            ArrayList<Clientes> filtrados = new ArrayList<Clientes>(0);
-            int input = Integer.parseInt(idClienteSelectedJTF.getText());
-            invalidIdJLabel.setVisible(false);
-            for (Clientes cliente : clientesExistentes) {
-                if (cliente.getIdCliente() == input){
-                    filtrados.add(cliente);
-                }
-            }
-            if(filtrados.size()>0){
-                modeloClientes.setRowCount(0);
-                for (Clientes filtrado : filtrados) {
-                    Object row[] = new Object[4];
-                    row[0] = filtrado.getAppPat();
-                    row[1] = filtrado.getAppMat();
-                    row[2] = filtrado.getnombre();
-                    row[3] = filtrado.getEmpresa();
-                    modeloClientes.addRow(row);
-                }
-            }else if(!idClienteSelectedJTF.getText().isEmpty())
-            modeloClientes.setRowCount(0);
-
-        }catch(NumberFormatException e){
-            modeloClientes.setRowCount(0);
-            if(idClienteSelectedJTF.getText().isEmpty()){
-                for (Clientes cliente : clientesExistentes) {
-                    Object row[] = new Object[4];
-                    row[0] = cliente.getAppPat();
-                    row[1] = cliente.getAppMat();
-                    row[2] = cliente.getnombre();
-                    row[3] = cliente.getEmpresa();
-                    modeloClientes.addRow(row);
-                }
-            }else{
-                invalidIdJLabel.setVisible(true);
-            }
-        }
-    }//GEN-LAST:event_idClienteSelectedJTFKeyReleased
-
     private void nombreBuscaClienteJTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nombreBuscaClienteJTFKeyReleased
         // TODO add your handling code here:
-        ArrayList<Clientes> filtrados = new ArrayList<Clientes>(0);
-        String input = nombreBuscaClienteJTF.getText();
-        for (Clientes cliente : clientesExistentes) {
-            if (input.isEmpty()
-                ||cliente.getAppMat().toUpperCase().contains(input.toUpperCase())
-                ||cliente.getAppPat().toUpperCase().contains(input.toUpperCase())
-                ||cliente.getnombre().toUpperCase().contains(input.toUpperCase())){
-                filtrados.add(cliente);
-            }
-        }
-        
-        if(filtrados.size() > 0){
+        try {
             modeloClientes.setRowCount(0);
-            for (Clientes filtrado : filtrados) {
+            clientesExistentes.clear();
+            PreparedStatement pst = conexion.conectar.prepareStatement("select * from Cliente where concat(nombre,paterno,materno) like ? order by paterno asc");
+            String input = nombreBuscaClienteJTF.getText();
+            pst.setString(1, "%"+input+"%");
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                Clientes nuevoCliente = new Clientes();
+                nuevoCliente.setAppMat(rs.getString("materno"));
+                nuevoCliente.setAppPat(rs.getString("paterno"));
+                nuevoCliente.setnombre(rs.getString("nombre"));
+                nuevoCliente.setTelefono(rs.getString("telefono"));
+                nuevoCliente.setCorreo(rs.getString("correo"));
+                nuevoCliente.setEmpresa(rs.getString("empresa"));
+                nuevoCliente.setIdCliente(rs.getInt("id_Cliente"));
+                clientesExistentes.add(nuevoCliente);
+                
                 Object row[] = new Object[4];
-                row[0] = filtrado.getAppPat();
-                row[1] = filtrado.getAppMat();
-                row[2] = filtrado.getnombre();
-                row[3] = filtrado.getEmpresa();
-
+                row[0] = nuevoCliente.getAppPat();
+                row[1] = nuevoCliente.getAppMat();
+                row[2] = nuevoCliente.getnombre();
+                row[3] = nuevoCliente.getEmpresa();
+                
                 modeloClientes.addRow(row);
             }
-        }else if(!nombreBuscaClienteJTF.getText().isEmpty())
-        modeloClientes.setRowCount(0);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "ERROR!");
+            System.out.println(ex);        }
+
     }//GEN-LAST:event_nombreBuscaClienteJTFKeyReleased
 
     private void clientesJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clientesJTableMouseClicked
@@ -859,7 +796,7 @@ public class RegPedido extends javax.swing.JFrame {
             currentSelectedCliente  = clientesExistentes.get(id);
             selectedClienteJTF.setText(clientesExistentes.get(id).FullName());
             nombreBuscaClienteJTF.setText(clientesExistentes.get(id).FullName());
-            idClienteSelectedJTF.setText(String.valueOf(clientesExistentes.get(id).getIdCliente()));
+            //idClienteSelectedJTF.setText(String.valueOf(clientesExistentes.get(id).getIdCliente()));
             currentPedido.setCliente(currentSelectedCliente);
         }
         validaRegistroCompleto();
@@ -868,10 +805,6 @@ public class RegPedido extends javax.swing.JFrame {
     private void nombreBuscaClienteJTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nombreBuscaClienteJTFActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_nombreBuscaClienteJTFActionPerformed
-
-    private void idClienteSelectedJTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idClienteSelectedJTFActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_idClienteSelectedJTFActionPerformed
     
     public void validaRegistroCompleto(){
         if(currentSelectedCliente != null
@@ -930,13 +863,10 @@ public class RegPedido extends javax.swing.JFrame {
     private javax.swing.JTextField anticipoJTF;
     private javax.swing.JTable clientesJTable;
     private com.toedter.calendar.JDateChooser fechaEntregaJCalendar;
-    private javax.swing.JTextField idClienteSelectedJTF;
-    private javax.swing.JLabel invalidIdJLabel;
     private javax.swing.JTable itemsPedidoJTable;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;

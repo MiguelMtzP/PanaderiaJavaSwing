@@ -60,7 +60,7 @@ public class RegProveedor extends javax.swing.JFrame {
         modelo.addColumn("Unidad de medida");
         modelo.addColumn("Total");
         itemsPedidoJTable.setModel(modelo);
-        invalidIdJLabel.setVisible(false);
+        
 
         modeloProveedores =  new DefaultTableModel();
         modeloProveedores.addColumn("Apellido Paterno");
@@ -165,7 +165,7 @@ public class RegProveedor extends javax.swing.JFrame {
         proveedoresExistentes.add(nuevoProveedor);
         String nombreCompleto = nuevoProveedor.getPaterno()+ " "+nuevoProveedor.getMaterno()+" "+nuevoProveedor.getNombre();
         nombreBuscaProveedorJTF.setText(nombreCompleto);
-        idProveedorSelectedJTF.setText(String.valueOf(nuevoProveedor.getIdProveedor()));
+        //idProveedorSelectedJTF.setText(String.valueOf(nuevoProveedor.getIdProveedor()));
         
         Object row[] = new Object[4];
         row[0] = nuevoProveedor.getPaterno();
@@ -230,10 +230,7 @@ public class RegProveedor extends javax.swing.JFrame {
         clientesJTable = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
         nombreBuscaProveedorJTF = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
-        idProveedorSelectedJTF = new javax.swing.JTextField();
         nuevoProveedorJBtn = new javax.swing.JButton();
-        invalidIdJLabel = new javax.swing.JLabel();
         selectedProveedorJTF = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
@@ -252,6 +249,7 @@ public class RegProveedor extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
         jLabel1.setText("Producto");
 
+        CbProducto.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         CbProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CbProductoActionPerformed(evt);
@@ -285,6 +283,7 @@ public class RegProveedor extends javax.swing.JFrame {
             }
         });
 
+        CantProductoJtf.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         CantProductoJtf.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 CantProductoJtfKeyReleased(evt);
@@ -301,6 +300,7 @@ public class RegProveedor extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Panes agregados al pedido", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 0, 12), new java.awt.Color(113, 113, 113))); // NOI18N
 
+        itemsPedidoJTable.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         itemsPedidoJTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
@@ -337,6 +337,7 @@ public class RegProveedor extends javax.swing.JFrame {
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Busca y  selecciona proveedor", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Gargi", 1, 12), new java.awt.Color(155, 96, 96))); // NOI18N
 
+        clientesJTable.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         clientesJTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -367,19 +368,10 @@ public class RegProveedor extends javax.swing.JFrame {
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel10.setText("Nombre");
 
+        nombreBuscaProveedorJTF.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         nombreBuscaProveedorJTF.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 nombreBuscaProveedorJTFKeyReleased(evt);
-            }
-        });
-
-        jLabel11.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
-        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel11.setText("ID proveedor");
-
-        idProveedorSelectedJTF.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                idProveedorSelectedJTFKeyReleased(evt);
             }
         });
 
@@ -390,10 +382,6 @@ public class RegProveedor extends javax.swing.JFrame {
             }
         });
 
-        invalidIdJLabel.setFont(new java.awt.Font("Ubuntu", 3, 12)); // NOI18N
-        invalidIdJLabel.setForeground(new java.awt.Color(242, 46, 46));
-        invalidIdJLabel.setText("invalid ID");
-
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -401,17 +389,12 @@ public class RegProveedor extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 653, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(nombreBuscaProveedorJTF, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 133, Short.MAX_VALUE)
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(invalidIdJLabel)
-                            .addComponent(idProveedorSelectedJTF, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(nuevoProveedorJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -422,12 +405,8 @@ public class RegProveedor extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(nombreBuscaProveedorJTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11)
-                    .addComponent(idProveedorSelectedJTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(invalidIdJLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(nombreBuscaProveedorJTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(27, 27, 27)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(nuevoProveedorJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -446,6 +425,7 @@ public class RegProveedor extends javax.swing.JFrame {
 
         jLabel4.setText("Nombre del producto:");
 
+        nombreProductoJTF.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         nombreProductoJTF.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nombreProductoJTFActionPerformed(evt);
@@ -459,6 +439,7 @@ public class RegProveedor extends javax.swing.JFrame {
 
         jLabel5.setText("Precio unitario:");
 
+        precioUnitarioJTF.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         precioUnitarioJTF.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 precioUnitarioJTFKeyReleased(evt);
@@ -467,6 +448,7 @@ public class RegProveedor extends javax.swing.JFrame {
 
         jLabel6.setText("Unidad de medida:");
 
+        unidadMedidaJTF.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         unidadMedidaJTF.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 unidadMedidaJTFActionPerformed(evt);
@@ -698,72 +680,37 @@ public class RegProveedor extends javax.swing.JFrame {
 
     }//GEN-LAST:event_nuevoProveedorJBtnActionPerformed
 
-    private void idProveedorSelectedJTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idProveedorSelectedJTFKeyReleased
-        // TODO add your handling code here:
-        try{
-            ArrayList<Proveedores> filtrados = new ArrayList<Proveedores>(0);
-            int input = Integer.parseInt(idProveedorSelectedJTF.getText());
-            invalidIdJLabel.setVisible(false);
-            for (Proveedores proveedor : proveedoresExistentes) {
-                if (proveedor.getIdProveedor()== input){
-                    filtrados.add(proveedor);
-                }
-            }
-            if(filtrados.size()>0){
-                modeloProveedores.setRowCount(0);
-                for (Proveedores filtrado : filtrados) {
-                    Object row[] = new Object[4];
-                    row[0] = filtrado.getPaterno();
-                    row[1] = filtrado.getMaterno();
-                    row[2] = filtrado.getNombre();
-                    row[3] = filtrado.getTelefono();
-                    modeloProveedores.addRow(row);
-                }
-            }else if(!idProveedorSelectedJTF.getText().isEmpty())
-            modeloProveedores.setRowCount(0);
-
-        }catch(NumberFormatException e){
-            modeloProveedores.setRowCount(0);
-            if(idProveedorSelectedJTF.getText().isEmpty()){
-                for (Proveedores filtrado : proveedoresExistentes) {
-                    Object row[] = new Object[4];
-                    row[0] = filtrado.getPaterno();
-                    row[1] = filtrado.getMaterno();
-                    row[2] = filtrado.getNombre();
-                    row[3] = filtrado.getTelefono();
-                    modeloProveedores.addRow(row);
-                }
-            }else{
-                invalidIdJLabel.setVisible(true);
-            }
-        }
-    }//GEN-LAST:event_idProveedorSelectedJTFKeyReleased
-
     private void nombreBuscaProveedorJTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nombreBuscaProveedorJTFKeyReleased
-        
-        ArrayList<Proveedores> filtrados = new ArrayList<Proveedores>(0);
-        String input = nombreBuscaProveedorJTF.getText();
-        for (Proveedores proveedor : proveedoresExistentes) {
-            if (input.isEmpty()
-                ||proveedor.getMaterno().toUpperCase().contains(input.toUpperCase())
-                ||proveedor.getPaterno().toUpperCase().contains(input.toUpperCase())
-                ||proveedor.getNombre().toUpperCase().contains(input.toUpperCase())){
-                filtrados.add(proveedor);
-            }
-        }
-        if(filtrados.size()>0){
+        try {
+            proveedoresExistentes.clear();
             modeloProveedores.setRowCount(0);
-            for (Proveedores filtrado : filtrados) {
+            PreparedStatement pst = conexion.conectar.prepareStatement("select * from Proveedor  where concat(nombre,paterno,materno) like ?  order by paterno asc");
+             String input = nombreBuscaProveedorJTF.getText();
+            pst.setString(1, "%"+input+"%");
+            
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                Proveedores nuevoProveedor = new Proveedores();
+                nuevoProveedor.setMaterno(rs.getString("materno"));
+                nuevoProveedor.setPaterno(rs.getString("paterno"));
+                nuevoProveedor.setNombre(rs.getString("nombre"));
+                nuevoProveedor.setTelefono(rs.getString("telefono"));
+                nuevoProveedor.setCorreo(rs.getString("correo"));
+                nuevoProveedor.setIdProveedor(rs.getInt("id_Proveedor"));
+                proveedoresExistentes.add(nuevoProveedor);
+                
                 Object row[] = new Object[4];
-                row[0] = filtrado.getPaterno();
-                row[1] = filtrado.getMaterno();
-                row[2] = filtrado.getNombre();
-                row[3] = filtrado.getTelefono();
-
+                row[0] = nuevoProveedor.getPaterno();
+                row[1] = nuevoProveedor.getMaterno();
+                row[2] = nuevoProveedor.getNombre();
+                row[3] = nuevoProveedor.getTelefono();
+                
                 modeloProveedores.addRow(row);
             }
-        }else if(!nombreBuscaProveedorJTF.getText().isEmpty())
-        modeloProveedores.setRowCount(0);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "ERROR!");
+            System.out.println(ex);        
+        }
     }//GEN-LAST:event_nombreBuscaProveedorJTFKeyReleased
 
     private void clientesJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clientesJTableMouseClicked
@@ -773,7 +720,7 @@ public class RegProveedor extends javax.swing.JFrame {
             currentProveedor  = proveedoresExistentes.get(id);
             selectedProveedorJTF.setText(proveedoresExistentes.get(id).fullName());
             nombreBuscaProveedorJTF.setText(proveedoresExistentes.get(id).fullName());
-            idProveedorSelectedJTF.setText(String.valueOf(proveedoresExistentes.get(id).getIdProveedor()));
+            //idProveedorSelectedJTF.setText(String.valueOf(proveedoresExistentes.get(id).getIdProveedor()));
         }
         validaRegistroCompleto();
     }//GEN-LAST:event_clientesJTableMouseClicked
@@ -887,12 +834,9 @@ public class RegProveedor extends javax.swing.JFrame {
     private javax.swing.JButton agregarJBtn;
     private javax.swing.JButton agregarProductoJBtn;
     private javax.swing.JTable clientesJTable;
-    private javax.swing.JTextField idProveedorSelectedJTF;
-    private javax.swing.JLabel invalidIdJLabel;
     private javax.swing.JTable itemsPedidoJTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

@@ -6,6 +6,7 @@ import Models.Empleado;
 import Models.Pan;
 import java.awt.Component;
 import java.awt.Window;
+import static java.lang.Float.parseFloat;
 //import java.sql.Date;
 import java.util.Date;
 import java.sql.PreparedStatement;
@@ -29,7 +30,7 @@ public class Venta extends javax.swing.JFrame {
     private Empleado logueado = new Empleado();
     private Menu ventanaMenu;
     private RegPedido ventanaRegPedido;
-    private AddPedido ventanaAddPedido;
+    //yprivate AddPedido ventanaAddPedido;
     private EntregaPedido ventanaEntregaPedidos;
     private ArrayList <Pan> panesExistencia;
     private ArrayList <RegVenta> panesVendidos;
@@ -64,6 +65,7 @@ public class Venta extends javax.swing.JFrame {
         
         initComponents();
         //validaRegistraVenta();
+        deleteSelectedJButton.setEnabled(false);
         panesIsuficientesLabel.setVisible(false);
         modelo = new DefaultTableModel();
         modelo.addColumn("Pan");
@@ -89,6 +91,7 @@ public class Venta extends javax.swing.JFrame {
     }
     
     public float calculaTotalTicket(){
+        
         float suma = 0;
         for (RegVenta elem : panesVendidos) {
             suma += elem.getTotal();
@@ -113,6 +116,14 @@ public class Venta extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "¡MONTO INGRESADO INSUFICIENTE!");
         }
         return resta;
+    }
+    
+    public void borraSeleccionado(){
+        int fila = VentaPanJTable.getSelectedRow();
+        
+        panesVendidos.remove(fila);
+        totalJLabel.setText(formato.format(calculaTotalTicket()));
+        modelo.removeRow(fila);
     }
     
     public void cargaCB(){
@@ -239,6 +250,7 @@ public class Venta extends javax.swing.JFrame {
         genCambioJBtn = new javax.swing.JButton();
         panesIsuficientesLabel = new javax.swing.JLabel();
         entregaPedidoJBtn = new javax.swing.JButton();
+        deleteSelectedJButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -400,7 +412,7 @@ public class Venta extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(47, 47, 47)
                         .addComponent(genCambioJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         panesIsuficientesLabel.setFont(new java.awt.Font("Liberation Sans", 1, 12)); // NOI18N
@@ -415,6 +427,13 @@ public class Venta extends javax.swing.JFrame {
             }
         });
 
+        deleteSelectedJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/iconfinder_error_1646012.png"))); // NOI18N
+        deleteSelectedJButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteSelectedJButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -422,23 +441,9 @@ public class Venta extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(53, 53, 53)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(CbPan, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(CantPanJtf, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(agregarJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(21, 21, 21))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 915, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                     .addGap(731, 731, 731)
                                     .addComponent(jLabel3)
@@ -456,7 +461,27 @@ public class Venta extends javax.swing.JFrame {
                                 .addComponent(jLabel1)
                                 .addGap(264, 264, 264)
                                 .addComponent(panesIsuficientesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 16, Short.MAX_VALUE)
+                        .addComponent(CbPan, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(CantPanJtf, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(agregarJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addGap(50, 50, 50))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(deleteSelectedJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(83, 83, 83))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -477,10 +502,14 @@ public class Venta extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(CbPan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(CantPanJtf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(panesIsuficientesLabel)
-                .addGap(55, 55, 55)
+                .addGap(2, 2, 2)
+                .addComponent(deleteSelectedJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 108, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -539,7 +568,7 @@ public class Venta extends javax.swing.JFrame {
             row [0]= panEncontrado.getnombre();
             row [1]= panEncontrado.getcosto();
             row [2]= nuevoregistro.getCantidad();
-            row [3]= nuevoregistro.getTotal();
+            row [3]= nuevoregistro.getTotal(); //Tiene el total del seleccionado
             
             modelo.addRow(row);
             totalJLabel.setText(String.valueOf(calculaTotalTicket())); 
@@ -570,6 +599,7 @@ public class Venta extends javax.swing.JFrame {
 
     private void RegVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegVentaActionPerformed
         registraVenta();
+        deleteSelectedJButton.setEnabled(false);
     }//GEN-LAST:event_RegVentaActionPerformed
 
     private void genCambioJBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_genCambioJBtnActionPerformed
@@ -603,12 +633,17 @@ public class Venta extends javax.swing.JFrame {
 
     private void VentaPanJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_VentaPanJTableMouseClicked
         int fila = VentaPanJTable.getSelectedRow();
-        if(fila > 0){
-            RegVenta.setEnabled(true);
+        if(fila >= 0){
+            deleteSelectedJButton.setEnabled(true);
         }else{
-            RegVenta.setEnabled(false);
+            deleteSelectedJButton.setEnabled(false);
         }
     }//GEN-LAST:event_VentaPanJTableMouseClicked
+
+    private void deleteSelectedJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteSelectedJButtonActionPerformed
+        borraSeleccionado();
+        deleteSelectedJButton.setEnabled(false);
+    }//GEN-LAST:event_deleteSelectedJButtonActionPerformed
 
     public void validaEntradaDinero(){
         try {
@@ -688,6 +723,7 @@ public class Venta extends javax.swing.JFrame {
     private javax.swing.JButton Regresar;
     private javax.swing.JTable VentaPanJTable;
     private javax.swing.JButton agregarJBtn;
+    private javax.swing.JButton deleteSelectedJButton;
     private javax.swing.JButton entregaPedidoJBtn;
     private javax.swing.JButton genCambioJBtn;
     private javax.swing.JLabel jLabel1;

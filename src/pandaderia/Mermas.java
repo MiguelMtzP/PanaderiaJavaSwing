@@ -132,6 +132,7 @@ public class Mermas extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         jLabel2.setText("Registra Merma por pan");
 
+        CbPan.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         CbPan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecciona un pan" }));
         CbPan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -141,6 +142,7 @@ public class Mermas extends javax.swing.JFrame {
 
         jLabel1.setText("Frios");
 
+        panesFriosjSpinner.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         panesFriosjSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         panesFriosjSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -148,6 +150,7 @@ public class Mermas extends javax.swing.JFrame {
             }
         });
 
+        panesRotosjSpinner.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         panesRotosjSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         panesRotosjSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -157,6 +160,7 @@ public class Mermas extends javax.swing.JFrame {
 
         jLabel3.setText("Rotos");
 
+        panesComidosjSpinner.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         panesComidosjSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         panesComidosjSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -225,6 +229,7 @@ public class Mermas extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Mermas registradas al corte"));
 
+        mermasjTable.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         mermasjTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},

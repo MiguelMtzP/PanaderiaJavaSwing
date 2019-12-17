@@ -155,7 +155,14 @@ public class Inventario extends javax.swing.JFrame {
         BorrarjButton.setEnabled(currentPanSelected != null && empleadoLoggeado.getRol() == 1);
         ModificarjButton.setEnabled(currentPanSelected != null && empleadoLoggeado.getRol() == 1 && !nombrePanJTF.getText().isEmpty()&&!PrecioPanJTF.getText().isEmpty());
         GuardarjButton.setEnabled(currentPanSelected == null && empleadoLoggeado.getRol() == 1 && !nombrePanJTF.getText().isEmpty()&&!PrecioPanJTF.getText().isEmpty());
-        //agregaExistenciasjButton.setEnabled(currentPanSelected !=null && Integer.parseInt(nuevosPanesJtf.getText()) > 0);
+        try {
+            agregaExistenciasjButton.setEnabled(currentPanSelected !=null && Integer.parseInt(nuevosPanesJtf.getText()) > 0);
+        } catch (NumberFormatException e) {
+            agregaExistenciasjButton.setEnabled(false);
+            System.out.println("cayo en la exception ");
+            nuevosPanesJtf.setText("0");
+        }
+            
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -209,12 +216,14 @@ public class Inventario extends javax.swing.JFrame {
 
         jLabel2.setText("Precio: ");
 
+        PrecioPanJTF.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         PrecioPanJTF.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 PrecioPanJTFKeyReleased(evt);
             }
         });
 
+        nombrePanJTF.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         nombrePanJTF.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 nombrePanJTFKeyReleased(evt);
@@ -225,6 +234,7 @@ public class Inventario extends javax.swing.JFrame {
 
         jLabel5.setText("ID Pan:");
 
+        IdPanJTF.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         IdPanJTF.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 IdPanJTFActionPerformed(evt);
@@ -357,6 +367,7 @@ public class Inventario extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         jLabel6.setText("Buscar por nombre:");
 
+        buscaPorNombrejTField.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         buscaPorNombrejTField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buscaPorNombrejTFieldActionPerformed(evt);
@@ -371,6 +382,7 @@ public class Inventario extends javax.swing.JFrame {
             }
         });
 
+        buscaPorIdJTField.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         buscaPorIdJTField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 buscaPorIdJTFieldKeyReleased(evt);
@@ -433,6 +445,16 @@ public class Inventario extends javax.swing.JFrame {
         nuevosPanesJtf.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
         nuevosPanesJtf.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         nuevosPanesJtf.setText("0");
+        nuevosPanesJtf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nuevosPanesJtfActionPerformed(evt);
+            }
+        });
+        nuevosPanesJtf.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                nuevosPanesJtfKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -598,27 +620,31 @@ public class Inventario extends javax.swing.JFrame {
 
     private void buscaPorNombrejTFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_buscaPorNombrejTFieldKeyReleased
         try {
-            ArrayList<Pan> filtrados = new ArrayList<Pan>(0);
+            panesExistencia.clear();
+            modelo.setNumRows(0);
+            PreparedStatement pst = conexion.conectar.prepareStatement("SELECT * from Inventario where nombre like ? " +
+                                                                        "    order by nombre asc");
             String input = buscaPorNombrejTField.getText();
-            for(Pan panes : panesExistencia){
-                if(input.isEmpty() || panes.getnombre().toUpperCase().contains(input.toUpperCase())){
-                    filtrados.add(panes);
-                }
+            pst.setString(1, "%"+input+"%");
+            
+            ResultSet a = pst.executeQuery();
+            while(a.next()){
+                
+                Pan nuevo = new Pan();
+                nuevo.setidPan(a.getInt("id_Pan"));
+                nuevo.setnombre(a.getString("nombre"));
+                nuevo.setcosto(a.getFloat("costo"));
+                nuevo.setexistencia(a.getInt("existencia"));
+                
+                Object[] filas = new Object[4];
+                filas[0] = a.getInt("id_Pan");
+                filas[1] = a.getString("nombre");
+                filas[2] = a.getFloat("costo");
+                filas[3] = a.getInt("existencia");
+                modelo.addRow(filas);
+                panesExistencia.add(nuevo);
             }
             
-            if(filtrados.size() > 0){
-            modelo.setRowCount(0);
-            for (Pan filtrado : filtrados) {
-                Object row[] = new Object[4];
-                row[0] = filtrado.getidPan();
-                row[1] = filtrado.getnombre();
-                row[2] = filtrado.getcosto();
-                row[3] = filtrado.getexistencia();
-
-                modelo.addRow(row);
-            }
-        }else if(!buscaPorNombrejTField.getText().isEmpty())
-            modelo.setRowCount(0);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -647,10 +673,10 @@ public class Inventario extends javax.swing.JFrame {
             
             pst.setInt(1,Integer.parseInt(nuevosPanesJtf.getText()));
             pst.setInt(2, currentPanSelected.getidPan());
-            pst.executeUpdate();
+            pst.execute();
+            JOptionPane.showMessageDialog(null,"¡Piezas agregadas exitosamente al pan "+nombre+"!");
             Actualizar("");
             limpiaCampos();
-            JOptionPane.showMessageDialog(null,"¡Piezas agregadas exitosamente al pan "+nombre+"!");
         }catch (Exception e) {
             System.out.println(e);
             JOptionPane.showMessageDialog(null,"ERROR: Contacte al administrador del sistema \nCODERR:4432"); 
@@ -659,39 +685,32 @@ public class Inventario extends javax.swing.JFrame {
 
     private void buscaPorIdJTFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_buscaPorIdJTFieldKeyReleased
         try{
-            ArrayList<Pan> filtrados = new ArrayList<Pan>(0);
+            panesExistencia.clear();
+            modelo.setNumRows(0);
+            PreparedStatement pst = conexion.conectar.prepareStatement("SELECT * from Inventario where id_Pan =  ? " +
+                                                                        "    order by nombre asc");
             int input = Integer.parseInt(buscaPorIdJTField.getText());
+            pst.setInt(1, input);
             
-            for (Pan pan : panesExistencia) {
-                if (pan.getidPan() == input){
-                    filtrados.add(pan);
-                }
+            ResultSet a = pst.executeQuery();
+            while(a.next()){
+                
+                Pan nuevo = new Pan();
+                nuevo.setidPan(a.getInt("id_Pan"));
+                nuevo.setnombre(a.getString("nombre"));
+                nuevo.setcosto(a.getFloat("costo"));
+                nuevo.setexistencia(a.getInt("existencia"));
+                
+                Object[] filas = new Object[4];
+                filas[0] = a.getInt("id_Pan");
+                filas[1] = a.getString("nombre");
+                filas[2] = a.getFloat("costo");
+                filas[3] = a.getInt("existencia");
+                modelo.addRow(filas);
+                panesExistencia.add(nuevo);
             }
-            if(filtrados.size()>0){
-                modelo.setRowCount(0);
-                for (Pan filtrado : filtrados) {
-                    Object row[] = new Object[4];
-                    row[0] = filtrado.getidPan();
-                    row[1] = filtrado.getnombre();
-                    row[2] = filtrado.getcosto();
-                    row[3] = filtrado.getexistencia();
-                    modelo.addRow(row);
-                }
-            }else if(!buscaPorIdJTField.getText().isEmpty())
-            modelo.setRowCount(0);
-
-        }catch(NumberFormatException e){
-            modelo.setRowCount(0);
-            if(buscaPorIdJTField.getText().isEmpty()){
-                for (Pan pan : panesExistencia) {
-                    Object row[] = new Object[4];
-                    row[0] = pan.getidPan();
-                    row[1] = pan.getnombre();
-                    row[2] = pan.getcosto();
-                    row[3] = pan.getexistencia();
-                    modelo.addRow(row);
-                }
-            }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
         }
     }//GEN-LAST:event_buscaPorIdJTFieldKeyReleased
 
@@ -711,6 +730,14 @@ public class Inventario extends javax.swing.JFrame {
         limpiaCampos();
         validaDatos();
     }//GEN-LAST:event_limpajButtonActionPerformed
+
+    private void nuevosPanesJtfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevosPanesJtfActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nuevosPanesJtfActionPerformed
+
+    private void nuevosPanesJtfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nuevosPanesJtfKeyReleased
+       validaDatos();
+    }//GEN-LAST:event_nuevosPanesJtfKeyReleased
 
     /**
      * @param args the command line arguments

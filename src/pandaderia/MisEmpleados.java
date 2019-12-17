@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -94,7 +95,6 @@ public class MisEmpleados extends javax.swing.JFrame {
                     }
                     modelo.addRow(filas);
                 }
-                    EmpleadosTabla.setModel(modelo);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null,e.toString());
             //System.out.println(e);
@@ -106,8 +106,23 @@ public class MisEmpleados extends javax.swing.JFrame {
             ModificarButton.setEnabled(false);
             BorrarButton.setEnabled(false);
             System.out.println("entro 1");
+            if (
+                (!gerenteOptionRadioButton.isSelected()&&!empleadoOptionRadioButton.isSelected())||
+                PaternoField.getText().isEmpty()||
+                MaternoField.getText().isEmpty()||
+                NombreField.getText().isEmpty()||
+                NumeroField.getText().isEmpty()||
+                PasswField.getText().isEmpty()){
+                System.out.println("entro 5");
+                GuardarButton.setEnabled(false);
+            }else{
+                GuardarButton.setEnabled(true);
+                System.out.println("entro 6");
+            }
+            
         }else{
             System.out.println("entro 2");
+            GuardarButton.setEnabled(false);
             BorrarButton.setEnabled(true);
             if((!gerenteOptionRadioButton.isSelected()&&!empleadoOptionRadioButton.isSelected())||
             PaternoField.getText().isEmpty()||
@@ -122,19 +137,6 @@ public class MisEmpleados extends javax.swing.JFrame {
                 System.out.println("entro 4");
             }
         }
-        if (!idTrabajadorField.getText().isEmpty()||
-            (!gerenteOptionRadioButton.isSelected()&&!empleadoOptionRadioButton.isSelected())||
-            PaternoField.getText().isEmpty()||
-            MaternoField.getText().isEmpty()||
-            NombreField.getText().isEmpty()||
-            NumeroField.getText().isEmpty()||
-            PasswField.getText().isEmpty()){
-            System.out.println("entro 5");
-            GuardarButton.setEnabled(false);
-        }else{
-            GuardarButton.setEnabled(true);
-            System.out.println("entro 6");
-        }
     }
     
     public void limpiaFields(){
@@ -144,6 +146,8 @@ public class MisEmpleados extends javax.swing.JFrame {
         MaternoField.setText("");
         NumeroField.setText("");
         PasswField.setText("");
+        empleadoOptionRadioButton.setSelected(false);
+        gerenteOptionRadioButton.setSelected(false);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -560,14 +564,16 @@ public class MisEmpleados extends javax.swing.JFrame {
                     int fila = EmpleadosTabla.getSelectedRow();
                     System.out.println(fila);
                     int idTrabaj = (int)EmpleadosTabla.getValueAt(fila, 0);
-                    PreparedStatement pst= cc.conectar.prepareStatement("DELETE FROM Usuarios WHERE id_Trabajdor = ?");
+                    PreparedStatement pst= cc.conectar.prepareStatement("DELETE FROM Usuarios WHERE id_Trabajador = ?");
                     pst.setInt(1, idTrabaj);
                     pst.execute();
                     modelo.removeRow(fila);
                     JOptionPane.showMessageDialog(null, "BORRADO");
-            
+                    limpiaFields();
+                    validateButtons();
         } catch (Exception e) {
                 //JOptionPane.showMessageDialog(null, "ERROR!!");
+                System.out.println(e.getMessage());
                 JOptionPane.showMessageDialog(null,"No hay datos que eliminar");
         }    
            
@@ -595,15 +601,9 @@ public class MisEmpleados extends javax.swing.JFrame {
                     pst.setInt(6, rol);
                     pst.execute();
                     JOptionPane.showMessageDialog(null, "Guardado");
-                        
-                    Object[] fila = new Object[7];
-                    fila[1] = NombreField.getText();
-                    fila[2] = PaternoField.getText();
-                    fila[3] = MaternoField.getText();
-                    fila[4] = NumeroField.getText();
-                    fila[5] = PasswField.getText();
-                    fila[6] = gerenteOptionRadioButton.isSelected() ? "Gerente" : "Empleado";
-                    modelo.addRow(fila);
+                    limpiaFields();
+                    validateButtons();
+                    Actualizar("");
                     
                 }catch (SQLException e) {
                         //JOptionPane.showMessageDialog(null, "ERROR!!");
@@ -618,8 +618,10 @@ public class MisEmpleados extends javax.swing.JFrame {
             try {
                   PreparedStatement pst = cc.conectar.prepareStatement("UPDATE Usuarios SET nombre = '"+NombreField.getText()+"', paterno = '"+PaternoField.getText()+"', materno = '"+MaternoField.getText()+"', password = '"+PasswField.getText()+"', numero = '"+NumeroField.getText()+"', rol = '"+(gerenteOptionRadioButton.isSelected()?"1":"2")+"' WHERE id_Trabajador = '"+idTrabajadorField.getText()+"'");
                   pst.executeUpdate();
-                  Actualizar("");
                   JOptionPane.showMessageDialog(null,"MODIFICADO!");  
+                  limpiaFields();
+                  validateButtons();
+                  Actualizar("");
         } catch (Exception e) {
                   //JOptionPane.showMessageDialog(null,"ERROR");
                   System.out.println(e);
@@ -632,17 +634,16 @@ public class MisEmpleados extends javax.swing.JFrame {
                 
             try {
 
-                    int Fila = EmpleadosTabla.getSelectedRow();
-                    String codigo = EmpleadosTabla.getValueAt(Fila, 0).toString();
+                int Fila = EmpleadosTabla.getSelectedRow();
+                String codigo = EmpleadosTabla.getValueAt(Fila, 0).toString();
 
-                    PreparedStatement pst= cc.conectar.prepareStatement("select * from Usuarios where id_Trabajador = ?");
-                    //System.out.println(pst);
-                    pst.setString(1, codigo);
-                    ResultSet a = pst.executeQuery();
-                    //ResultSetMetaData aMd = a.getMetaData(); //Le pasamos el resultado de la consulta
+                PreparedStatement pst= cc.conectar.prepareStatement("select * from Usuarios where id_Trabajador = ?");
+                //System.out.println(pst);
+                pst.setString(1, codigo);
+                ResultSet a = pst.executeQuery();
+                //ResultSetMetaData aMd = a.getMetaData(); //Le pasamos el resultado de la consulta
 
-                    while(a.next()){  //Recorremos los datos de la consulta //En cada ciclo me va a dar los datos de una sola fila
-
+                while(a.next()){  //Recorremos los datos de la consulta //En cada ciclo me va a dar los datos de una sola fila
                     idTrabajadorField.setText(a.getString("id_Trabajador"));
                     NombreField.setText(a.getString("Nombre"));
                     PaternoField.setText(a.getString("Paterno"));
@@ -650,7 +651,13 @@ public class MisEmpleados extends javax.swing.JFrame {
                     NumeroField.setText(a.getString("Numero"));
                     PasswField.setText(a.getString("password"));
                     int rol = a.getInt("Rol");
+                    if(rol ==1){
+                        gerenteOptionRadioButton.setSelected(true);
+                    }else{
+                        empleadoOptionRadioButton.setSelected(true);
                     }
+                }
+                validateButtons();
 
             } catch (SQLException e) {
                 System.out.println(e);
@@ -659,6 +666,7 @@ public class MisEmpleados extends javax.swing.JFrame {
 
     private void limpiaCamposActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_limpiaCamposActionPerformed
         limpiaFields();
+        validateButtons();
     }//GEN-LAST:event_limpiaCamposActionPerformed
 
     private void NombreFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_NombreFieldKeyReleased

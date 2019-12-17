@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -52,11 +53,11 @@ public class EntregaPedido extends javax.swing.JFrame {
         this.ventanaVenta = previewView;
         setResizable(false);
         cargaPedidos();
-        
     }
     
     public void cargaPedidos(){
         try {
+            entregarPedidoJButton.setEnabled(false);
             idPedidosExistentes = new ArrayList<Pedido>(0);
             modelo.setRowCount(0);
             PreparedStatement pst = conexion.conectar.prepareStatement("SELECT concat(Cliente.paterno,\" \",Cliente.materno,\" \",Cliente.nombre)as nombre,  " +
@@ -140,8 +141,6 @@ public class EntregaPedido extends javax.swing.JFrame {
         entregaPedidosJTable = new javax.swing.JTable();
         BuscaClientejTextField = new javax.swing.JTextField();
         nombreClientePedidoJLabel = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         detallePedidojTable = new javax.swing.JTable();
@@ -201,9 +200,6 @@ public class EntregaPedido extends javax.swing.JFrame {
         nombreClientePedidoJLabel.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
         nombreClientePedidoJLabel.setText("Nombre");
 
-        jLabel1.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
-        jLabel1.setText("ID Pedido");
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -213,12 +209,8 @@ public class EntregaPedido extends javax.swing.JFrame {
                 .addComponent(nombreClientePedidoJLabel)
                 .addGap(18, 18, 18)
                 .addComponent(BuscaClientejTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(146, 146, 146)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 826, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -226,9 +218,7 @@ public class EntregaPedido extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BuscaClientejTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nombreClientePedidoJLabel)
-                    .addComponent(jLabel1)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(nombreClientePedidoJLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -331,7 +321,7 @@ public class EntregaPedido extends javax.swing.JFrame {
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(regresarJBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 898, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 744, Short.MAX_VALUE)
                         .addComponent(jLabel2)
                         .addGap(27, 27, 27)
                         .addComponent(RestanjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -377,9 +367,58 @@ public class EntregaPedido extends javax.swing.JFrame {
             RestanjLabel.setText(String.valueOf(currentSelectedPedido.getResta()));
             getDetallePedido(currentSelectedPedido.getIdPedido());
         }
+        entregarPedidoJButton.setEnabled(index>=0);
     }//GEN-LAST:event_entregaPedidosJTableMouseClicked
 
     private void BuscaClientejTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BuscaClientejTextFieldKeyReleased
+        try {
+            
+            idPedidosExistentes.clear();
+            modelo.setNumRows(0);
+            PreparedStatement pst = conexion.conectar.prepareStatement("SELECT concat(Cliente.paterno,\" \",Cliente.materno,\" \",Cliente.nombre)as nombre,  " +
+                                                                        "	Pedidos.tipo as tipo, " +
+                                                                        "	Pedidos.id_Pedidos as idPedido, " +
+                                                                        "    Pedidos.fecha_entrega as entrega, " +
+                                                                        "    Pedidos.abono as abono, " +
+                                                                        "    Pedidos.costo as total, " +
+                                                                        "    Pedidos.costo - Pedidos.abono as restan " +
+                                                                        "	FROM panaderia.Pedidos " +
+                                                                        "    join Cliente on Pedidos.id_Cliente = Cliente.id_Cliente " +
+                                                                        "    where Pedidos.status = 1 and concat(Cliente.nombre,Cliente.paterno,Cliente.materno) like ? " +
+                                                                        "    order by nombre asc");
+            String input = BuscaClientejTextField.getText();
+            pst.setString(1, "%"+input+"%");
+            
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                
+                Pedido nuevo = new Pedido();
+                nuevo.setIdPedido(rs.getInt("idPedido"));
+                Clientes nCliente = new Clientes();
+                nCliente.setnombre(rs.getString("nombre"));
+                nuevo.setCliente(nCliente);
+                nuevo.setTipo(rs.getInt("tipo"));
+                nuevo.setFechaEntrega(rs.getDate("entrega"));
+                nuevo.setAbono(rs.getFloat("abono"));
+                nuevo.setResta(rs.getFloat("restan"));
+                nuevo.setCosto(rs.getFloat("total"));
+                        
+                idPedidosExistentes.add(nuevo);
+                Object [] obj = new Object[6];
+                obj[0]= rs.getString("nombre");
+                obj[1] = rs.getInt("tipo") == 1 ? "normal":"externo";
+                obj[2] = rs.getDate("entrega");
+                obj[3] = rs.getFloat("abono");
+                obj[4]= rs.getFloat("restan");
+                obj[5]= rs.getFloat("total");
+                modelo.addRow(obj);
+            }
+            
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(EntregaPedido.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         ArrayList<Pedido> filtrados = new ArrayList<Pedido>(0);
         String input = BuscaClientejTextField.getText();
         for (Pedido pedido :idPedidosExistentes) {
@@ -407,7 +446,17 @@ public class EntregaPedido extends javax.swing.JFrame {
     }//GEN-LAST:event_BuscaClientejTextFieldKeyReleased
 
     private void entregarPedidoJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_entregarPedidoJButtonActionPerformed
-        // TODO add your handling code here:
+        try {
+            PreparedStatement pst = conexion.conectar.prepareStatement("UPDATE Pedidos SET status= 2 WHERE id_Pedidos=?");
+            pst.setInt(1, currentSelectedPedido.getIdPedido());
+            pst.execute();
+            
+            JOptionPane.showMessageDialog(null, "¡Pedido finalizado Correctamente!");
+            cargaPedidos();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "ERROR! algo salio mal...");
+            System.out.println(e.getMessage());
+        }
     }//GEN-LAST:event_entregarPedidoJButtonActionPerformed
 
     /**
@@ -452,14 +501,12 @@ public class EntregaPedido extends javax.swing.JFrame {
     private javax.swing.JTable detallePedidojTable;
     private javax.swing.JTable entregaPedidosJTable;
     private javax.swing.JButton entregarPedidoJButton;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JLabel nombreClientePedidoJLabel;
     private javax.swing.JButton regresarJBtn;
     // End of variables declaration//GEN-END:variables
