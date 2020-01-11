@@ -23,6 +23,6 @@ public class BalanceCorte {
         this.fugasPedidosExternos = 0;
     }
     public float getBalanceTotal(){
-        return gananciasVentas+perdidasMermas+gananciasPedidos+fugasPedidosExternos;
+        return gananciasVentas+gananciasPedidos+fugasPedidosExternos;
     }
 }

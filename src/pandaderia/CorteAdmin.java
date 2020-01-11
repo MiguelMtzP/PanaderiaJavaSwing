@@ -93,6 +93,8 @@ public class CorteAdmin extends javax.swing.JFrame {
         
         diaBalanceGananciasPorVentasLabel.setText("$"+"0.0" );
         diaBalancePasivosPorMermasLabel.setText("$"+"0.0" );
+        diaBalancePasivosPorMermasLabel.setVisible(false);
+        diaBalancePasivosPorMermasTitleLabel.setVisible(false);
         diaBalanceGananciasPorPedidosLabael.setText("$"+"0.0" );
         diaBalanceFugasPedidosExternosLabel.setText("$"+"0.0" );
         diaBalanceTotalLabel.setText("$"+"0.0" );
@@ -129,6 +131,8 @@ public class CorteAdmin extends javax.swing.JFrame {
         
         mesBalanceGananciasPorVentasLabel.setText("$"+"0.0" );
         mesBalancePasivosPorMermasLabel.setText("$"+"0.0" );
+        mesBalancePasivosPorMermasLabel.setVisible(false);
+        mesBalancePasivosPorMermasTitleLabel.setVisible(false);
         mesBalanceGananciasPorPedidosLabael.setText("$"+"0.0" );
         mesBalanceFugasPedidosExternosLabel.setText("$"+"0.0" );
         mesBalanceTotalLabel.setText("$"+"0.0" );
@@ -170,6 +174,8 @@ public class CorteAdmin extends javax.swing.JFrame {
         
         corteGananciasPorVentasLabel.setText("$"+"0.0" );
         cortePasivosPorMermasLabel.setText("$"+"0.0" );
+        cortePasivosPorMermasLabel.setVisible(false);
+        cortePasivosPorMermasTitleLabel.setVisible(false);
         corteGananciasPorPedidoLabel.setText("$"+"0.0" );
         corteFugasPorPedidosExternosLabel.setText("$"+"0.0" );
         corteBalanceTotaljLabel.setText("$"+"0.0" );
@@ -650,7 +656,7 @@ public class CorteAdmin extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         diaBalanceGananciasPorVentasLabel = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
+        diaBalancePasivosPorMermasTitleLabel = new javax.swing.JLabel();
         diaBalancePasivosPorMermasLabel = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         diaBalanceGananciasPorPedidosLabael = new javax.swing.JLabel();
@@ -684,7 +690,7 @@ public class CorteAdmin extends javax.swing.JFrame {
         jLabel53 = new javax.swing.JLabel();
         jLabel54 = new javax.swing.JLabel();
         mesBalanceGananciasPorVentasLabel = new javax.swing.JLabel();
-        jLabel56 = new javax.swing.JLabel();
+        mesBalancePasivosPorMermasTitleLabel = new javax.swing.JLabel();
         mesBalancePasivosPorMermasLabel = new javax.swing.JLabel();
         jLabel58 = new javax.swing.JLabel();
         mesBalanceGananciasPorPedidosLabael = new javax.swing.JLabel();
@@ -718,7 +724,7 @@ public class CorteAdmin extends javax.swing.JFrame {
         jLabel74 = new javax.swing.JLabel();
         jLabel75 = new javax.swing.JLabel();
         corteGananciasPorVentasLabel = new javax.swing.JLabel();
-        jLabel77 = new javax.swing.JLabel();
+        cortePasivosPorMermasTitleLabel = new javax.swing.JLabel();
         cortePasivosPorMermasLabel = new javax.swing.JLabel();
         jLabel79 = new javax.swing.JLabel();
         corteGananciasPorPedidoLabel = new javax.swing.JLabel();
@@ -841,8 +847,8 @@ public class CorteAdmin extends javax.swing.JFrame {
         diaBalanceGananciasPorVentasLabel.setForeground(new java.awt.Color(189, 5, 5));
         diaBalanceGananciasPorVentasLabel.setText("jLabel3");
 
-        jLabel14.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
-        jLabel14.setText("Pasivos por mermas");
+        diaBalancePasivosPorMermasTitleLabel.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
+        diaBalancePasivosPorMermasTitleLabel.setText("Pasivos por mermas");
 
         diaBalancePasivosPorMermasLabel.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
         diaBalancePasivosPorMermasLabel.setForeground(new java.awt.Color(189, 5, 5));
@@ -919,7 +925,16 @@ public class CorteAdmin extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(309, 309, 309)
+                                .addGap(256, 256, 256)
+                                .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(82, 82, 82)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(diaBalancePasivosPorMermasTitleLabel)
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addGap(20, 20, 20)
+                                        .addComponent(diaBalancePasivosPorMermasLabel)))
+                                .addGap(85, 85, 85)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(jPanel3Layout.createSequentialGroup()
                                         .addComponent(jLabel20)
@@ -931,20 +946,13 @@ public class CorteAdmin extends javax.swing.JFrame {
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                             .addComponent(diaBalanceGananciasPorPedidosLabael))
                                         .addGroup(jPanel3Layout.createSequentialGroup()
-                                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(jLabel12)
-                                                .addComponent(jLabel14))
+                                            .addComponent(jLabel12)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(diaBalancePasivosPorMermasLabel, javax.swing.GroupLayout.Alignment.TRAILING)
-                                                .addComponent(diaBalanceGananciasPorVentasLabel, javax.swing.GroupLayout.Alignment.TRAILING)))
+                                            .addComponent(diaBalanceGananciasPorVentasLabel))
                                         .addGroup(jPanel3Layout.createSequentialGroup()
                                             .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(diaBalanceFugasPedidosExternosLabel)))))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(256, 256, 256)
-                                .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(diaBalanceFugasPedidosExternosLabel))))))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -991,12 +999,11 @@ public class CorteAdmin extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(diaBalanceGananciasPorVentasLabel)
-                    .addComponent(jLabel12))
+                    .addComponent(jLabel12)
+                    .addComponent(diaBalancePasivosPorMermasTitleLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(diaBalancePasivosPorMermasLabel)
-                    .addComponent(jLabel14))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(diaBalancePasivosPorMermasLabel)
+                .addGap(1, 1, 1)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(diaBalanceGananciasPorPedidosLabael)
                     .addComponent(jLabel16))
@@ -1109,8 +1116,8 @@ public class CorteAdmin extends javax.swing.JFrame {
         mesBalanceGananciasPorVentasLabel.setForeground(new java.awt.Color(189, 5, 5));
         mesBalanceGananciasPorVentasLabel.setText("jLabel3");
 
-        jLabel56.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
-        jLabel56.setText("Pasivos por mermas");
+        mesBalancePasivosPorMermasTitleLabel.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
+        mesBalancePasivosPorMermasTitleLabel.setText("Pasivos por mermas");
 
         mesBalancePasivosPorMermasLabel.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
         mesBalancePasivosPorMermasLabel.setForeground(new java.awt.Color(189, 5, 5));
@@ -1196,33 +1203,32 @@ public class CorteAdmin extends javax.swing.JFrame {
                                 .addComponent(jLabel62)
                                 .addGap(476, 476, 476))))
                     .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel8Layout.createSequentialGroup()
-                                .addGap(309, 309, 309)
-                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(mesBalanceTotalLabel)
-                                    .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addGroup(jPanel8Layout.createSequentialGroup()
-                                            .addComponent(jLabel58)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(mesBalanceGananciasPorPedidosLabael))
-                                        .addGroup(jPanel8Layout.createSequentialGroup()
-                                            .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(jLabel54)
-                                                .addComponent(jLabel56))
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(mesBalancePasivosPorMermasLabel, javax.swing.GroupLayout.Alignment.TRAILING)
-                                                .addComponent(mesBalanceGananciasPorVentasLabel, javax.swing.GroupLayout.Alignment.TRAILING)))
-                                        .addGroup(jPanel8Layout.createSequentialGroup()
-                                            .addComponent(jLabel60, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(mesBalanceFugasPedidosExternosLabel)))))
-                            .addGroup(jPanel8Layout.createSequentialGroup()
-                                .addGap(256, 256, 256)
-                                .addComponent(jSeparator12, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(256, 256, 256)
+                        .addComponent(jSeparator12, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addGap(309, 309, 309)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(mesBalanceTotalLabel)
+                    .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(jPanel8Layout.createSequentialGroup()
+                            .addComponent(jLabel58)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(mesBalanceGananciasPorPedidosLabael))
+                        .addGroup(jPanel8Layout.createSequentialGroup()
+                            .addComponent(jLabel54)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(mesBalanceGananciasPorVentasLabel))
+                        .addGroup(jPanel8Layout.createSequentialGroup()
+                            .addComponent(jLabel60, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(mesBalanceFugasPedidosExternosLabel))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(mesBalancePasivosPorMermasLabel)
+                    .addComponent(mesBalancePasivosPorMermasTitleLabel))
+                .addGap(78, 78, 78))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1267,11 +1273,10 @@ public class CorteAdmin extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(mesBalanceGananciasPorVentasLabel)
-                    .addComponent(jLabel54))
+                    .addComponent(jLabel54)
+                    .addComponent(mesBalancePasivosPorMermasTitleLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(mesBalancePasivosPorMermasLabel)
-                    .addComponent(jLabel56))
+                .addComponent(mesBalancePasivosPorMermasLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(mesBalanceGananciasPorPedidosLabael)
@@ -1286,7 +1291,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(mesBalanceTotalLabel)
                     .addComponent(jLabel62))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(219, Short.MAX_VALUE))
         );
 
         jScrollPane4.setViewportView(jPanel8);
@@ -1382,8 +1387,8 @@ public class CorteAdmin extends javax.swing.JFrame {
         corteGananciasPorVentasLabel.setForeground(new java.awt.Color(189, 5, 5));
         corteGananciasPorVentasLabel.setText("jLabel3");
 
-        jLabel77.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
-        jLabel77.setText("Pasivos por mermas");
+        cortePasivosPorMermasTitleLabel.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
+        cortePasivosPorMermasTitleLabel.setText("Pasivos por mermas");
 
         cortePasivosPorMermasLabel.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
         cortePasivosPorMermasLabel.setForeground(new java.awt.Color(189, 5, 5));
@@ -1537,27 +1542,6 @@ public class CorteAdmin extends javax.swing.JFrame {
                     .addGroup(jPanel9Layout.createSequentialGroup()
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel9Layout.createSequentialGroup()
-                                .addGap(309, 309, 309)
-                                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(corteBalanceTotaljLabel)
-                                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addGroup(jPanel9Layout.createSequentialGroup()
-                                            .addComponent(jLabel79)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(corteGananciasPorPedidoLabel))
-                                        .addGroup(jPanel9Layout.createSequentialGroup()
-                                            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(jLabel75)
-                                                .addComponent(jLabel77))
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(cortePasivosPorMermasLabel, javax.swing.GroupLayout.Alignment.TRAILING)
-                                                .addComponent(corteGananciasPorVentasLabel, javax.swing.GroupLayout.Alignment.TRAILING)))
-                                        .addGroup(jPanel9Layout.createSequentialGroup()
-                                            .addComponent(jLabel81, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(corteFugasPorPedidosExternosLabel)))))
-                            .addGroup(jPanel9Layout.createSequentialGroup()
                                 .addGap(256, 256, 256)
                                 .addComponent(jSeparator16, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel9Layout.createSequentialGroup()
@@ -1573,6 +1557,28 @@ public class CorteAdmin extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(corteSeleccionadoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(51, 51, 51))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                .addGap(309, 309, 309)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(corteBalanceTotaljLabel)
+                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(jPanel9Layout.createSequentialGroup()
+                            .addComponent(jLabel79)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(corteGananciasPorPedidoLabel))
+                        .addGroup(jPanel9Layout.createSequentialGroup()
+                            .addComponent(jLabel75)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(corteGananciasPorVentasLabel))
+                        .addGroup(jPanel9Layout.createSequentialGroup()
+                            .addComponent(jLabel81, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(corteFugasPorPedidosExternosLabel))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cortePasivosPorMermasLabel)
+                    .addComponent(cortePasivosPorMermasTitleLabel))
+                .addGap(89, 89, 89))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1618,11 +1624,10 @@ public class CorteAdmin extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(corteGananciasPorVentasLabel)
-                    .addComponent(jLabel75))
+                    .addComponent(jLabel75)
+                    .addComponent(cortePasivosPorMermasTitleLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cortePasivosPorMermasLabel)
-                    .addComponent(jLabel77))
+                .addComponent(cortePasivosPorMermasLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(corteGananciasPorPedidoLabel)
@@ -1637,7 +1642,7 @@ public class CorteAdmin extends javax.swing.JFrame {
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(corteBalanceTotaljLabel)
                     .addComponent(jLabel83))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
 
         jScrollPane5.setViewportView(jPanel9);
@@ -1780,6 +1785,7 @@ public class CorteAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel corteMermasPerdidasTotalesLabel;
     private javax.swing.JCheckBox corteMuestraPendientesYExternosCheckBox;
     private javax.swing.JLabel cortePasivosPorMermasLabel;
+    private javax.swing.JLabel cortePasivosPorMermasTitleLabel;
     private javax.swing.JLabel cortePedidosGananciasTotalesLabel;
     private javax.swing.JLabel corteSeleccionadoLabel;
     private javax.swing.JPanel corteSeleccionadoPanel;
@@ -1788,6 +1794,7 @@ public class CorteAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel diaBalanceGananciasPorPedidosLabael;
     private javax.swing.JLabel diaBalanceGananciasPorVentasLabel;
     private javax.swing.JLabel diaBalancePasivosPorMermasLabel;
+    private javax.swing.JLabel diaBalancePasivosPorMermasTitleLabel;
     private javax.swing.JLabel diaBalanceTotalLabel;
     private javax.swing.JLabel diaMermasPerdidasTotalesLabel;
     private javax.swing.JCheckBox diaMuestraPendientesYExternosCheckBox;
@@ -1798,7 +1805,6 @@ public class CorteAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
@@ -1814,7 +1820,6 @@ public class CorteAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel51;
     private javax.swing.JLabel jLabel53;
     private javax.swing.JLabel jLabel54;
-    private javax.swing.JLabel jLabel56;
     private javax.swing.JLabel jLabel58;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel60;
@@ -1827,7 +1832,6 @@ public class CorteAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel72;
     private javax.swing.JLabel jLabel74;
     private javax.swing.JLabel jLabel75;
-    private javax.swing.JLabel jLabel77;
     private javax.swing.JLabel jLabel79;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel81;
@@ -1868,6 +1872,7 @@ public class CorteAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel mesBalanceGananciasPorPedidosLabael;
     private javax.swing.JLabel mesBalanceGananciasPorVentasLabel;
     private javax.swing.JLabel mesBalancePasivosPorMermasLabel;
+    private javax.swing.JLabel mesBalancePasivosPorMermasTitleLabel;
     private javax.swing.JLabel mesBalanceTotalLabel;
     private javax.swing.JLabel mesMermasPerdidasTotalesLabel;
     private javax.swing.JCheckBox mesMuestraPendientesYExternosCheckBox;

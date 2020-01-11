@@ -143,29 +143,35 @@
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" attributes="0">
-                                          <EmptySpace min="-2" pref="309" max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="256" max="-2" attributes="0"/>
+                                          <Component id="jSeparator4" min="-2" pref="378" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" attributes="0">
+                                          <EmptySpace min="-2" pref="82" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="diaBalancePasivosPorMermasTitleLabel" min="-2" max="-2" attributes="0"/>
+                                              <Group type="102" alignment="0" attributes="0">
+                                                  <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                                                  <Component id="diaBalancePasivosPorMermasLabel" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                          </Group>
+                                          <EmptySpace min="-2" pref="85" max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="1" attributes="0">
-                                              <Group type="102" attributes="0">
+                                              <Group type="102" alignment="1" attributes="0">
                                                   <Component id="jLabel20" min="-2" max="-2" attributes="0"/>
                                                   <EmptySpace min="-2" pref="96" max="-2" attributes="0"/>
                                                   <Component id="diaBalanceTotalLabel" min="-2" max="-2" attributes="0"/>
                                               </Group>
-                                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                              <Group type="103" alignment="1" groupAlignment="1" max="-2" attributes="0">
                                                   <Group type="102" attributes="0">
                                                       <Component id="jLabel16" min="-2" max="-2" attributes="0"/>
                                                       <EmptySpace max="32767" attributes="0"/>
                                                       <Component id="diaBalanceGananciasPorPedidosLabael" min="-2" max="-2" attributes="0"/>
                                                   </Group>
                                                   <Group type="102" attributes="0">
-                                                      <Group type="103" groupAlignment="0" attributes="0">
-                                                          <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
-                                                          <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
-                                                      </Group>
+                                                      <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
                                                       <EmptySpace max="32767" attributes="0"/>
-                                                      <Group type="103" groupAlignment="0" attributes="0">
-                                                          <Component id="diaBalancePasivosPorMermasLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                                                          <Component id="diaBalanceGananciasPorVentasLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                                                      </Group>
+                                                      <Component id="diaBalanceGananciasPorVentasLabel" min="-2" max="-2" attributes="0"/>
                                                   </Group>
                                                   <Group type="102" alignment="1" attributes="0">
                                                       <Component id="jLabel18" max="32767" attributes="0"/>
@@ -174,10 +180,6 @@
                                                   </Group>
                                               </Group>
                                           </Group>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <EmptySpace min="-2" pref="256" max="-2" attributes="0"/>
-                                          <Component id="jSeparator4" min="-2" pref="378" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -236,13 +238,11 @@
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="diaBalanceGananciasPorVentasLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="diaBalancePasivosPorMermasTitleLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="diaBalancePasivosPorMermasLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="diaBalancePasivosPorMermasLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="diaBalanceGananciasPorPedidosLabael" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel16" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -463,7 +463,7 @@
                     <Property name="text" type="java.lang.String" value="jLabel3"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="jLabel14">
+                <Component class="javax.swing.JLabel" name="diaBalancePasivosPorMermasTitleLabel">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Liberation Sans" size="14" style="1"/>
@@ -631,45 +631,41 @@
                                   </Group>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <EmptySpace min="-2" pref="309" max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="1" attributes="0">
-                                              <Component id="mesBalanceTotalLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                                              <Group type="103" alignment="1" groupAlignment="1" max="-2" attributes="0">
-                                                  <Group type="102" alignment="1" attributes="0">
-                                                      <Component id="jLabel58" min="-2" max="-2" attributes="0"/>
-                                                      <EmptySpace max="32767" attributes="0"/>
-                                                      <Component id="mesBalanceGananciasPorPedidosLabael" min="-2" max="-2" attributes="0"/>
-                                                  </Group>
-                                                  <Group type="102" alignment="1" attributes="0">
-                                                      <Group type="103" groupAlignment="0" attributes="0">
-                                                          <Component id="jLabel54" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                          <Component id="jLabel56" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                      </Group>
-                                                      <EmptySpace max="32767" attributes="0"/>
-                                                      <Group type="103" groupAlignment="0" attributes="0">
-                                                          <Component id="mesBalancePasivosPorMermasLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                                                          <Component id="mesBalanceGananciasPorVentasLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                                                      </Group>
-                                                  </Group>
-                                                  <Group type="102" alignment="1" attributes="0">
-                                                      <Component id="jLabel60" max="32767" attributes="0"/>
-                                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                                      <Component id="mesBalanceFugasPedidosExternosLabel" min="-2" max="-2" attributes="0"/>
-                                                  </Group>
-                                              </Group>
-                                          </Group>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <EmptySpace min="-2" pref="256" max="-2" attributes="0"/>
-                                          <Component id="jSeparator12" min="-2" pref="378" max="-2" attributes="0"/>
-                                      </Group>
-                                  </Group>
+                                  <EmptySpace min="-2" pref="256" max="-2" attributes="0"/>
+                                  <Component id="jSeparator12" min="-2" pref="378" max="-2" attributes="0"/>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace min="-2" pref="309" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="mesBalanceTotalLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" alignment="1" groupAlignment="1" max="-2" attributes="0">
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="jLabel58" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="mesBalanceGananciasPorPedidosLabael" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="jLabel54" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="mesBalanceGananciasPorVentasLabel" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="jLabel60" max="32767" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="mesBalanceFugasPedidosExternosLabel" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="mesBalancePasivosPorMermasLabel" min="-2" max="-2" attributes="0"/>
+                              <Component id="mesBalancePasivosPorMermasTitleLabel" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="78" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -722,12 +718,10 @@
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="mesBalanceGananciasPorVentasLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel54" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="mesBalancePasivosPorMermasTitleLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="mesBalancePasivosPorMermasLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="jLabel56" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="mesBalancePasivosPorMermasLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="mesBalanceGananciasPorPedidosLabael" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -745,7 +739,7 @@
                               <Component id="mesBalanceTotalLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel62" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="219" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -944,7 +938,7 @@
                     <Property name="text" type="java.lang.String" value="jLabel3"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="jLabel56">
+                <Component class="javax.swing.JLabel" name="mesBalancePasivosPorMermasTitleLabel">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Liberation Sans" size="14" style="1"/>
@@ -1111,35 +1105,6 @@
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" alignment="0" attributes="0">
-                                          <EmptySpace min="-2" pref="309" max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="1" attributes="0">
-                                              <Component id="corteBalanceTotaljLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                                              <Group type="103" alignment="1" groupAlignment="1" max="-2" attributes="0">
-                                                  <Group type="102" alignment="1" attributes="0">
-                                                      <Component id="jLabel79" min="-2" max="-2" attributes="0"/>
-                                                      <EmptySpace max="32767" attributes="0"/>
-                                                      <Component id="corteGananciasPorPedidoLabel" min="-2" max="-2" attributes="0"/>
-                                                  </Group>
-                                                  <Group type="102" alignment="1" attributes="0">
-                                                      <Group type="103" groupAlignment="0" attributes="0">
-                                                          <Component id="jLabel75" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                          <Component id="jLabel77" alignment="0" min="-2" max="-2" attributes="0"/>
-                                                      </Group>
-                                                      <EmptySpace max="32767" attributes="0"/>
-                                                      <Group type="103" groupAlignment="0" attributes="0">
-                                                          <Component id="cortePasivosPorMermasLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                                                          <Component id="corteGananciasPorVentasLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                                                      </Group>
-                                                  </Group>
-                                                  <Group type="102" alignment="1" attributes="0">
-                                                      <Component id="jLabel81" max="32767" attributes="0"/>
-                                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                                      <Component id="corteFugasPorPedidosExternosLabel" min="-2" max="-2" attributes="0"/>
-                                                  </Group>
-                                              </Group>
-                                          </Group>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="-2" pref="256" max="-2" attributes="0"/>
                                           <Component id="jSeparator16" min="-2" pref="378" max="-2" attributes="0"/>
                                       </Group>
@@ -1162,6 +1127,35 @@
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="corteSeleccionadoPanel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace min="-2" pref="309" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="corteBalanceTotaljLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" alignment="1" groupAlignment="1" max="-2" attributes="0">
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="jLabel79" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="corteGananciasPorPedidoLabel" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="jLabel75" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="corteGananciasPorVentasLabel" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="jLabel81" max="32767" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="corteFugasPorPedidosExternosLabel" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="cortePasivosPorMermasLabel" min="-2" max="-2" attributes="0"/>
+                              <Component id="cortePasivosPorMermasTitleLabel" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="89" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1214,12 +1208,10 @@
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="corteGananciasPorVentasLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel75" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="cortePasivosPorMermasTitleLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="cortePasivosPorMermasLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="jLabel77" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="cortePasivosPorMermasLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="corteGananciasPorPedidoLabel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -1237,7 +1229,7 @@
                               <Component id="corteBalanceTotaljLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel83" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="48" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1428,7 +1420,7 @@
                     <Property name="text" type="java.lang.String" value="jLabel3"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="jLabel77">
+                <Component class="javax.swing.JLabel" name="cortePasivosPorMermasTitleLabel">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Liberation Sans" size="14" style="1"/>

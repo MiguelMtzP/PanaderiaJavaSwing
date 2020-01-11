@@ -95,7 +95,7 @@ public class RegPedido extends javax.swing.JFrame {
             //System.out.println("el valor es "+CantPanJtf.getText());
             int cantidad = Integer.parseInt(CantPanJtf.getText());
             if(index >= 0){
-                int enExistencia = panesExistencia.get(index).getexistencia();
+            /*    int enExistencia = panesExistencia.get(index).getexistencia();
                 if(panesExistencia.get(index).getexistencia()>=cantidad){
                     agregarJBtn.setEnabled(true);
                     panesIsuficientesLabel.setVisible(false);
@@ -103,7 +103,9 @@ public class RegPedido extends javax.swing.JFrame {
                     panesIsuficientesLabel.setText((enExistencia>0 ? "¡Solo hay "+enExistencia:"¡No hay")+" panes disponibles!");
                     panesIsuficientesLabel.setVisible(true);
                     agregarJBtn.setEnabled(false);
-                }
+                }*/
+                agregarJBtn.setEnabled(true);
+                panesIsuficientesLabel.setVisible(false);
             }else{
                 panesIsuficientesLabel.setVisible(false);
                 agregarJBtn.setEnabled(false);
