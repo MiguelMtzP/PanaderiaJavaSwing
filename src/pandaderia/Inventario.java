@@ -580,13 +580,18 @@ public class Inventario extends javax.swing.JFrame {
             String nombre = currentPanSelected.getnombre();
             PreparedStatement pst= conexion.conectar.prepareStatement("DELETE FROM Inventario WHERE id_Pan = ?");
             pst.setInt(1, currentPanSelected.getidPan());
+    //        if(JOptionPane.showConfirmDialog(this, "Estas seguro de querer eliminar el pan:\n"+currentPanSelected.getnombre(),"Confirmar Borrado",JOptionPane.OK_CANCEL_OPTION)){
+  //          }
+            if (JOptionPane.showConfirmDialog(this, "Estas seguro de querer eliminar el pan:\n"+currentPanSelected.getnombre(),"Confirmar Borrado",JOptionPane.OK_CANCEL_OPTION) == 0){
             pst.execute();
             Actualizar("");
             limpiaCampos();
             
             JOptionPane.showMessageDialog(null, "¡El pan "+nombre+" fue borrado!");
             validaDatos();
+            }
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "No puedes eliminar este pan, pues tiene\nventas asociadas.", "Operacion no Valida", JOptionPane.ERROR_MESSAGE);
             System.out.println(e.getMessage()); 
         }
     }//GEN-LAST:event_BorrarjButtonActionPerformed
