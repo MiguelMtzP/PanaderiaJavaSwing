@@ -131,7 +131,7 @@ public class Venta extends javax.swing.JFrame {
                 CbPan.removeAllItems();
                 panesExistencia.removeAll(panesExistencia);
         try {
-                PreparedStatement pst= conexion.conectar.prepareStatement("SELECT * FROM Inventario");
+                PreparedStatement pst= conexion.conectar.prepareStatement("SELECT * FROM Inventario order by nombre asc");
                 ResultSet rs = pst.executeQuery();
                 CbPan.addItem("Seleccione un pan");
                 
@@ -143,7 +143,6 @@ public class Venta extends javax.swing.JFrame {
                     nuevoPan.setnombre(rs.getString("nombre"));
                     
                     panesExistencia.add(nuevoPan);
-                    
                     CbPan.addItem(nuevoPan.getnombre());
                 }                
         } catch (SQLException e) {
@@ -172,7 +171,6 @@ public class Venta extends javax.swing.JFrame {
                 
                 for (RegVenta elem : panesVendidos) {
                     PreparedStatement pst= conexion.conectar.prepareStatement("INSERT INTO Ventas  (id_Trabajador, id_Pan, id_Corte, fecha, cantidad, Total ) VALUES(?,?,?,now(),?,?)");
-                    System.out.println(elem);
 
                     pst.setInt(1, elem.getIdTrabajador());
                     pst.setInt(2, elem.getIdPan());
@@ -544,13 +542,9 @@ public class Venta extends javax.swing.JFrame {
     private void agregarJBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarJBtnActionPerformed
         int idPanSelected = CbPan.getSelectedIndex();
         Pan panEncontrado = null;
+       
         
-        for (int i = 0; i < panesExistencia.size(); i++) {
-            Pan elem = panesExistencia.get(i);
-           if (elem.getidPan()== idPanSelected){
-               panEncontrado = elem;
-           } 
-        }
+        panEncontrado = panesExistencia.get(idPanSelected-1);
         
         if (null != panEncontrado){
             RegVenta nuevoregistro = new RegVenta();
@@ -574,7 +568,7 @@ public class Venta extends javax.swing.JFrame {
             totalJLabel.setText(String.valueOf(calculaTotalTicket())); 
             CantPanJtf.setText("");
             CbPan.setSelectedIndex(0);
-        } 
+        } else{System.out.println("no encontro una mierda");}
     }//GEN-LAST:event_agregarJBtnActionPerformed
 
     private void RegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegresarActionPerformed
