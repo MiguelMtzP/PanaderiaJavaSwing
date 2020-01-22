@@ -49,11 +49,11 @@ public class Inventario extends javax.swing.JFrame {
         nombrePanJTF.setEnabled(empleadoLoggeado.getRol() == 1);
         PrecioPanJTF.setEnabled(empleadoLoggeado.getRol() == 1);
         modelo = (DefaultTableModel)InventTablaJTable.getModel();
-        Actualizar("");
         setResizable(false);
-        
         IdPanJTF.setEditable(false);
         validaDatos();
+        Actualizar("");
+        piezasTotales();
     }
     
     public void Actualizar(String valor){
@@ -161,8 +161,19 @@ public class Inventario extends javax.swing.JFrame {
             agregaExistenciasjButton.setEnabled(false);
             System.out.println("cayo en la exception ");
             nuevosPanesJtf.setText("0");
+        }    
+    }
+    
+    public void piezasTotales(){
+        int filas;
+        int totales = 0;
+        
+        filas = InventTablaJTable.getRowCount();
+        for(int i = 0; i < filas-1; i++){
+            totales = totales+(int)InventTablaJTable.getValueAt(i, 3);
         }
-            
+        piezasTotalesJLabel.setText(String.valueOf(totales));
+        System.out.println("filas---->"+filas);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -199,6 +210,8 @@ public class Inventario extends javax.swing.JFrame {
         nombrePanSelectedjLabel = new javax.swing.JLabel();
         agregaExistenciasjButton = new javax.swing.JButton();
         nuevosPanesJtf = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        piezasTotalesJLabel = new javax.swing.JLabel();
 
         jButton1.setText("jButton1");
 
@@ -368,15 +381,7 @@ public class Inventario extends javax.swing.JFrame {
         jLabel6.setText("Buscar por nombre:");
 
         buscaPorNombrejTField.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
-        buscaPorNombrejTField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buscaPorNombrejTFieldActionPerformed(evt);
-            }
-        });
         buscaPorNombrejTField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                buscaPorNombrejTFieldKeyTyped(evt);
-            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 buscaPorNombrejTFieldKeyReleased(evt);
             }
@@ -488,6 +493,13 @@ public class Inventario extends javax.swing.JFrame {
                 .addGap(17, 17, 17))
         );
 
+        jLabel3.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
+        jLabel3.setText("Total de piezas");
+
+        piezasTotalesJLabel.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
+        piezasTotalesJLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        piezasTotalesJLabel.setText("0");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -504,7 +516,13 @@ public class Inventario extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(piezasTotalesJLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(22, 22, 22)))))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -513,9 +531,14 @@ public class Inventario extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(piezasTotalesJLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(Regresar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -562,13 +585,14 @@ public class Inventario extends javax.swing.JFrame {
             
         try {          
             PreparedStatement pst= conexion.conectar.prepareStatement("INSERT INTO Inventario  (nombre, costo, existencia) VALUES(?,?,0)");
-            pst.setString(1, nombrePanJTF.getText());
+            pst.setString(1, nombrePanJTF.getText().toUpperCase());
             pst.setString(2, PrecioPanJTF.getText());
             pst.execute();
             JOptionPane.showMessageDialog(null, "Guardado");
             Actualizar("");
             limpiaCampos();
             validaDatos();
+            piezasTotales();
         }catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Ingrese todos los campos");
             System.out.println(e);
@@ -583,12 +607,13 @@ public class Inventario extends javax.swing.JFrame {
     //        if(JOptionPane.showConfirmDialog(this, "Estas seguro de querer eliminar el pan:\n"+currentPanSelected.getnombre(),"Confirmar Borrado",JOptionPane.OK_CANCEL_OPTION)){
   //          }
             if (JOptionPane.showConfirmDialog(this, "Estas seguro de querer eliminar el pan:\n"+currentPanSelected.getnombre(),"Confirmar Borrado",JOptionPane.OK_CANCEL_OPTION) == 0){
-            pst.execute();
-            Actualizar("");
-            limpiaCampos();
-            
-            JOptionPane.showMessageDialog(null, "¡El pan "+nombre+" fue borrado!");
-            validaDatos();
+                pst.execute();
+                Actualizar("");
+                limpiaCampos();
+
+                JOptionPane.showMessageDialog(null, "¡El pan "+nombre+" fue borrado!");
+                validaDatos();
+                piezasTotales();
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "No puedes eliminar este pan, pues tiene\nventas asociadas.", "Operacion no Valida", JOptionPane.ERROR_MESSAGE);
@@ -618,10 +643,6 @@ public class Inventario extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null,"ERROR: Contacte al administrador del sistema \nCODERR:324"); 
         }
     }//GEN-LAST:event_ModificarjButtonActionPerformed
-
-    private void buscaPorNombrejTFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscaPorNombrejTFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_buscaPorNombrejTFieldActionPerformed
 
     private void buscaPorNombrejTFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_buscaPorNombrejTFieldKeyReleased
         try {
@@ -655,22 +676,6 @@ public class Inventario extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_buscaPorNombrejTFieldKeyReleased
 
-    private void buscaPorNombrejTFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_buscaPorNombrejTFieldKeyTyped
-        
-        /*buscaPorNombrejTField.addKeyListener(new KeyAdapter (){
-        
-        @Override
-        public void keyReleased(KeyEvent ke){
-            
-            trs.setRowFilter(RowFilter.regexFilter("(?i)"+buscaPorNombrejTField.getText(), 1));
-        }
-        });
-        
-        trs = new TableRowSorter(modelo);
-        InventTablaJTable.setRowSorter(trs);*/
-        
-    }//GEN-LAST:event_buscaPorNombrejTFieldKeyTyped
-
     private void agregaExistenciasjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregaExistenciasjButtonActionPerformed
          try {   
             String nombre = currentPanSelected.getnombre();
@@ -682,6 +687,7 @@ public class Inventario extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null,"¡Piezas agregadas exitosamente al pan "+nombre+"!");
             Actualizar("");
             limpiaCampos();
+            piezasTotales();
         }catch (Exception e) {
             System.out.println(e);
             JOptionPane.showMessageDialog(null,"ERROR: Contacte al administrador del sistema \nCODERR:4432"); 
@@ -793,6 +799,7 @@ public class Inventario extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -806,5 +813,6 @@ public class Inventario extends javax.swing.JFrame {
     private javax.swing.JTextField nombrePanJTF;
     private javax.swing.JLabel nombrePanSelectedjLabel;
     private javax.swing.JTextField nuevosPanesJtf;
+    private javax.swing.JLabel piezasTotalesJLabel;
     // End of variables declaration//GEN-END:variables
 }
