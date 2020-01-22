@@ -453,6 +453,8 @@ public class EntregaPedido extends javax.swing.JFrame {
             
             JOptionPane.showMessageDialog(null, "¡Pedido finalizado Correctamente!");
             cargaPedidos();
+            DefaultTableModel model = (DefaultTableModel)detallePedidojTable.getModel();
+            model.setRowCount(0);
             RestanjLabel.setText("0");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "ERROR! algo salio mal...");
